@@ -1,0 +1,115 @@
+.home {
+  position: relative;
+  min-height: 540px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 5rem;
+}
+
+.home img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1.4rem;
+  z-index: -1;
+}
+
+.home-text {
+  max-width: 380px;
+  padding-left: 3.5rem;
+}
+
+.home-text h1 {
+  font-size: 2.4rem;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.home-text h1 span {
+  color: var(--main-color);
+  text-transform: uppercase;
+}
+
+.home-text p {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 15px 25px;
+  background: var(--main-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 500;
+  animation: zoomEffect 1.5s infinite ease-in-out;
+  clip-path: polygon(100% 72%, 88% 100%, 0% 100%, 0% 0%, 53% 0%, 100% 0%);
+}
+
+@keyframes zoomEffect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.btn:hover {
+  background-color: rgb(255, 255, 255);
+  color: var(--main-color);
+  box-shadow: inset 0px 0px 15px rgba(0, 0, 0, 0.8);
+}
+
+.heading {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.left-heading {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.left-heading .bx {
+  font-size: 25px;
+  color: var(--main-color);
+}
+
+.left-heading h2 {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.right-heading a {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+  color: var(--text-color);
+  font-size: 1rem;
+  text-transform: initial;
+  font-style: italic;
+  transition: transform 0.3s;
+}
+
+.right-heading .bx {
+  font-size: 20px;
+  font-style: italic;
+}
+
+.right-heading a:hover {
+  transform: scale(1.2);
+}
+
+.new-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, auto));
+  gap: 2rem;
+}

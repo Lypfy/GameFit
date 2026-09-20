@@ -1,0 +1,27 @@
+.home-toast {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: rgba(33, 35, 43, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.home-toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}

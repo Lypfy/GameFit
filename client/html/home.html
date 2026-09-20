@@ -3,19 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Game Hub</title>
+    <title>Game Fit - Trang Chủ</title>
     <link rel="stylesheet" href="../css/style.css" />
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../css/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="../css/vendor/swiper-bundle.min.css" />
   </head>
   <body>
     <header>
       <!-- Navbar -->
       <div class="nav container">
-        <a href="home.html" class="logo">Game<span>Hub</span></a>
+        <a href="home.html" class="logo">Game<span>Fit</span></a>
         <!-- Nav icon -->
         <div class="nav-icon">
           <div class="search">
@@ -66,27 +66,29 @@
           </div>
         </div>
         <div class="menu">
-          <img src="../assets/menu.png" alt="" />
+          <img src="../assets/menu.png" alt="Menu Banner" />
           <div class="navbar">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Games</a></li>
-            <li><a href="#">PC Check</a></li>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="games.html">Games</a></li>
+            <li><a href="pc-config.html">PC Check</a></li>
           </div>
         </div>
       </div>
     </header>
+
     <!-- Home Section -->
     <section class="home container" id="home">
-      <img src="../assets/home.jpg" alt="" />
+      <img src="../assets/home.jpg" alt="Home Banner" />
       <div class="home-text">
         <h1>Welcome to <br /><span>Game Hub</span></h1>
         <p>
           Game Hub is a platform for gamers to connect, share, and compete. Join
           our community today!
         </p>
-        <a href="#" class="btn">Explore Games</a>
+        <a href="games.html" class="btn">Explore Games</a>
       </div>
     </section>
+
     <!-- Popular Section-->
     <section class="popular container" id="popular">
       <div class="heading">
@@ -95,31 +97,18 @@
           <h2>Popular Games</h2>
         </div>
         <div class="right-heading">
-          <a href="#">View All<i class="bx bx-right-arrow-alt"></i></a>
+          <a href="games.html">View All<i class="bx bx-right-arrow-alt"></i></a>
         </div>
       </div>
       <!-- Content -->
       <div class="popular-content swiper">
         <div class="swiper-wrapper">
-          <!-- <div class="swiper-slide">
-            <div class="box">
-              <img src="../assets/trending1.webp" alt="" />
-              <div class="box-text">
-                <h2>Genshin Impact</h2>
-                <h3>Action</h3>
-                <div class="rating-container">
-                  <div class="rating">
-                    <i class="bx bxs-star"></i>
-                    <span>4.8</span>
-                  </div>
-                  <a href="#" class="box-btn">View</a>
-                </div>
-              </div>
-            </div>
-          </div> -->
+          <!-- Swiper slides dynamically rendered by JS -->
         </div>
       </div>
     </section>
+
+    <!-- New Games Section -->
     <section class="new container">
       <div class="heading">
         <div class="left-heading">
@@ -127,25 +116,12 @@
           <h2>New Games</h2>
         </div>
         <div class="right-heading">
-          <a href="#">View All<i class="bx bx-right-arrow-alt"></i></a>
+          <a href="games.html">View All<i class="bx bx-right-arrow-alt"></i></a>
         </div>
       </div>
       <!-- content -->
       <div class="new-content">
-        <!-- <div class="box">
-          <img src="../assets/trending1.webp" alt="" />
-          <div class="box-text">
-            <h2>Genshin Impact</h2>
-            <h3>Action</h3>
-            <div class="rating-container">
-              <div class="rating">
-                <i class="bx bxs-star"></i>
-                <span>4.8</span>
-              </div>
-              <a href="#" class="box-btn">View</a>
-            </div>
-          </div>
-        </div> -->
+        <!-- New game boxes dynamically rendered by JS -->
       </div>
     </section>
 
@@ -200,9 +176,15 @@
     <!-- Toast Notification -->
     <div id="home-toast" class="home-toast"></div>
 
-    <!-- Link Swiper -->
-    <script src="../js/swiper-bundle.min.js"></script>
-    <!-- ============= JavaScript ============= -->
-    <script src="../js/home.js"></script>
+    <!-- Vendor JavaScript -->
+    <script src="../js/vendor/swiper-bundle.min.js"></script>
+
+    <!-- App JavaScript Modules -->
+    <script src="../js/utils/toast.js"></script>
+    <script src="../js/utils/auth-storage.js"></script>
+    <script src="../js/components/navbar.js"></script>
+    <script src="../js/components/user-dropdown.js"></script>
+    <script src="../js/components/profile-modal.js"></script>
+    <script src="../js/pages/home.js"></script>
   </body>
 </html>

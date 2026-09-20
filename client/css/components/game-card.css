@@ -1,0 +1,85 @@
+.box {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.box .box-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 14px 16px;
+  background: rgba(27, 24, 43, 0.75);
+  backdrop-filter: blur(10px);
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.box .box-text h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 2px;
+}
+
+.box .box-text h3 {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.75rem;
+}
+
+.box .rating-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.box .rating-container .rating {
+  display: flex;
+  align-items: center;
+  column-gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+.box .rating-container .rating .bx {
+  font-size: 16px;
+  color: #ffc107;
+}
+
+.box .rating-container .rating span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.box .rating-container .box-btn {
+  padding: 6px 16px;
+  background: var(--main-color);
+  border-radius: 20px;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box .rating-container .box-btn:hover {
+  background: #ff6b6b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 5px rgba(250, 83, 83, 0.4);
+}
