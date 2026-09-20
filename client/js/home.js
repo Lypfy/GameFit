@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", function () {
     e.stopPropagation();
     const currentUser = getCurrentUser();
     if (!currentUser) {
-      window.location.href = "../html/login_register.html";
+      window.location.href = "auth/login_register.html";
     } else {
       if (userDropdown) {
         userDropdown.classList.toggle("active");

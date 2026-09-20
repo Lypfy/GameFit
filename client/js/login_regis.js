@@ -34,12 +34,12 @@ LoginForm.addEventListener("submit", function (e) {
     if (user.role === "admin") {
       showToast("Welcome Admin!");
       setTimeout(() => {
-        window.location.href = "../html/home.html";
+        window.location.href = "../home.html";
       }, 1000);
     } else {
       showToast("Welcome User!");
       setTimeout(() => {
-        window.location.href = "../html/home.html";
+        window.location.href = "../home.html";
       }, 1000);
     }
   } else {
