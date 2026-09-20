@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm game mới - Admin GameHub</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/add-game-wizard.css">
+</head>
+
+<body>
+
+    <div class="wizard-container">
+
+        <!-- Header -->
+        <div class="wizard-header">
+            <div class="header-title-container">
+                <div class="header-icon">
+                    <i class='bx bx-joystick-button'></i>
+                </div>
+                <div class="header-text">
+                    <h1>Thêm game mới</h1>
+                    <p>Nhập thông tin game và cấu hình yêu cầu để thêm game vào hệ thống.</p>
+                </div>
+            </div>
+
+            <!-- Stepper -->
+            <div class="stepper">
+                <div class="step active" id="step-marker-1">
+                    <div class="step-circle">1</div>
+                    <div class="step-text">Thông tin game</div>
+                </div>
+                <div class="stepper-line" id="stepper-line">
+                    <div class="stepper-line-progress"></div>
+                </div>
+                <div class="step" id="step-marker-2">
+                    <div class="step-circle">2</div>
+                    <div class="step-text">Cấu hình yêu cầu</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="wizard-body">
+
+            <!-- STEP 1: Thông tin cơ bản -->
+            <div class="step-content active" id="step-1">
+                <div class="step-header">
+                    <h2>Thông tin game</h2>
+                    <p>Nhập các thông tin cơ bản của game.</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label required">Tên game</label>
+                        <input type="text" class="form-control" id="game-name" placeholder="Nhập tên game...">
+                        <span class="error-message">Vui lòng nhập tên game.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ngày phát hành</label>
+                        <div class="date-select-group">
+                            <select class="form-control" id="release-day">
+                                <option value="">Ngày</option>
+                            </select>
+                            <select class="form-control" id="release-month">
+                                <option value="">Tháng</option>
+                            </select>
+                            <select class="form-control" id="release-year">
+                                <option value="">Năm</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Platform</label>
+                        <select class="form-control">
+                            <option value="">Chọn platform...</option>
+                            <option value="pc">PC (Windows)</option>
+                            <option value="ps5">PlayStation 5</option>
+                            <option value="xbox">Xbox Series X/S</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Developer</label>
+                        <input type="text" class="form-control" placeholder="Nhập tên nhà phát triển...">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Publisher</label>
+                        <input type="text" class="form-control" placeholder="Nhập tên nhà phát hành...">
+                    </div>
+
+                    <div class="form-group full-width" style="position: relative;">
+                        <label class="form-label">Thể loại</label>
+                        <div class="tags-input-container" id="genre-container">
+                            <div class="tag">Action <i class='bx bx-x tag-remove'></i></div>
+                            <div class="tag">RPG <i class='bx bx-x tag-remove'></i></div>
+                            <input type="text" id="genre-search" placeholder="Tìm và thêm thể loại..." autocomplete="off">
+                        </div>
+                        <div class="search-dropdown" id="genre-dropdown">
+                            <div class="dropdown-item">Adventure</div>
+                            <div class="dropdown-item">Strategy</div>
+                            <div class="dropdown-item">Simulation</div>
+                            <div class="dropdown-item">Sports</div>
+                            <div class="dropdown-item">Puzzle</div>
+                            <div class="dropdown-item">Indie</div>
+                            <div class="dropdown-item">Horror</div>
+                            <div class="dropdown-item">Racing</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Link tải / URL trang chủ</label>
+                        <input type="url" class="form-control" placeholder="https://...">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Mô tả game</label>
+                        <textarea class="form-control" rows="4"
+                            placeholder="Nhập tóm tắt nội dung cốt truyện, gameplay..."
+                            oninput="document.getElementById('desc-count').innerText = this.value.length + '/500'"></textarea>
+                        <div style="text-align: right; font-size: 11px; color: var(--text-muted); margin-top: 4px;"
+                            id="desc-count">0/500</div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Ảnh bìa game (Cover Image)</label>
+                        <div class="dropzone">
+                            <i class='bx bx-cloud-upload'></i>
+                            <p>Kéo thả ảnh vào đây, hoặc click để chọn file</p>
+                            <span>Hỗ trợ định dạng: JPG, PNG (Tối đa 5MB)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Cấu hình yêu cầu -->
+            <div class="step-content" id="step-2">
+                <div class="step-header">
+                    <h2>Cấu hình yêu cầu</h2>
+                    <p>Thiết lập cấu hình tối thiểu và đề nghị để game có thể chạy.</p>
+                </div>
+
+                <div class="game-info-banner">
+                    <i class='bx bx-game banner-icon'></i>
+                    <div class="banner-details">
+                        <h3 id="display-game-name">Black Myth: Wukong</h3>
+                        <p>Mã game: <span style="color: var(--text-primary)">GM001</span></p>
+                    </div>
+                </div>
+
+                <div class="config-section" id="config-section">
+
+                    <!-- Min Config -->
+                    <div class="config-card">
+                        <div class="config-card-header">
+                            <h3>Cấu hình tối thiểu</h3>
+                        </div>
+                        <div class="config-card-body form-grid">
+                            <div class="form-group">
+                                <label class="form-label required">CPU</label>
+                                <div class="custom-combobox">
+                                    <input type="text" class="form-control combobox-input" placeholder="Nhập CPU..." autocomplete="off">
+                                    <div class="search-dropdown combobox-dropdown">
+                                        <div class="dropdown-item">Core i3-8100</div>
+                                        <div class="dropdown-item">Core i5-8400</div>
+                                        <div class="dropdown-item">Core i5-10400F</div>
+                                        <div class="dropdown-item">Core i7-9700</div>
+                                        <div class="dropdown-item">Core i7-12700K</div>
+                                        <div class="dropdown-item">Ryzen 3 1200</div>
+                                        <div class="dropdown-item">Ryzen 5 1600</div>
+                                        <div class="dropdown-item">Ryzen 5 3600</div>
+                                        <div class="dropdown-item">Ryzen 5 5600X</div>
+                                        <div class="dropdown-item">Ryzen 7 5800X</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required">GPU</label>
+                                <div class="custom-combobox">
+                                    <input type="text" class="form-control combobox-input" placeholder="Nhập GPU..." autocomplete="off">
+                                    <div class="search-dropdown combobox-dropdown">
+                                        <div class="dropdown-item">GTX 1050 Ti</div>
+                                        <div class="dropdown-item">GTX 1060 6GB</div>
+                                        <div class="dropdown-item">GTX 1660 Super</div>
+                                        <div class="dropdown-item">RTX 2060</div>
+                                        <div class="dropdown-item">RTX 3060</div>
+                                        <div class="dropdown-item">RTX 3070</div>
+                                        <div class="dropdown-item">RTX 4060</div>
+                                        <div class="dropdown-item">RX 570 4GB</div>
+                                        <div class="dropdown-item">RX 580 8GB</div>
+                                        <div class="dropdown-item">RX 6600</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required">RAM</label>
+                                <div class="input-with-suffix">
+                                    <input type="number" class="form-control" placeholder="Nhập RAM..." value="16">
+                                    <span class="input-suffix">GB</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required">Storage (Dung lượng trống)</label>
+                                <div style="display: flex; gap: 8px;">
+                                    <input type="number" class="form-control" placeholder="Dung lượng..." value="130" style="flex: 1;">
+                                    <select class="form-control" style="width: 80px; padding-left: 12px; padding-right: 28px;">
+                                        <option value="GB" selected>GB</option>
+                                        <option value="TB">TB</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">Hệ điều hành</label>
+                                <select class="form-control">
+                                    <option value="win10">Windows 10 64-bit</option>
+                                    <option value="win11">Windows 11 64-bit</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommended Config (Hidden by default, or Add button) -->
+                    <button class="btn-add-config" id="btn-add-recommended">
+                        <i class='bx bx-plus-circle'></i> Thêm cấu hình đề nghị
+                    </button>
+
+                    <div class="config-card" id="recommended-config" style="display: none;">
+                        <div class="config-card-header">
+                            <h3>Cấu hình đề nghị</h3>
+                            <button class="config-remove" id="btn-remove-recommended" title="Xóa cấu hình này">
+                                <i class='bx bx-trash'></i>
+                            </button>
+                        </div>
+                        <div class="config-card-body form-grid">
+                            <div class="form-group">
+                                <label class="form-label required">CPU</label>
+                                <div class="custom-combobox">
+                                    <input type="text" class="form-control combobox-input" placeholder="Nhập CPU..." autocomplete="off">
+                                    <div class="search-dropdown combobox-dropdown">
+                                        <div class="dropdown-item">Core i3-8100</div>
+                                        <div class="dropdown-item">Core i5-8400</div>
+                                        <div class="dropdown-item">Core i5-10400F</div>
+                                        <div class="dropdown-item">Core i7-9700</div>
+                                        <div class="dropdown-item">Core i7-12700K</div>
+                                        <div class="dropdown-item">Ryzen 3 1200</div>
+                                        <div class="dropdown-item">Ryzen 5 1600</div>
+                                        <div class="dropdown-item">Ryzen 5 3600</div>
+                                        <div class="dropdown-item">Ryzen 5 5600X</div>
+                                        <div class="dropdown-item">Ryzen 7 5800X</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required">GPU</label>
+                                <div class="custom-combobox">
+                                    <input type="text" class="form-control combobox-input" placeholder="Nhập GPU..." autocomplete="off">
+                                    <div class="search-dropdown combobox-dropdown">
+                                        <div class="dropdown-item">GTX 1050 Ti</div>
+                                        <div class="dropdown-item">GTX 1060 6GB</div>
+                                        <div class="dropdown-item">GTX 1660 Super</div>
+                                        <div class="dropdown-item">RTX 2060</div>
+                                        <div class="dropdown-item">RTX 3060</div>
+                                        <div class="dropdown-item">RTX 3070</div>
+                                        <div class="dropdown-item">RTX 4060</div>
+                                        <div class="dropdown-item">RX 570 4GB</div>
+                                        <div class="dropdown-item">RX 580 8GB</div>
+                                        <div class="dropdown-item">RX 6600</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required">RAM</label>
+                                <div class="input-with-suffix">
+                                    <input type="number" class="form-control" placeholder="Nhập RAM..." value="32">
+                                    <span class="input-suffix">GB</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required">Storage (Dung lượng trống)</label>
+                                <div style="display: flex; gap: 8px;">
+                                    <input type="number" class="form-control" placeholder="Dung lượng..." value="130" style="flex: 1;">
+                                    <select class="form-control" style="width: 80px; padding-left: 12px; padding-right: 28px;">
+                                        <option value="GB" selected>GB</option>
+                                        <option value="TB">TB</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">Hệ điều hành</label>
+                                <select class="form-control">
+                                    <option value="win10">Windows 10 64-bit</option>
+                                    <option value="win11" selected>Windows 11 64-bit</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="wizard-footer">
+            <div class="footer-left">
+                <!-- Step 1 Left -->
+                <button class="btn btn-secondary" id="btn-cancel">Hủy</button>
+                <!-- Step 2 Left -->
+                <button class="btn btn-secondary" id="btn-back" style="display: none;"><i
+                        class='bx bx-left-arrow-alt'></i> Quay lại</button>
+            </div>
+            <div class="footer-right">
+                <!-- Step 1 Right -->
+                <button class="btn btn-primary" id="btn-next">Tiếp tục <i class='bx bx-right-arrow-alt'></i></button>
+                <!-- Step 2 Right -->
+                <button class="btn btn-primary" id="btn-finish" style="display: none;"><i class='bx bx-check'></i> Hoàn
+                    tất thêm game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Dialog -->
+    <div class="dialog-overlay" id="confirm-dialog">
+        <div class="dialog-box">
+            <div class="dialog-icon">
+                <i class='bx bx-question-mark'></i>
+            </div>
+            <div class="dialog-title">Xác nhận thêm game?</div>
+            <div class="dialog-desc">Game và cấu hình yêu cầu sẽ được lưu vào hệ thống.</div>
+            <div class="dialog-actions">
+                <button class="btn btn-secondary" id="btn-dialog-cancel">Hủy</button>
+                <button class="btn btn-primary" id="btn-dialog-confirm">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Dialog -->
+    <div class="dialog-overlay" id="success-dialog">
+        <div class="dialog-box">
+            <div class="dialog-icon success">
+                <i class='bx bx-check'></i>
+            </div>
+            <div class="dialog-title">Thêm game thành công</div>
+            <div class="dialog-desc" id="success-message">Black Myth: Wukong đã được thêm vào hệ thống.</div>
+            <div class="dialog-actions">
+                <button class="btn btn-primary" onclick="window.location.reload()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+        const btnNext = document.getElementById('btn-next');
+        const btnBack = document.getElementById('btn-back');
+        const btnCancel = document.getElementById('btn-cancel');
+        const btnFinish = document.getElementById('btn-finish');
+
+        const marker1 = document.getElementById('step-marker-1');
+        const marker2 = document.getElementById('step-marker-2');
+        const stepperLine = document.getElementById('stepper-line');
+
+        const gameNameInput = document.getElementById('game-name');
+        const displayGameName = document.getElementById('display-game-name');
+
+        const confirmDialog = document.getElementById('confirm-dialog');
+        const successDialog = document.getElementById('success-dialog');
+        const btnDialogCancel = document.getElementById('btn-dialog-cancel');
+        const btnDialogConfirm = document.getElementById('btn-dialog-confirm');
+
+        // Populate Date Selects
+        const releaseDay = document.getElementById('release-day');
+        const releaseMonth = document.getElementById('release-month');
+        const releaseYear = document.getElementById('release-year');
+
+        for (let i = 1; i <= 31; i++) {
+            releaseDay.innerHTML += `<option value="${i}">${i}</option>`;
+        }
+        for (let i = 1; i <= 12; i++) {
+            releaseMonth.innerHTML += `<option value="${i}">Tháng ${i}</option>`;
+        }
+        const currentYear = new Date().getFullYear();
+        for (let i = currentYear + 5; i >= 1980; i--) {
+            releaseYear.innerHTML += `<option value="${i}">${i}</option>`;
+        }
+
+        // Toggle Recommended Config
+        const btnAddRecommended = document.getElementById('btn-add-recommended');
+        const recommendedConfig = document.getElementById('recommended-config');
+        const btnRemoveRecommended = document.getElementById('btn-remove-recommended');
+
+        btnAddRecommended.addEventListener('click', () => {
+            btnAddRecommended.style.display = 'none';
+            recommendedConfig.style.display = 'block';
+        });
+
+        btnRemoveRecommended.addEventListener('click', () => {
+            recommendedConfig.style.display = 'none';
+            btnAddRecommended.style.display = 'flex';
+        });
+
+        // Navigation Logic
+        btnNext.addEventListener('click', () => {
+            // Validation
+            let isValid = true;
+            if (!gameNameInput.value.trim()) {
+                gameNameInput.classList.add('error');
+                gameNameInput.nextElementSibling.style.display = 'block';
+                isValid = false;
+            } else {
+                gameNameInput.classList.remove('error');
+                gameNameInput.nextElementSibling.style.display = 'none';
+            }
+
+            if (isValid) {
+                // Update Step 2 Banner
+                displayGameName.innerText = gameNameInput.value;
+
+                // UI Transition
+                step1.classList.remove('active');
+                step2.classList.add('active');
+
+                btnNext.style.display = 'none';
+                btnCancel.style.display = 'none';
+                btnBack.style.display = 'flex';
+                btnFinish.style.display = 'flex';
+
+                marker1.classList.remove('active');
+                marker1.classList.add('completed');
+                stepperLine.classList.add('active');
+
+                // Slight delay for animation
+                setTimeout(() => {
+                    marker2.classList.add('active');
+                }, 300);
+            }
+        });
+
+        btnBack.addEventListener('click', () => {
+            step2.classList.remove('active');
+            step1.classList.add('active');
+
+            btnBack.style.display = 'none';
+            btnFinish.style.display = 'none';
+            btnNext.style.display = 'flex';
+            btnCancel.style.display = 'block';
+
+            marker2.classList.remove('active');
+            stepperLine.classList.remove('active');
+            marker1.classList.remove('completed');
+            marker1.classList.add('active');
+        });
+
+        // Finish Logic
+        btnFinish.addEventListener('click', () => {
+            confirmDialog.classList.add('show');
+        });
+
+        btnDialogCancel.addEventListener('click', () => {
+            confirmDialog.classList.remove('show');
+        });
+
+        btnDialogConfirm.addEventListener('click', () => {
+            confirmDialog.classList.remove('show');
+            document.getElementById('success-message').innerText = `${gameNameInput.value} đã được thêm vào hệ thống.`;
+
+            setTimeout(() => {
+                successDialog.classList.add('show');
+
+                // Final stepper state
+                marker2.classList.remove('active');
+                marker2.classList.add('completed');
+            }, 300);
+        });
+
+        // Clear error on input
+        gameNameInput.addEventListener('input', function() {
+            this.classList.remove('error');
+            this.nextElementSibling.style.display = 'none';
+        });
+
+        // Genre Search Combobox Logic
+        const genreSearch = document.getElementById('genre-search');
+        const genreDropdown = document.getElementById('genre-dropdown');
+        const dropdownItems = document.querySelectorAll('.dropdown-item');
+        const genreContainer = document.getElementById('genre-container');
+
+        genreSearch.addEventListener('focus', () => {
+            genreDropdown.classList.add('show');
+        });
+
+        genreSearch.addEventListener('blur', () => {
+            setTimeout(() => {
+                genreDropdown.classList.remove('show');
+            }, 200);
+        });
+
+        genreSearch.addEventListener('input', function() {
+            const val = this.value.toLowerCase();
+            dropdownItems.forEach(item => {
+                if(item.innerText.toLowerCase().includes(val)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const tagText = this.innerText;
+                const tagEl = document.createElement('div');
+                tagEl.className = 'tag';
+                tagEl.innerHTML = `${tagText} <i class='bx bx-x tag-remove'></i>`;
+                genreContainer.insertBefore(tagEl, genreSearch);
+                genreSearch.value = '';
+                
+                // reset search
+                dropdownItems.forEach(d => d.classList.remove('hidden'));
+            });
+        });
+
+        // Delegate remove tag
+        genreContainer.addEventListener('click', function(e) {
+            if(e.target.classList.contains('tag-remove')) {
+                e.target.parentElement.remove();
+            }
+        });
+
+        // Generic Custom Combobox Logic
+        document.querySelectorAll('.custom-combobox').forEach(container => {
+            const input = container.querySelector('.combobox-input');
+            const dropdown = container.querySelector('.combobox-dropdown');
+            const items = container.querySelectorAll('.dropdown-item');
+
+            const openDropdown = () => {
+                dropdown.classList.add('show');
+            };
+
+            input.addEventListener('focus', openDropdown);
+            input.addEventListener('click', openDropdown);
+
+            input.addEventListener('blur', () => {
+                setTimeout(() => {
+                    dropdown.classList.remove('show');
+                }, 200);
+            });
+
+            input.addEventListener('input', function() {
+                openDropdown();
+                const val = this.value.toLowerCase();
+                items.forEach(item => {
+                    if(item.innerText.toLowerCase().includes(val)) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+            });
+
+            items.forEach(item => {
+                item.addEventListener('click', function() {
+                    input.value = this.innerText;
+                    dropdown.classList.remove('show');
+                    items.forEach(d => d.classList.remove('hidden'));
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

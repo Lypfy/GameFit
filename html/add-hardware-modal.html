@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm linh kiện mới</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- BoxIcons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/add-hardware-modal.css">
+</head>
+<body>
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <!-- Header -->
+            <div class="modal-header">
+                <div class="header-left">
+                    <div class="modal-header-icon">
+                        <i class='bx bx-chip'></i>
+                    </div>
+                    <div class="header-text">
+                        <h2>Thêm linh kiện mới</h2>
+                    </div>
+                </div>
+                <button class="btn-close"><i class='bx bx-x'></i></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+                <!-- Loại linh kiện -->
+                <div class="form-group">
+                    <label class="form-label">Loại linh kiện <span class="required">*</span></label>
+                    <div class="toggle-group">
+                        <label class="toggle-btn active" id="btn-cpu">
+                            <input type="radio" name="hardware_type" value="cpu" checked>
+                            <i class='bx bx-microchip'></i> CPU
+                        </label>
+                        <label class="toggle-btn" id="btn-gpu">
+                            <input type="radio" name="hardware_type" value="gpu">
+                            <i class='bx bxs-microchip'></i> GPU
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Tên linh kiện -->
+                <div class="form-group">
+                    <label class="form-label">Tên linh kiện <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <i class='bx bx-microchip prefix' id="hardware-icon"></i>
+                        <input type="text" class="form-control with-prefix" placeholder="Nhập tên linh kiện...">
+                    </div>
+                </div>
+
+                <!-- Hãng sản xuất -->
+                <div class="form-group">
+                    <label class="form-label">Hãng sản xuất <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <i class='bx bx-buildings prefix'></i>
+                        <select class="form-control with-prefix">
+                            <option value="" disabled selected>Chọn hãng sản xuất...</option>
+                            <option value="intel">Intel</option>
+                            <option value="amd">AMD</option>
+                            <option value="nvidia">NVIDIA</option>
+                        </select>
+                        <i class='bx bx-chevron-down suffix'></i>
+                    </div>
+                </div>
+
+                <!-- Điểm Benchmark -->
+                <div class="form-group">
+                    <label class="form-label">Điểm Benchmark</label>
+                    <div class="input-wrapper">
+                        <i class='bx bx-bar-chart-alt-2 prefix'></i>
+                        <input type="number" class="form-control with-prefix" placeholder="Nhập điểm benchmark...">
+                    </div>
+                </div>
+
+                <!-- Ngày thêm -->
+                <div class="form-group">
+                    <label class="form-label">Ngày thêm <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <i class='bx bx-calendar prefix'></i>
+                        <input type="date" class="form-control with-prefix" value="2025-09-12">
+                    </div>
+                </div>
+
+
+            </div>
+            
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button class="btn-secondary">Hủy</button>
+                <button class="btn-primary"><i class='bx bx-save'></i> Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS for interaction -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtns = document.querySelectorAll('.toggle-btn');
+            const hardwareIcon = document.getElementById('hardware-icon');
+
+            toggleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Xóa class active ở tất cả
+                    toggleBtns.forEach(b => b.classList.remove('active'));
+                    
+                    // Thêm class active cho nút được bấm
+                    btn.classList.add('active');
+
+                    // Đổi icon ở ô "Tên linh kiện" tương ứng
+                    const type = btn.querySelector('input').value;
+                    if (type === 'cpu') {
+                        hardwareIcon.className = 'bx bx-microchip prefix';
+                    } else if (type === 'gpu') {
+                        hardwareIcon.className = 'bx bxs-microchip prefix';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
