@@ -16,6 +16,21 @@
   --dark-color: #1b182b;
   --light-color: #322f40;
   --text-color: hsl(0, 0%, 91%);
+  --bg-main: #0a0d14;
+  --bg-modal: #111520;
+  --bg-input: #0f131d;
+  --border-color: #21283b;
+  --border-hover: #333d59;
+  --primary: #f43f5e;
+  --primary-hover: #e11d48;
+  --text-primary: #f0f2f5;
+  --text-secondary: #8c97ab;
+  --text-muted: #5e687e;
+  --danger: #ff4d4f;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 ::selection {
