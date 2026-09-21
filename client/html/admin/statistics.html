@@ -18,14 +18,19 @@
 <body>
     <div class="page-container">
         <!-- Header -->
-        <div class="page-header">
-            <div class="header-icon">
-                <i class='bx bx-pie-chart-alt-2'></i>
+        <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div class="header-icon">
+                    <i class='bx bx-pie-chart-alt-2'></i>
+                </div>
+                <div class="header-content">
+                    <h1>Thống kê - Báo cáo</h1>
+                    <p>Tổng quan hệ thống, thống kê số lượng và hoạt động của tựa game.</p>
+                </div>
             </div>
-            <div class="header-content">
-                <h1>Thống kê - Báo cáo</h1>
-                <p>Tổng quan hệ thống, thống kê số lượng và hoạt động của tựa game.</p>
-            </div>
+            <button class="btn btn-primary" style="display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; background: var(--primary, #6366f1); color: white;">
+                <i class='bx bx-export'></i> Xuất Excel
+            </button>
         </div>
 
         <!-- Tabs Navigation -->
