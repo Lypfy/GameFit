@@ -25,17 +25,8 @@
       </div>
 
       <div class="dashboard-content">
-        <!-- Vertical Timeline -->
-        <!-- <div class="timeline">
-            <div class="step-marker active" id="marker-1">1</div>
-            <div class="step-marker" id="marker-2">2</div>
-            <div class="step-marker" id="marker-3">3</div>
-            <div class="step-marker" id="marker-4">4</div>
-        </div> -->
-
         <!-- Form Sections -->
         <div class="form-section">
-          <!-- Step 1 -->
           <div class="form-group">
             <div class="form-label">
               <i class="bx bx-id-card"></i> Mã người dùng
@@ -51,7 +42,6 @@
             </div>
           </div>
 
-          <!-- Step 2 -->
           <div class="form-group">
             <div class="form-label">
               <i class="bx bx-user"></i> Tên tài khoản / Email
@@ -67,7 +57,6 @@
             </div>
           </div>
 
-          <!-- Step 3 -->
           <div class="form-group">
             <div class="form-label">
               <i class="bx bx-check-shield"></i> Hành động
@@ -82,7 +71,6 @@
             </div>
           </div>
 
-          <!-- Step 4 -->
           <div class="form-group">
             <div class="form-label">
               <i class="bx bx-message-alt-error"></i> Lý do thực hiện
@@ -143,31 +131,31 @@
 
     <script>
       // Logic for Timeline active state
-      const focusTriggers = document.querySelectorAll(".focus-trigger");
-      const markers = document.querySelectorAll(".step-marker");
+      // const focusTriggers = document.querySelectorAll(".focus-trigger");
+      // const markers = document.querySelectorAll(".step-marker");
 
-      focusTriggers.forEach((el) => {
-        el.addEventListener("focus", function () {
-          updateTimeline(this.dataset.step);
-        });
+      // focusTriggers.forEach((el) => {
+      //   el.addEventListener("focus", function () {
+      //     updateTimeline(this.dataset.step);
+      //   });
 
-        // Also trigger on click for buttons and checkboxes
-        if (el.tagName === "BUTTON" || el.type === "checkbox") {
-          el.addEventListener("click", function () {
-            updateTimeline(this.dataset.step);
-          });
-        }
-      });
+      //   // Also trigger on click for buttons and checkboxes
+      //   if (el.tagName === "BUTTON" || el.type === "checkbox") {
+      //     el.addEventListener("click", function () {
+      //       updateTimeline(this.dataset.step);
+      //     });
+      //   }
+      // });
 
-      function updateTimeline(step) {
-        markers.forEach((marker) => {
-          if (marker.id === `marker-${step}`) {
-            marker.classList.add("active");
-          } else {
-            marker.classList.remove("active");
-          }
-        });
-      }
+      // function updateTimeline(step) {
+      //   markers.forEach((marker) => {
+      //     if (marker.id === `marker-${step}`) {
+      //       marker.classList.add("active");
+      //     } else {
+      //       marker.classList.remove("active");
+      //     }
+      //   });
+      // }
 
       // Logic for Checkbox Cards active state styling
       const checkboxes = document.querySelectorAll(".checkbox-input");
