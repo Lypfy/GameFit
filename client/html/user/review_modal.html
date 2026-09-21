@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đánh giá game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/pages/user/review_modal.css">
+</head>
+<body>
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <!-- Header -->
+            <div class="modal-header">
+                <div class="game-info">
+                    <!-- Ảnh game minh họa, bạn có thể thay đổi đường dẫn src thành ảnh thực tế -->
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80" alt="Black Myth: Wukong" class="game-image">
+                    <div class="game-details">
+                        <h2>Black Myth: Wukong</h2>
+                        <p>Chia sẻ trải nghiệm của bạn về tựa game</p>
+                    </div>
+                </div>
+                <button class="btn-close"><i class='bx bx-x'></i></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+                <!-- Section 1: Rating -->
+                <div class="section">
+                    <div class="section-header">
+                        <i class='bx bxs-star section-icon'></i>
+                        <div class="section-title">
+                            <h3>Đánh giá của bạn</h3>
+                            <p>Bạn đánh giá tựa game này như thế nào?</p>
+                        </div>
+                    </div>
+                    
+                    <div class="rating-container">
+                        <div class="stars">
+                            <i class='bx bx-star star' data-value="1"></i>
+                            <i class='bx bx-star star' data-value="2"></i>
+                            <i class='bx bx-star star' data-value="3"></i>
+                            <i class='bx bx-star star' data-value="4"></i>
+                            <i class='bx bx-star star' data-value="5"></i>
+                        </div>
+                        <div class="rating-label" id="ratingLabel"></div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Review Text -->
+                <div class="section">
+                    <div class="section-header">
+                        <i class='bx bxs-message-dots section-icon'></i>
+                        <div class="section-title">
+                            <h3>Nhận xét</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="textarea-wrapper">
+                        <textarea class="form-control" id="reviewText" placeholder="Chia sẻ trải nghiệm của bạn về tựa game này..." maxlength="500"></textarea>
+                        <div class="char-count" id="charCount">0/500 ký tự</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button class="btn-secondary">Hủy</button>
+                <button class="btn-primary"><i class='bx bxs-send'></i> Gửi đánh giá</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS xử lý tính năng đánh giá sao & đếm ký tự -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const stars = document.querySelectorAll('.star');
+            const ratingLabel = document.getElementById('ratingLabel');
+            const reviewText = document.getElementById('reviewText');
+            const charCount = document.getElementById('charCount');
+
+            // Định nghĩa nhãn đánh giá tương ứng với số sao
+            const ratingTexts = {
+                1: "Rất tệ",
+                2: "Tệ",
+                3: "Bình thường",
+                4: "Tốt",
+                5: "Rất tốt"
+            };
+
+            let currentRating = 0;
+
+            // Xử lý sự kiện cho các sao
+            stars.forEach(star => {
+                // Hiệu ứng hover
+                star.addEventListener('mouseover', (e) => {
+                    const value = parseInt(e.target.dataset.value);
+                    updateStars(value);
+                    ratingLabel.textContent = ratingTexts[value];
+                });
+
+                // Hủy hover (trả về trạng thái đã chọn)
+                star.addEventListener('mouseout', () => {
+                    updateStars(currentRating);
+                    ratingLabel.textContent = currentRating > 0 ? ratingTexts[currentRating] : "";
+                });
+
+                // Click chọn sao
+                star.addEventListener('click', (e) => {
+                    currentRating = parseInt(e.target.dataset.value);
+                    updateStars(currentRating);
+                    ratingLabel.textContent = ratingTexts[currentRating];
+                });
+            });
+
+            // Hàm cập nhật trạng thái UI của sao
+            function updateStars(value) {
+                stars.forEach(star => {
+                    const starValue = parseInt(star.dataset.value);
+                    if (starValue <= value) {
+                        star.classList.remove('bx-star');
+                        star.classList.add('bxs-star', 'active');
+                    } else {
+                        star.classList.remove('bxs-star', 'active');
+                        star.classList.add('bx-star');
+                    }
+                });
+            }
+
+            // Xử lý đếm ký tự
+            reviewText.addEventListener('input', (e) => {
+                const length = e.target.value.length;
+                charCount.textContent = `${length}/500 ký tự`;
+            });
+        });
+    </script>
+</body>
+</html>

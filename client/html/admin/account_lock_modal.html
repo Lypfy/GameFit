@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Khóa / Mở khóa tài khoản - Admin Dashboard</title>
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../css/pages/user/account_lock_modal.css" />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <div class="dashboard-header">
+        <i class="bx bx-shield-quarter"></i>
+        <h1>KHÓA / MỞ KHÓA TÀI KHOẢN</h1>
+      </div>
+
+      <div class="dashboard-content">
+        <!-- Form Sections -->
+        <div class="form-section">
+          <div class="form-group">
+            <div class="form-label">
+              <i class="bx bx-id-card"></i> Mã người dùng
+            </div>
+            <div class="input-wrapper">
+              <i class="bx bx-hash input-icon"></i>
+              <input
+                type="text"
+                class="form-control focus-trigger"
+                data-step="1"
+                placeholder="Nhập mã người dùng (VD: UID-12345)..."
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">
+              <i class="bx bx-user"></i> Tên tài khoản / Email
+            </div>
+            <div class="input-wrapper">
+              <i class="bx bx-envelope input-icon"></i>
+              <input
+                type="text"
+                class="form-control focus-trigger"
+                data-step="2"
+                placeholder="Nhập tên tài khoản hoặc địa chỉ email..."
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">
+              <i class="bx bx-check-shield"></i> Hành động
+            </div>
+            <div class="action-buttons">
+              <button class="btn btn-danger focus-trigger" data-step="3">
+                <i class="bx bx-lock-alt"></i> KHÓA TÀI KHOẢN
+              </button>
+              <button class="btn btn-success focus-trigger" data-step="3">
+                <i class="bx bx-lock-open-alt"></i> MỞ KHÓA TÀI KHOẢN
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">
+              <i class="bx bx-message-alt-error"></i> Lý do thực hiện
+            </div>
+
+            <div class="checkbox-group">
+              <label class="checkbox-card">
+                <input
+                  type="checkbox"
+                  name="reason"
+                  class="focus-trigger checkbox-input"
+                  data-step="4"
+                />
+                <span class="checkbox-label">Vi phạm quy định / Spam</span>
+              </label>
+              <label class="checkbox-card">
+                <input
+                  type="checkbox"
+                  name="reason"
+                  class="focus-trigger checkbox-input"
+                  data-step="4"
+                />
+                <span class="checkbox-label">Ngôn từ không phù hợp</span>
+              </label>
+              <label class="checkbox-card">
+                <input
+                  type="checkbox"
+                  name="reason"
+                  class="focus-trigger checkbox-input"
+                  data-step="4"
+                />
+                <span class="checkbox-label">Theo yêu cầu của người dùng</span>
+              </label>
+              <label class="checkbox-card" id="card-other-reason">
+                <input
+                  type="checkbox"
+                  name="reason"
+                  id="other-reason"
+                  class="focus-trigger checkbox-input"
+                  data-step="4"
+                />
+                <span class="checkbox-label">Khác:</span>
+              </label>
+
+              <div class="other-reason-container" id="other-reason-container">
+                <textarea
+                  class="form-control focus-trigger"
+                  id="reason-text"
+                  data-step="4"
+                  placeholder="Nhập lý do cụ thể vào đây..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Logic for Timeline active state
+      // const focusTriggers = document.querySelectorAll(".focus-trigger");
+      // const markers = document.querySelectorAll(".step-marker");
+
+      // focusTriggers.forEach((el) => {
+      //   el.addEventListener("focus", function () {
+      //     updateTimeline(this.dataset.step);
+      //   });
+
+      //   // Also trigger on click for buttons and checkboxes
+      //   if (el.tagName === "BUTTON" || el.type === "checkbox") {
+      //     el.addEventListener("click", function () {
+      //       updateTimeline(this.dataset.step);
+      //     });
+      //   }
+      // });
+
+      // function updateTimeline(step) {
+      //   markers.forEach((marker) => {
+      //     if (marker.id === `marker-${step}`) {
+      //       marker.classList.add("active");
+      //     } else {
+      //       marker.classList.remove("active");
+      //     }
+      //   });
+      // }
+
+      // Logic for Checkbox Cards active state styling
+      const checkboxes = document.querySelectorAll(".checkbox-input");
+      checkboxes.forEach((cb) => {
+        cb.addEventListener("change", function () {
+          if (this.checked) {
+            this.closest(".checkbox-card").classList.add("active");
+          } else {
+            this.closest(".checkbox-card").classList.remove("active");
+          }
+        });
+      });
+
+      // Logic for "Khác" reason textarea
+      const otherCheckbox = document.getElementById("other-reason");
+      const reasonContainer = document.getElementById("other-reason-container");
+      const reasonText = document.getElementById("reason-text");
+
+      otherCheckbox.addEventListener("change", (e) => {
+        if (e.target.checked) {
+          reasonContainer.classList.add("show");
+          reasonText.focus();
+        } else {
+          reasonContainer.classList.remove("show");
+          reasonText.value = "";
+        }
+      });
+    </script>
+    <script src="../js/admin.js"></script>
+  </body>
+</html>

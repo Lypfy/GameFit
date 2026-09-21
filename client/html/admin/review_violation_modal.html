@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xử lý đánh giá vi phạm</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/pages/admin/review_violation_modal.css">
+</head>
+
+<body>
+
+    <div class="modal-overlay">
+        <div class="modal-container">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <div class="header-content">
+                    <div class="header-icon">
+                        <i class='bx bx-shield-quarter'></i>
+                    </div>
+                    <div class="header-text">
+                        <h2>Xử lý đánh giá vi phạm</h2>
+                        <p>Kiểm tra và xử lý đánh giá vi phạm của người dùng</p>
+                    </div>
+                </div>
+                <button class="close-btn"><i class='bx bx-x'></i></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+
+                <!-- Left Column: Info -->
+                <div class="info-column">
+                    <div class="section-title">
+                        <i class='bx bx-info-circle'></i> THÔNG TIN ĐÁNH GIÁ
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-row">
+                            <span class="info-label">Game</span>
+                            <span class="info-value">Black Myth: Wukong</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Người đánh giá</span>
+                            <span class="info-value">ElonMusk</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Đánh giá</span>
+                            <div class="info-value stars">
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-label" style="margin-bottom: 8px;">Nội dung đánh giá</div>
+                    <div class="quote-card">
+                        <i class='bx bxs-quote-alt-right quote-icon'></i>
+                        <div class="quote-content">
+                            "Game rất hay nhưng nhiều lỗi quá. Spam spam spam link wedsite mạo danh: www.example.com"
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Actions -->
+                <div class="action-column">
+                    <div class="section-title">
+                        <i class='bx bx-edit-alt'></i> XỬ LÝ
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Lý do vi phạm</label>
+                        <div class="reason-grid">
+                            <label class="reason-card active">
+                                <input type="radio" name="violation_reason" value="spam" class="reason-radio" checked>
+                                <div class="radio-custom"></div>
+                                <span class="reason-text">Spam / Quảng cáo</span>
+                            </label>
+
+                            <label class="reason-card">
+                                <input type="radio" name="violation_reason" value="inappropriate" class="reason-radio">
+                                <div class="radio-custom"></div>
+                                <span class="reason-text">Ngôn từ không phù hợp</span>
+                            </label>
+
+                            <label class="reason-card">
+                                <input type="radio" name="violation_reason" value="misleading" class="reason-radio">
+                                <div class="radio-custom"></div>
+                                <span class="reason-text">Nội dung sai lệch</span>
+                            </label>
+
+                            <label class="reason-card" id="card-other-reason">
+                                <input type="radio" name="violation_reason" value="other" id="other-reason"
+                                    class="reason-radio">
+                                <div class="radio-custom"></div>
+                                <span class="reason-text">Khác</span>
+                            </label>
+
+                            <div class="other-reason-container" id="other-reason-container">
+                                <textarea class="form-control" id="reason-text" rows="2"
+                                    placeholder="Nhập lý do cụ thể..." maxlength="200"
+                                    oninput="document.getElementById('char-count').innerText = this.value.length + '/200'"></textarea>
+                                <div class="char-count" id="char-count">0/200</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ghi chú</label>
+                        <textarea class="form-control" rows="3" placeholder="Nhập ghi chú ..."></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <div class="footer-info">
+                    <i class='bx bx-info-circle'></i> Đánh giá sẽ không còn hiển thị với người dùng
+                </div>
+                <div class="footer-actions">
+                    <button class="btn btn-secondary">Hủy</button>
+                    <button class="btn btn-primary" id="btn-hide-review">
+                        <i class='bx bx-hide'></i> Ẩn đánh giá
+                    </button>
+                </div>
+            </div>
+
+            <!-- Confirmation Dialog Overlay -->
+            <div class="confirm-dialog-overlay" id="confirm-overlay">
+                <div class="confirm-dialog">
+                    <div class="confirm-icon">
+                        <i class='bx bx-error'></i>
+                    </div>
+                    <div class="confirm-title">Bạn có chắc muốn ẩn đánh giá này?</div>
+                    <div class="confirm-desc">Hành động này sẽ ẩn đánh giá khỏi phía người dùng và không thể hoàn tác
+                        trực tiếp.</div>
+                    <div class="confirm-actions">
+                        <button class="btn btn-secondary" id="btn-cancel-confirm">Hủy</button>
+                        <button class="btn btn-primary" id="btn-confirm-hide">
+                            <i class='bx bx-hide'></i> Xác nhận ẩn
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Logic for Radio Cards active state & Other reason
+        const radios = document.querySelectorAll('.reason-radio');
+        const reasonContainer = document.getElementById('other-reason-container');
+        const reasonText = document.getElementById('reason-text');
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                // Remove active class from all cards
+                document.querySelectorAll('.reason-card').forEach(card => {
+                    card.classList.remove('active');
+                });
+
+                // Add active class to checked card
+                if (this.checked) {
+                    this.closest('.reason-card').classList.add('active');
+                }
+
+                // Handle "Other" textarea
+                if (this.id === 'other-reason' && this.checked) {
+                    reasonContainer.classList.add('show');
+                    reasonText.focus();
+                } else {
+                    reasonContainer.classList.remove('show');
+                    reasonText.value = '';
+                    document.getElementById('char-count').innerText = '0/200';
+                }
+            });
+        });
+
+        // Logic for Confirmation Dialog
+        const btnHideReview = document.getElementById('btn-hide-review');
+        const confirmOverlay = document.getElementById('confirm-overlay');
+        const btnCancelConfirm = document.getElementById('btn-cancel-confirm');
+        const btnConfirmHide = document.getElementById('btn-confirm-hide');
+
+        btnHideReview.addEventListener('click', () => {
+            confirmOverlay.classList.add('show');
+        });
+
+        btnCancelConfirm.addEventListener('click', () => {
+            confirmOverlay.classList.remove('show');
+        });
+
+        btnConfirmHide.addEventListener('click', () => {
+            confirmOverlay.classList.remove('show');
+            alert('Đã ẩn đánh giá thành công!');
+            // Here you would typically close the main modal or submit a form
+        });
+    </script>
+</body>
+
+</html>
