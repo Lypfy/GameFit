@@ -1,0 +1,225 @@
+/* Filter Section Layout */
+.filter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding-bottom: 0;
+}
+
+.filter-toolbar {
+  margin: 0;
+  padding: 0;
+}
+
+.sort-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.sort-group select {
+  padding: 8px 14px;
+  background: #1e293b;
+  color: #f8fafc;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.sort-group select:hover,
+.sort-group select:focus {
+  border-color: #0284c7;
+}
+
+.btn-filter-trigger {
+  padding: 10px 20px;
+  background: #1e293b;
+  color: #fff;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.btn-filter-trigger:hover {
+  background: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+/* Lớp phủ mờ */
+.filter-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  display: none;
+}
+
+.filter-modal-overlay.active {
+  display: block;
+}
+
+/* Khung Popup Modal Lọc */
+.filter-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -45%) scale(0.95);
+  width: 90%;
+  max-width: 600px;
+  max-height: 85vh;
+  background: #1e293b;
+  color: #f8fafc;
+  border-radius: 16px;
+  border: 1px solid #334155;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.filter-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Header */
+.filter-modal-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-modal-header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.btn-close-filter {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.btn-close-filter:hover {
+  background: #334155;
+  color: #fff;
+}
+
+/* Body */
+.filter-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.filter-group h4 {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Filter Chips (Các nút thẻ chọn) */
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-chip {
+  padding: 8px 18px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-chip:hover {
+  border-color: #0284c7;
+  color: #38bdf8;
+}
+
+.filter-chip.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+}
+
+/* Footer */
+.filter-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-reset-filter {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-reset-filter:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.btn-apply-filter {
+  padding: 10px 24px;
+  background: #0284c7;
+  border: none;
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-apply-filter:hover {
+  background: #0369a1;
+}

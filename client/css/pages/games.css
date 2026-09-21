@@ -1,0 +1,11 @@
+/* Games Page  */
+.games {
+  padding-top: 1rem;
+}
+.games-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
+}

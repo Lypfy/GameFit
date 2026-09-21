@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Fit - Games</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <!-- Navbar -->
+      <div class="nav container">
+        <a href="home.html" class="logo">Game<span>Fit</span></a>
+
+        <!-- Navigation Links hiển thị trên Header -->
+        <ul class="nav-links">
+          <li><a href="home.html">Home</a></li>
+          <li><a href="games.html" class="active">Games</a></li>
+          <li><a href="pc-config.html">PC Check</a></li>
+        </ul>
+
+        <!-- Nav icon -->
+        <div class="nav-icon">
+          <div class="search">
+            <input type="text" placeholder="Search" />
+            <i class="bx bx-search"></i>
+          </div>
+          <div class="user-box">
+            <span id="user-display-name" class="user-display-name"></span>
+            <i class="bx bx-user" id="user-icon"></i>
+            <!-- Dropdown Menu -->
+            <div class="user-dropdown" id="user-dropdown">
+              <div class="dropdown-header">
+                <div class="user-avatar">
+                  <i class="bx bxs-user-circle"></i>
+                </div>
+                <div class="user-info">
+                  <h4 id="dropdown-username">Nicole Reeyn</h4>
+                  <span id="dropdown-role" class="role-badge user">User</span>
+                </div>
+              </div>
+              <ul class="dropdown-menu-list">
+                <li id="menu-dashboard" class="menu-item admin-only">
+                  <a href="#">
+                    <i class="bx bx-grid-alt"></i>
+                    <span>Dashboard</span>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" id="btn-update-profile">
+                    <i class="bx bx-user-pin"></i>
+                    <span>Cập nhật thông tin cá nhân</span>
+                  </a>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li class="menu-item logout-item">
+                  <a href="#" id="btn-logout">
+                    <i class="bx bx-log-out"></i>
+                    <span>Đăng xuất</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- Menu icon (tạm thời ẩn) -->
+          <div class="menu-icon">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+          </div>
+        </div>
+
+        <!-- Full Overlay Menu -->
+        <div class="menu">
+          <img src="../assets/menu.png" alt="Menu Banner" />
+          <div class="navbar">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="games.html">Games</a></li>
+            <li><a href="pc-config.html">PC Check</a></li>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- Filter & Sort Bar -->
+    <section class="filter container">
+      <!-- Bộ lọc (Filter) -->
+      <div class="filter-toolbar">
+        <button id="btn-open-filter" class="btn-filter-trigger">
+          <i class="bx bx-filter-alt"></i> Filter
+        </button>
+      </div>
+      <!-- Sắp xếp (Sort) -->
+      <div class="sort-group">
+        <label for="sort-by">Sắp xếp:</label>
+        <select id="sort-by">
+          <option value="default">Mặc định</option>
+          <option value="rating-desc">Đánh giá cao nhất</option>
+          <option value="name-asc">Tên A-Z</option>
+        </select>
+      </div>
+    </section>
+    <!-- Bảng Popup Bộ Lọc (Modal) -->
+    <div class="filter-modal-overlay" id="filter-modal-overlay"></div>
+    <div class="filter-modal" id="filter-modal">
+      <!-- Filter Options -->
+      <div class="filter-modal-header">
+        <h3>Tất cả bộ lọc</h3>
+        <button class="btn-close-filter" id="btn-close-filter">
+          &times; Đóng
+        </button>
+      </div>
+      <div class="filter-modal-body">
+        <!-- Nhóm 1: Thể loại Game -->
+        <div class="filter-group">
+          <h4>Thể loại</h4>
+          <div class="chip-list" data-filter-type="category">
+            <button class="filter-chip" data-value="Action">Action</button>
+            <button class="filter-chip" data-value="RPG">RPG</button>
+            <button class="filter-chip" data-value="FPS">FPS</button>
+            <button class="filter-chip" data-value="MOBA">MOBA</button>
+            <button class="filter-chip" data-value="Sandbox">Sandbox</button>
+          </div>
+        </div>
+        <!-- Nhóm 2: Nhà phát hành -->
+        <div class="filter-group">
+          <h4>Nhà phát hành</h4>
+          <div class="chip-list" data-filter-type="publisher">
+            <button class="filter-chip" data-value="Tencent">Tencent</button>
+            <button class="filter-chip" data-value="Valve">Valve</button>
+            <button class="filter-chip" data-value="CDP">CDP</button>
+            <button class="filter-chip" data-value="EA">EA</button>
+            <button class="filter-chip" data-value="Rockstar">Rockstar</button>
+          </div>
+        </div>
+        <!-- Nhóm 3: Yêu cầu RAM tối thiểu -->
+        <div class="filter-group">
+          <h4>Yêu cầu RAM</h4>
+          <div class="chip-list" data-filter-type="ram">
+            <button class="filter-chip" data-value="4 GB">4 GB</button>
+            <button class="filter-chip" data-value="8 GB">8 GB</button>
+            <button class="filter-chip" data-value="16 GB">16 GB</button>
+          </div>
+        </div>
+        <!-- Footer chứa nút Bỏ chọn & Xem kết quả -->
+        <div class="filter-modal-footer">
+          <button class="btn-reset-filter" id="btn-reset-filter">
+            Bỏ chọn
+          </button>
+          <button class="btn-apply-filter" id="btn-apply-filter">
+            Xem kết quả
+          </button>
+        </div>
+      </div>
+    </div>
+    <section class="games container">
+      <div class="heading">
+        <div class="left-heading">
+          <i class="bx bx-joystick"></i>
+          <h2>All Games</h2>
+        </div>
+      </div>
+      <div class="games-content">
+        <!-- New game boxes dynamically rendered by JS -->
+      </div>
+    </section>
+    <!-- Modal Cập Nhật Thông Tin Cá Nhân -->
+    <div class="modal" id="profile-modal">
+      <div class="modal-overlay" id="profile-modal-overlay"></div>
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3><i class="bx bx-user-pin"></i> Cập nhật thông tin cá nhân</h3>
+          <button type="button" class="close-btn" id="close-profile-modal">
+            &times;
+          </button>
+        </div>
+        <form id="profile-form">
+          <div class="form-group">
+            <label for="profile-fullname">Họ và tên</label>
+            <input
+              type="text"
+              id="profile-fullname"
+              required
+              placeholder="Nhập họ và tên..."
+            />
+          </div>
+          <div class="form-group">
+            <label for="profile-username">Email</label>
+            <input type="text" id="profile-username" readonly disabled />
+          </div>
+          <div class="form-group">
+            <label for="profile-role">Vai trò tài khoản</label>
+            <input type="text" id="profile-role" readonly disabled />
+          </div>
+          <div class="form-group">
+            <label for="profile-password"
+              >Mật khẩu mới (Để trống nếu không đổi)</label
+            >
+            <input
+              type="password"
+              id="profile-password"
+              placeholder="Nhập mật khẩu mới..."
+            />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" id="cancel-profile-btn">
+              Hủy
+            </button>
+            <button type="submit" class="btn-save">Lưu thay đổi</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Toast Notification -->
+    <div id="home-toast" class="home-toast"></div>
+
+    <script src="../js/utils/toast.js"></script>
+    <script src="../js/utils/auth-storage.js"></script>
+    <script src="../js/components/navbar.js"></script>
+    <script src="../js/components/user-dropdown.js"></script>
+    <script src="../js/components/profile-modal.js"></script>
+    <script src="../js/components/filter-modal.js"></script>
+    <script src="../js/pages/games.js"></script>
+  </body>
+</html>
