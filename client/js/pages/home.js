@@ -1,110 +1,18 @@
-/**
- * Home page main initialization & data rendering.
- */
-const popularGames = [
-  {
-    id: 1,
-    title: "Genshin Impact",
-    category: "Action / RPG",
-    rating: 4.8,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=1",
-  },
-  {
-    id: 2,
-    title: "Cyberpunk 2077",
-    category: "Sci-Fi / RPG",
-    rating: 4.6,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=2",
-  },
-  {
-    id: 3,
-    title: "Elden Ring",
-    category: "Souls-like",
-    rating: 4.9,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=3",
-  },
-  {
-    id: 4,
-    title: "God of War",
-    category: "Adventure",
-    rating: 4.9,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=4",
-  },
-  {
-    id: 5,
-    title: "Valorant",
-    category: "FPS / Tactical",
-    rating: 4.5,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=5",
-  },
-  {
-    id: 6,
-    title: "GTA V",
-    category: "Open World",
-    rating: 4.7,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=6",
-  },
-];
+// 1. Lọc lấy 8 games có rating cao nhất cho phần Popular Games
+const popularGames = [...gamesData]
+  .sort((a, b) => b.rating - a.rating)
+  .slice(0, 8);
 
-const newGames = [
-  {
-    id: 1,
-    title: "Black Myth: Wukong",
-    category: "Action / RPG",
-    rating: 4.9,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=101",
-  },
-  {
-    id: 2,
-    title: "Helldivers 2",
-    category: "Shooter / Co-op",
-    rating: 4.7,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=102",
-  },
-  {
-    id: 3,
-    title: "Palworld",
-    category: "Survival / Crafting",
-    rating: 4.6,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=103",
-  },
-  {
-    id: 4,
-    title: "Tekken 8",
-    category: "Fighting",
-    rating: 4.8,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=104",
-  },
-  {
-    id: 5,
-    title: "FF VII Rebirth",
-    category: "RPG",
-    rating: 4.9,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=105",
-  },
-  {
-    id: 6,
-    title: "Dragon's Dogma 2",
-    category: "Action RPG",
-    rating: 4.5,
-    image: "../assets/trending1.webp",
-    link: "game-detail.html?id=106",
-  },
+// 2. Danh sách các thể loại hiển thị thành từng mục riêng biệt trên trang Home
+const categoriesToDisplay = [
+  { title: "Action / RPG", filterKey: "Action / RPG", icon: "bx-joystick" },
+  { title: "FPS", filterKey: "FPS", icon: "bx-target-lock" },
 ];
 
 function renderPopularGames(games) {
-  const swiperWrapper = document.querySelector(".popular-content .swiper-wrapper");
+  const swiperWrapper = document.querySelector(
+    ".popular-content .swiper-wrapper",
+  );
   if (!swiperWrapper) return;
   swiperWrapper.innerHTML = games
     .map(
@@ -125,40 +33,73 @@ function renderPopularGames(games) {
         </div>
       </div>
     </div>
-  `
+  `,
     )
     .join("");
 }
 
-function renderNewGames(games) {
-  const newContent = document.querySelector(".new-content");
-  if (!newContent) return;
+/**
+ * Hiển thị từng thể loại thành một mục riêng biệt (Section)
+ */
+function renderCategorySections() {
+  const container = document.getElementById("category-sections");
+  if (!container) return;
 
-  newContent.innerHTML = games
-    .map(
-      (game) => `
-    <div class="box">
-      <img src="${game.image}" alt="${game.title}" />
-      <div class="box-text">
-        <h2>${game.title}</h2>
-        <h3>${game.category}</h3>
-        <div class="rating-container">
-          <div class="rating">
-            <i class="bx bxs-star"></i>
-            <span>${game.rating}</span>
+  container.innerHTML = categoriesToDisplay
+    .map((cat) => {
+      // Lấy danh sách game thuộc thể loại này (lấy tối đa 4 game)
+      const games = gamesData
+        .filter((game) =>
+          game.category.toLowerCase().includes(cat.filterKey.toLowerCase()),
+        )
+        .slice(0, 4);
+
+      if (games.length === 0) return "";
+
+      const gameCardsHtml = games
+        .map(
+          (game) => `
+        <div class="box">
+          <img src="${game.image}" alt="${game.title}" />
+          <div class="box-text">
+            <h2>${game.title}</h2>
+            <h3>${game.category}</h3>
+            <div class="rating-container">
+              <div class="rating">
+                <i class="bx bxs-star"></i>
+                <span>${game.rating}</span>
+              </div>
+              <a href="${game.link}" class="box-btn">View</a>
+            </div>
           </div>
-          <a href="${game.link}" class="box-btn">View</a>
         </div>
-      </div>
-    </div>
-  `
-    )
+      `,
+        )
+        .join("");
+
+      return `
+        <section class="new container">
+          <div class="heading">
+            <div class="left-heading">
+              <i class="bx ${cat.icon}"></i>
+              <h2>${cat.title} Games</h2>
+            </div>
+            <div class="right-heading">
+              <a href="games.html">View All<i class="bx bx-right-arrow-alt"></i></a>
+            </div>
+          </div>
+          <div class="new-content">
+            ${gameCardsHtml}
+          </div>
+        </section>
+      `;
+    })
     .join("");
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   renderPopularGames(popularGames);
-  renderNewGames(newGames);
+  renderCategorySections();
 
   if (typeof Swiper !== "undefined") {
     new Swiper(".popular-content", {

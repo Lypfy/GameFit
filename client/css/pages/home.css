@@ -110,6 +110,6 @@
 
 .new-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, auto));
+  grid-template-columns: repeat(4, minmax(240px, auto));
   gap: 2rem;
 }
