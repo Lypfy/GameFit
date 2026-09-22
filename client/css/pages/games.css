@@ -4,8 +4,8 @@
 }
 .games-content {
   display: grid;
-  grid-template-columns: repeat(4, minmax(240px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(5, minmax(195px, auto));
+  gap: 1rem;
   margin-top: 1.5rem;
   margin-bottom: 3rem;
 }

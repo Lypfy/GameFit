@@ -85,7 +85,7 @@ function renderCategorySections() {
               <h2>${cat.title} Games</h2>
             </div>
             <div class="right-heading">
-              <a href="games.html">View All<i class="bx bx-right-arrow-alt"></i></a>
+              <a href="games.html?category=${encodeURIComponent(cat.filterKey)}">View All<i class="bx bx-right-arrow-alt"></i></a>
             </div>
           </div>
           <div class="new-content">

@@ -28,8 +28,28 @@ function renderGames(gamesList) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  renderGames(games);
-
+  // Đọc tham số category từ URL nếu có
+  const urlParams = new URLSearchParams(window.location.search);
+  const categoryParam = urlParams.get("category");
+  if (categoryParam) {
+    const filteredGames = games.filter((game) =>
+      game.category.toLowerCase().includes(categoryParam.toLowerCase()),
+    );
+    renderGames(filteredGames);
+    // active chip bộ lọc tương ứng
+    const categoryChip = document.querySelectorAll(
+      '[data-filter-type="category"] .filter-chip',
+    );
+    categoryChip.forEach((chip) => {
+      if (
+        categoryParam.toLowerCase().includes(chip.dataset.value.toLowerCase())
+      ) {
+        chip.classList.add("active");
+      }
+    });
+  } else {
+    renderGames(games);
+  }
   // Lọc game
   const btnApplyFilter = document.getElementById("btn-apply-filter");
   btnApplyFilter?.addEventListener("click", function () {
