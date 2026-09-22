@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,17 +11,16 @@
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/pages/user/review_modal.css">
 </head>
+
 <body>
     <div class="modal-overlay">
         <div class="modal-content">
             <!-- Header -->
             <div class="modal-header">
                 <div class="game-info">
-                    <!-- Ảnh game minh họa, bạn có thể thay đổi đường dẫn src thành ảnh thực tế -->
-                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80" alt="Black Myth: Wukong" class="game-image">
+                    <img src="../../assets/home.jpg" alt="Game Image" class="game-image">
                     <div class="game-details">
                         <h2>Black Myth: Wukong</h2>
-                        <p>Chia sẻ trải nghiệm của bạn về tựa game</p>
                     </div>
                 </div>
                 <button class="btn-close"><i class='bx bx-x'></i></button>
@@ -31,13 +31,12 @@
                 <!-- Section 1: Rating -->
                 <div class="section">
                     <div class="section-header">
-                        <i class='bx bxs-star section-icon'></i>
                         <div class="section-title">
-                            <h3>Đánh giá của bạn</h3>
-                            <p>Bạn đánh giá tựa game này như thế nào?</p>
+                            <h3>Đánh giá</h3>
+                            <p>Trải nghiệm của bạn như thế nào?</p>
                         </div>
                     </div>
-                    
+
                     <div class="rating-container">
                         <div class="stars">
                             <i class='bx bx-star star' data-value="1"></i>
@@ -53,14 +52,14 @@
                 <!-- Section 2: Review Text -->
                 <div class="section">
                     <div class="section-header">
-                        <i class='bx bxs-message-dots section-icon'></i>
                         <div class="section-title">
                             <h3>Nhận xét</h3>
                         </div>
                     </div>
-                    
+
                     <div class="textarea-wrapper">
-                        <textarea class="form-control" id="reviewText" placeholder="Chia sẻ trải nghiệm của bạn về tựa game này..." maxlength="500"></textarea>
+                        <textarea class="form-control" id="reviewText"
+                            placeholder="Chia sẻ trải nghiệm của bạn về tựa game này..." maxlength="500"></textarea>
                         <div class="char-count" id="charCount">0/500 ký tự</div>
                     </div>
                 </div>
@@ -138,4 +137,5 @@
         });
     </script>
 </body>
+
 </html>
