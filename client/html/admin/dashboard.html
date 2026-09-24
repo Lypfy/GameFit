@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Fit - Admin Dashboard</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../css/pages/admin/dashboard.css" />
+    <!-- Nhúng CSS của trang thống kê -->
+    <link rel="stylesheet" href="../../css/pages/admin/statistics.css" />
+  </head>
+
+  <body>
+    <!-- Header Navbar dùng chung -->
+    <header>
+      <div class="nav container">
+        <a href="../home.html" class="logo">Game<span>Fit</span></a>
+        <!-- Navigation Links hiển thị trên Header -->
+        <ul class="nav-links">
+          <li><a href="../home.html">Home</a></li>
+          <li><a href="../games.html">Games</a></li>
+          <li><a href="../pc_config.html">PC Check</a></li>
+          <li class="admin-only" style="display: none">
+            <a href="dashboard.html" class="active">Dashboard</a>
+          </li>
+        </ul>
+        <!-- Nav icon -->
+        <div class="nav-icon">
+          <div class="search">
+            <input type="text" placeholder="Search" />
+            <i class="bx bx-search"></i>
+          </div>
+          <div class="user-box">
+            <span id="user-display-name" class="user-display-name"></span>
+            <i class="bx bx-user" id="user-icon"></i>
+            <!-- Dropdown Menu -->
+            <div class="user-dropdown" id="user-dropdown">
+              <div class="dropdown-header">
+                <div class="user-avatar">
+                  <i class="bx bxs-user-circle"></i>
+                </div>
+                <div class="user-info">
+                  <h4 id="dropdown-username">Admin</h4>
+                  <span id="dropdown-role" class="role-badge admin">Admin</span>
+                </div>
+              </div>
+              <ul class="dropdown-menu-list">
+                <li class="menu-item">
+                  <a href="#" id="btn-update-profile">
+                    <i class="bx bx-user-pin"></i>
+                    <span>Cập nhật thông tin cá nhân</span>
+                  </a>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li class="menu-item logout-item">
+                  <a href="#" id="btn-logout">
+                    <i class="bx bx-log-out"></i>
+                    <span>Đăng xuất</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- Menu Icon Responsive -->
+          <div class="menu-icon">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+          </div>
+        </div>
+        <!-- Full Overlay Menu -->
+        <div class="menu">
+          <img src="../../assets/menu.png" alt="Menu Banner" />
+          <div class="navbar">
+            <li><a href="../home.html">Home</a></li>
+            <li><a href="../games.html">Games</a></li>
+            <li><a href="../pc_config.html">PC Check</a></li>
+            <li class="admin-only" style="display: none">
+              <a href="dashboard.html">Dashboard</a>
+            </li>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Section Main Dashboard Container -->
+    <section class="dashboard container">
+      <!-- Hero Section Header -->
+      <div class="dashboard-hero">
+        <div class="heading">
+          <div class="left-heading">
+            <i class="bx bx-grid-alt"></i>
+            <h2>Admin Dashboard</h2>
+          </div>
+        </div>
+        <p>
+          Trung tâm quản trị hệ thống GameFit - Quản lý dữ liệu game, cấu hình
+          phần cứng, tài khoản và duyệt báo cáo vi phạm.
+        </p>
+      </div>
+      <!-- Admin Tabbed Management Module -->
+      <div class="admin-management-container">
+        <div class="heading" style="margin-bottom: 1rem">
+          <div class="left-heading">
+            <i class="bx bx-cog"></i>
+            <h2>Chức năng quản lý</h2>
+          </div>
+        </div>
+        <!-- Navigation Tabs -->
+        <div class="admin-tabs-nav">
+          <button class="tab-pill active" data-tab="tab-dashboard">
+            <i class="bx bx-bar-chart-alt-2"></i> Thống kê
+          </button>
+          <button class="tab-pill" data-tab="tab-games">
+            <i class="bx bx-joystick"></i> Quản lý Game
+          </button>
+          <button class="tab-pill" data-tab="tab-users">
+            <i class="bx bx-user"></i> Người dùng
+          </button>
+          <button class="tab-pill" data-tab="tab-hardware">
+            <i class="bx bx-chip"></i> Hardware
+          </button>
+          <button class="tab-pill" data-tab="tab-genres">
+            <i class="bx bx-purchase-tag-alt"></i> Genre
+          </button>
+          <button class="tab-pill" data-tab="tab-violations">
+            <i class="bx bx-shield-quarter"></i> Báo cáo vi phạm
+          </button>
+        </div>
+        <div id="tab-dashboard"></div>
+      </div>
+    </section>
+
+    <!-- Toast Notification -->
+    <div id="home-toast" class="home-toast"></div>
+
+    <!-- Shared App JavaScript Modules -->
+    <script src="../../js/utils/toast.js"></script>
+    <script src="../../js/utils/auth-storage.js"></script>
+    <script src="../../js/data/games-data.js"></script>
+    <script src="../../js/components/navbar.js"></script>
+    <script src="../../js/components/user-dropdown.js"></script>
+    <script src="../../js/components/profile-modal.js"></script>
+    <script src="../../js/pages/admin/dashboard.js"></script>
+  </body>
+</html>

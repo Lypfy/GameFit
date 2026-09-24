@@ -8,6 +8,14 @@ function renderUserDropdownUI() {
   const menuDashboard = document.getElementById("menu-dashboard");
 
   const currentUser = getCurrentUser();
+  const isAdmin = currentUser && currentUser.role === "admin";
+
+  // Display/Hide all admin-only elements across navbar and menus
+  const adminOnlyElements = document.querySelectorAll(".admin-only");
+  adminOnlyElements.forEach((el) => {
+    el.style.display = isAdmin ? "block" : "none";
+  });
+
   if (!currentUser) {
     if (userDisplayName) userDisplayName.textContent = "";
     if (menuDashboard) menuDashboard.style.display = "none";
@@ -21,12 +29,11 @@ function renderUserDropdownUI() {
     dropdownUsername.textContent = currentUser.fullname || "Người dùng";
   }
   if (dropdownRole) {
-    const isAdmin = currentUser.role === "admin";
     dropdownRole.textContent = isAdmin ? "Admin" : "User";
     dropdownRole.className = `role-badge ${isAdmin ? "admin" : "user"}`;
   }
   if (menuDashboard) {
-    menuDashboard.style.display = currentUser.role === "admin" ? "block" : "none";
+    menuDashboard.style.display = isAdmin ? "block" : "none";
   }
 }
 
@@ -43,8 +50,13 @@ document.addEventListener("DOMContentLoaded", function () {
     e.stopPropagation();
     const currentUser = getCurrentUser();
     if (!currentUser) {
-      // Redirect from html/home.html to auth/login_register.html
-      window.location.href = "auth/login_register.html";
+      // Redirect from current page to login_register.html
+      const currentPath = window.location.pathname;
+      if (currentPath.includes("/admin/")) {
+        window.location.href = "../auth/login_register.html";
+      } else {
+        window.location.href = "auth/login_register.html";
+      }
     } else {
       if (userDropdown) {
         userDropdown.classList.toggle("active");
@@ -76,6 +88,12 @@ document.addEventListener("DOMContentLoaded", function () {
       logoutUser();
       renderUserDropdownUI();
       showToast("Đã đăng xuất tài khoản!");
+      // If logging out from admin dashboard, redirect to home page
+      if (window.location.pathname.includes("/admin/")) {
+        setTimeout(() => {
+          window.location.href = "../home.html";
+        }, 500);
+      }
     });
   }
 });
