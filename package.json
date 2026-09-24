@@ -1,5 +1,15 @@
 {
+  "name": "gamefit",
+  "version": "1.0.0",
+  "description": "GameFit Application",
+  "main": "server/src/app.js",
+  "scripts": {
+    "start": "node server/src/app.js",
+    "dev": "node --watch server/src/app.js"
+  },
   "dependencies": {
-    "express": "^5.2.1"
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "mssql": "^11.0.1"
   }
 }
