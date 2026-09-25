@@ -107,7 +107,9 @@
 .right-heading a:hover {
   transform: scale(1.2);
 }
-
+#category-sections section {
+  padding: 0 0 2rem !important;
+}
 .new-content {
   display: grid;
   grid-template-columns: repeat(5, minmax(195px, auto));
