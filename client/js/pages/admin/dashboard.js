@@ -8,11 +8,14 @@ async function loadStatisticsTab() {
   try {
     const res = await fetch("./statistics.html");
     const htmlText = await res.text();
-    // Parse HTML và lấy phần nội dung chính của statistics
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlText, "text/html");
     const statsContent = doc.querySelector(".main-content") || doc.body;
     container.innerHTML = statsContent.innerHTML;
+    // Khởi tạo các sự kiện click tab & filter sau khi nạp HTML thành công
+    if (typeof initStatistics === "function") {
+      initStatistics(container);
+    }
   } catch (err) {
     container.innerHTML = "<p>Không thể tải dữ liệu thống kê.</p>";
   }
