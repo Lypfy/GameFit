@@ -5,28 +5,18 @@ const jwt = require('jsonwebtoken');
 const registerUser = async (username, password, email, role = 'User') => {
     try {
         const request = new sql.Request();
-        
-        // 1. Kiểm tra xem user_name hoặc email đã tồn tại chưa
-        request.input('username', username);
-        request.input('email', email);
-        const checkUser = await request.query('SELECT user_id FROM Users WHERE user_name = @username OR email = @email');
-        
-        if (checkUser.recordset.length > 0) {
-            return { success: false, message: 'Tên người dùng hoặc Email đã tồn tại' };
-        }
 
-        // 2. Hash mật khẩu
+        // 1. Hash mật khẩu
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // 3. Thêm vào database
-        request.input('password', hashedPassword);
-        request.input('role', role);
-        const result = await request.query(`
-            INSERT INTO Users (user_name, password, email, role) 
-            VALUES (@username, @password, @email, @role);
-            SELECT SCOPE_IDENTITY() AS user_id;
-        `);
+        // 2. Truyền tham số khớp với Stored Procedure
+        request.input('user_name', sql.VarChar, username);
+        request.input('email', sql.VarChar, email);
+        request.input('password', sql.VarChar, hashedPassword);
+
+        // 3. Thực thi Stored Procedure
+        const result = await request.execute('sp_Register');
 
         return { 
             success: true, 
@@ -36,6 +26,12 @@ const registerUser = async (username, password, email, role = 'User') => {
     }
     catch (error) {
         console.error('Error in registerUser Service:', error.message);
+        
+        // 4. Bắt lỗi RAISERROR từ SQL Server
+        if (error.message.includes('Email này đã có người dùng') || error.message.includes('Tên này đã có người sử dụng')) {
+            return { success: false, message: error.message };
+        }
+
         throw new Error('Lỗi khi đăng ký người dùng');
     }
 };

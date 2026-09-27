@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const cancelProfileBtn = document.getElementById("cancel-profile-btn");
   const profileForm = document.getElementById("profile-form");
   const profileFullname = document.getElementById("profile-fullname");
-  const profileUsername = document.getElementById("profile-username");
+  const profileEmail = document.getElementById("profile-email");
   const profileRole = document.getElementById("profile-role");
   const profilePassword = document.getElementById("profile-password");
   const btnUpdateProfile = document.getElementById("btn-update-profile");
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!currentUser) return;
 
       if (profileFullname) profileFullname.value = currentUser.fullname || "";
-      if (profileUsername) profileUsername.value = currentUser.username || "user1";
+      if (profileEmail) profileEmail.value = currentUser.email || "";
       if (profileRole) {
         profileRole.value =
           currentUser.role === "admin"
