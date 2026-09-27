@@ -28,15 +28,21 @@ function renderGames(gamesList) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  let currentPage = 1;
+  let totalPages = 1;
+  const limit = 20;
+
   // Lấy dữ liệu từ Database thông qua API
-  async function fetchGames() {
+  async function fetchGames(page = 1) {
     try {
       // Giả sử server Backend đang chạy ở port 5000
-      const response = await fetch('http://localhost:5000/api/games?page=1&limit=20');
+      const response = await fetch(`http://localhost:5000/api/games?page=${page}&limit=${limit}`);
       const result = await response.json();
 
       if (result.success) {
         games = result.data; // Lưu lại vào biến games toàn cục để dùng cho bộ lọc bên dưới
+        currentPage = result.pagination?.currentPage || 1;
+        totalPages = result.pagination?.totalPages || 1;
 
         // Xử lý đọc tham số category từ URL sau khi đã có data
         const urlParams = new URLSearchParams(window.location.search);
@@ -57,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           renderGames(games);
         }
+        renderPagination();
       } else {
         console.error("Lỗi từ server:", result.message);
       }
@@ -68,6 +75,42 @@ document.addEventListener("DOMContentLoaded", function () {
         renderGames(games);
       }
     }
+  }
+
+  function renderPagination() {
+    const paginationContainer = document.getElementById("pagination-container");
+    if (!paginationContainer) return;
+
+    paginationContainer.innerHTML = "";
+    if (totalPages <= 1) return;
+
+    const prevBtn = document.createElement("button");
+    prevBtn.className = "page-btn";
+    prevBtn.textContent = "Prev";
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.addEventListener("click", () => changePage(currentPage - 1));
+    paginationContainer.appendChild(prevBtn);
+
+    for (let i = 1; i <= totalPages; i++) {
+      const pageBtn = document.createElement("button");
+      pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+      pageBtn.textContent = i;
+      pageBtn.addEventListener("click", () => changePage(i));
+      paginationContainer.appendChild(pageBtn);
+    }
+
+    const nextBtn = document.createElement("button");
+    nextBtn.className = "page-btn";
+    nextBtn.textContent = "Next";
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.addEventListener("click", () => changePage(currentPage + 1));
+    paginationContainer.appendChild(nextBtn);
+  }
+
+  function changePage(page) {
+    if (page < 1 || page > totalPages || page === currentPage) return;
+    fetchGames(page);
+    window.scrollTo({ top: document.querySelector('.games').offsetTop - 100, behavior: 'smooth' });
   }
 
   // Gọi hàm lấy dữ liệu
