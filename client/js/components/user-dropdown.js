@@ -8,7 +8,7 @@ function renderUserDropdownUI() {
   const menuDashboard = document.getElementById("menu-dashboard");
 
   const currentUser = getCurrentUser();
-  const isAdmin = currentUser && currentUser.role === "admin";
+  const isAdmin = currentUser && currentUser.role && currentUser.role.toLowerCase() === "admin";
 
   // Display/Hide all admin-only elements across navbar and menus
   const adminOnlyElements = document.querySelectorAll(".admin-only");
@@ -23,10 +23,10 @@ function renderUserDropdownUI() {
   }
 
   if (userDisplayName) {
-    userDisplayName.textContent = currentUser.fullname || "";
+    userDisplayName.textContent = currentUser.username || "Người dùng";
   }
   if (dropdownUsername) {
-    dropdownUsername.textContent = currentUser.fullname || "Người dùng";
+    dropdownUsername.textContent = currentUser.username || "Người dùng";
   }
   if (dropdownRole) {
     dropdownRole.textContent = isAdmin ? "Admin" : "User";

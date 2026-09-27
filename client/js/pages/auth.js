@@ -8,51 +8,82 @@ document.addEventListener("DOMContentLoaded", function () {
   const showLogin = document.getElementById("showLogin");
 
   if (LoginForm) {
-    LoginForm.addEventListener("submit", function (e) {
+    LoginForm.addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const username = document.getElementById("login-username").value.trim();
       const password = document.getElementById("login-password").value.trim();
 
-      const user = mockUsers.find(
-        (u) => u.username === username && u.password === password
-      );
+      try {
+        // Sử dụng biến API_URL từ file config.js (nếu chưa add vào HTML thì mặc định dùng localhost)
+        const BASE_URL = window.API_URL || "http://localhost:5000/api";
 
-      if (user) {
-        setCurrentUser(user);
-        showToast(user.role === "admin" ? "Welcome Admin!" : "Welcome User!", false, "toast");
+        const response = await fetch(`${BASE_URL}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
 
-        setTimeout(() => {
-          // From client/html/auth/login_register.html back to client/html/home.html
-          window.location.href = "../home.html";
-        }, 1000);
-      } else {
-        showToast("Sai tài khoản hoặc mật khẩu!", true, "toast");
+        const data = await response.json();
+
+        if (response.ok) {
+          // Lưu token và thông tin user vào localStorage
+          localStorage.setItem("token", data.token);
+          setCurrentUser(data.user);
+
+          showToast(`Xin chào ${data.user.username}!`, false, "toast");
+
+          setTimeout(() => {
+            window.location.href = "../home.html";
+          }, 1000);
+        } else {
+          showToast(data.message || "Sai tài khoản hoặc mật khẩu!", true, "toast");
+        }
+      } catch (error) {
+        console.error("Lỗi:", error);
+        showToast("Không thể kết nối đến Máy chủ!", true, "toast");
       }
     });
   }
 
   if (SignUpForm) {
-    SignUpForm.addEventListener("submit", function (e) {
+    SignUpForm.addEventListener("submit", async function (e) {
       e.preventDefault();
-      const fullname = document.getElementById("signup-fullname").value.trim();
-      const username = document.getElementById("signup-username").value.trim();
+      const username = document.getElementById("signup-fullname").value.trim();
+      const email = document.getElementById("signup-username").value.trim();
+
+      if (!email) return;
+
       const password = document.getElementById("signup-password").value.trim();
       const password_confirm = document.getElementById("signup-password-confirm").value.trim();
 
-      const userExist = mockUsers.find((u) => u.username === username);
-      if (userExist) {
-        alert("Username already exists!");
+      if (password !== password_confirm) {
+        showToast("Mật khẩu nhập lại không khớp!", true, "toast");
         return;
-      } else if (password !== password_confirm) {
-        alert("Wrong password repeat!");
-        return;
-      } else {
-        mockUsers.push({ fullname, username, password, role: "user" });
-        showToast("Sign up successful!", false, "toast");
-        SignUpForm.reset();
-        SignUpForm.style.display = "none";
-        LoginForm.style.display = "block";
+      }
+
+      try {
+        const BASE_URL = window.API_URL || "http://localhost:5000/api";
+
+        const response = await fetch(`${BASE_URL}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showToast("Đăng ký thành công! Vui lòng đăng nhập.", false, "toast");
+          SignUpForm.reset();
+          SignUpForm.style.display = "none";
+          LoginForm.style.display = "block";
+        } else {
+          showToast(data.message, true, "toast");
+        }
+      } catch (error) {
+        console.error("Lỗi:", error);
+        showToast("Lỗi kết nối đến Máy chủ", true, "toast");
       }
     });
   }
