@@ -43,6 +43,7 @@ const cpusRoutes = require("./routes/cpus.routes");
 const gpusRoutes = require("./routes/gpus.routes");
 const tagsRoutes = require("./routes/tags.routes");
 const wishlistRoutes = require("./routes/wishlist.routes");
+const reviewRoutes = require("./routes/review.routes");
 
 // Đăng ký các router
 app.use("/api/computer-config", computerConfigRoutes);
@@ -52,6 +53,7 @@ app.use("/api/cpus", cpusRoutes);
 app.use("/api/gpus", gpusRoutes);
 app.use("/api/tags", tagsRoutes);
 app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // Khởi tạo kết nối DB trước khi lắng nghe port
 connectDB().then(() => {

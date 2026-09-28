@@ -27,9 +27,29 @@ const getGames = async (page = 1, limit = 20) => {
 
         const totalItems = countResult.recordset[0].totalItems;
 
+        const games = gamesResult.recordset;
+        
+        // Lấy điểm trung bình cho từng game
+        for (let game of games) {
+            const gameId = game.game_id || game.id;
+            if (gameId) {
+                const r = pool.request();
+                r.input('game_id', sql.Int, gameId);
+                try {
+                    const ratingRes = await r.query('SELECT dbo.fn_GetAverageRating(@game_id) AS avgRating');
+                    const avg = ratingRes.recordset[0].avgRating;
+                    game.rating = avg !== null ? Number(avg) : 0;
+                } catch (e) {
+                    game.rating = 0;
+                }
+            } else {
+                game.rating = 0;
+            }
+        }
+
         // Trả về cấu trúc JSON đẹp cho Controller
         return {
-            data: gamesResult.recordset,
+            data: games,
             pagination: {
                 currentPage: page,
                 limit: limit,

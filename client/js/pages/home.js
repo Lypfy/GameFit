@@ -1,8 +1,3 @@
-// 1. Lọc lấy 8 games có rating cao nhất cho phần Popular Games
-const popularGames = [...gamesData]
-  .sort((a, b) => b.rating - a.rating)
-  .slice(0, 8);
-
 // 2. Danh sách các thể loại hiển thị thành từng mục riêng biệt trên trang Home
 const categoriesToDisplay = [
   { title: "Action / RPG", filterKey: "Action / RPG", icon: "bx-joystick" },
@@ -11,6 +6,7 @@ const categoriesToDisplay = [
 
 let savedWishlistGameIds = new Set();
 let currentUser = null;
+let allGames = []; // Dữ liệu thật từ DB
 
 function renderPopularGames(games) {
   const swiperWrapper = document.querySelector(
@@ -28,17 +24,17 @@ function renderPopularGames(games) {
         return `
     <div class="swiper-slide">
       <div class="box" data-id="${gameIdStr}">
-        <img src="${game.image}" alt="${game.title}" />
+        <img src="${game.image || '../assets/default-game.png'}" alt="${game.title || game.name}" />
         ${bookmarkHtml}
         <div class="box-text">
-          <h2>${game.title}</h2>
-          <h3>${game.category}</h3>
+          <h2>${game.title || game.name}</h2>
+          <h3>${game.category || game.platform}</h3>
           <div class="rating-container">
             <div class="rating">
               <i class="bx bxs-star"></i>
-              <span>${game.rating}</span>
+              <span>${typeof game.rating === 'number' ? game.rating.toFixed(1) : (game.rating ? parseFloat(game.rating).toFixed(1) : '0.0')}</span>
             </div>
-            <a href="${game.link}" class="box-btn">View</a>
+            <a href="game-details.html?id=${gameIdStr}" class="box-btn">View</a>
           </div>
         </div>
       </div>
@@ -59,15 +55,16 @@ function renderCategorySections() {
   container.innerHTML = categoriesToDisplay
     .map((cat) => {
       // Lấy danh sách game thuộc thể loại này (lấy tối đa 4 game)
-      const games = gamesData
-        .filter((game) =>
-          game.category.toLowerCase().includes(cat.filterKey.toLowerCase()),
-        )
+      const filtered = allGames
+        .filter((game) => {
+          const gameCat = game.category || game.platform || '';
+          return gameCat.toLowerCase().includes(cat.filterKey.toLowerCase());
+        })
         .slice(0, 4);
 
-      if (games.length === 0) return "";
+      if (filtered.length === 0) return "";
 
-      const gameCardsHtml = games
+      const gameCardsHtml = filtered
         .map(
           (game) => {
             const gameIdStr = (game.game_id || game.id || '').toString();
@@ -77,17 +74,17 @@ function renderCategorySections() {
 
             return `
         <div class="box" data-id="${gameIdStr}" style="position: relative;">
-          <img src="${game.image}" alt="${game.title}" />
+          <img src="${game.image || '../assets/default-game.png'}" alt="${game.title || game.name}" />
           ${bookmarkHtml}
           <div class="box-text">
-            <h2>${game.title}</h2>
-            <h3>${game.category}</h3>
+            <h2>${game.title || game.name}</h2>
+            <h3>${game.category || game.platform}</h3>
             <div class="rating-container">
               <div class="rating">
                 <i class="bx bxs-star"></i>
-                <span>${game.rating}</span>
+                <span>${typeof game.rating === 'number' ? game.rating.toFixed(1) : (game.rating ? parseFloat(game.rating).toFixed(1) : '0.0')}</span>
               </div>
-              <a href="${game.link}" class="box-btn">View</a>
+              <a href="game-details.html?id=${gameIdStr}" class="box-btn">View</a>
             </div>
           </div>
         </div>
@@ -131,9 +128,30 @@ async function fetchUserWishlist() {
   }
 }
 
+async function fetchAllGames() {
+  try {
+    const res = await fetch(`http://localhost:5000/api/games?page=1&limit=50`);
+    const data = await res.json();
+    if (data.success) {
+      allGames = data.data;
+    }
+  } catch (error) {
+    console.error("Lỗi fetch games:", error);
+    // Fallback: dùng mảng tĩnh nếu API sập
+    if (typeof gamesData !== 'undefined') allGames = gamesData;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async function () {
   currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+  
+  await fetchAllGames();
   await fetchUserWishlist();
+
+  // Lọc lấy 8 games có rating cao nhất cho phần Popular Games
+  const popularGames = [...allGames]
+    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    .slice(0, 8);
 
   renderPopularGames(popularGames);
   renderCategorySections();

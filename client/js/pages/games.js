@@ -25,7 +25,7 @@ function renderGames(gamesList) {
         <div class="rating-container">
           <div class="rating">
             <i class="bx bxs-star"></i>
-            <span>${game.rating || '5.0'}</span>
+            <span>${typeof game.rating === 'number' ? game.rating.toFixed(1) : (game.rating ? parseFloat(game.rating).toFixed(1) : '0.0')}</span>
           </div>
         </div>
       </div>

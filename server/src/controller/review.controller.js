@@ -2,7 +2,7 @@ const reviewService = require('../service/review.service')
 
 const writeReview = async (req, res) => {
     try {
-        const user_id = req.user.id;
+        const user_id = req.user.user_id;
         const { game_id } = req.params;
         const { rating, comment } = req.body;
 
@@ -36,7 +36,7 @@ const writeReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
     try {
-        const user_id = req.user.id;
+        const user_id = req.user.user_id;
         const { game_id } = req.params;
         const { rating, comment } = req.body;
 
@@ -71,7 +71,7 @@ const getReviews = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Thiếu game_id hợp lệ' });
         }
 
-        const result = await reviewService.getReviews(game_id);
+        const result = await reviewService.getReview(game_id);
         return res.status(200).json({
             success: true,
             message: 'Lấy thông tin review thành công',
