@@ -36,13 +36,19 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
-const computerConfigRoutes = require('./routes/computerConfig.routes');
-const authRoutes = require('./routes/auth.routes');
-const gamesRoutes = require('./routes/games.routes');
+const computerConfigRoutes = require("./routes/computerConfig.routes");
+const authRoutes = require("./routes/auth.routes");
+const gamesRoutes = require("./routes/games.routes");
+const tagsRoutes = require("./routes/tags.routes");
+const cpusRoutes = require("./routes/cpus.routes");
+const gpusRoutes = require("./routes/gpus.routes");
 // Đăng ký các router
-app.use('/api/computer-config', computerConfigRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/games', gamesRoutes);
+app.use("/api/computer-config", computerConfigRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/games", gamesRoutes);
+app.use("/api/tags", tagsRoutes);
+app.use("/api/cpus", cpusRoutes);
+app.use("/api/gpus", gpusRoutes);
 
 // Khởi tạo kết nối DB trước khi lắng nghe port
 connectDB().then(() => {
