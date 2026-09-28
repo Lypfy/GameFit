@@ -58,7 +58,7 @@ const deleteWishlistGame = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Xóa game khỏi wishlist thất bại' });
         }
 
-        return res.satus(200).json({
+        return res.status(200).json({
             success: true,
             message: 'Xóa game khỏi wishlist thành công'
         })

@@ -9,6 +9,9 @@ const categoriesToDisplay = [
   { title: "FPS", filterKey: "FPS", icon: "bx-target-lock" },
 ];
 
+let savedWishlistGameIds = new Set();
+let currentUser = null;
+
 function renderPopularGames(games) {
   const swiperWrapper = document.querySelector(
     ".popular-content .swiper-wrapper",
@@ -16,10 +19,17 @@ function renderPopularGames(games) {
   if (!swiperWrapper) return;
   swiperWrapper.innerHTML = games
     .map(
-      (game) => `
+      (game) => {
+        const gameIdStr = (game.game_id || game.id || '').toString();
+        const isSaved = savedWishlistGameIds.has(gameIdStr);
+        const bookmarkIcon = isSaved ? '../assets/yellow_bookmarks.png' : '../assets/white_bookmarks.png';
+        const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? 'Xóa khỏi Wishlist' : 'Thêm vào Wishlist'}" />`;
+
+        return `
     <div class="swiper-slide">
-      <div class="box">
+      <div class="box" data-id="${gameIdStr}">
         <img src="${game.image}" alt="${game.title}" />
+        ${bookmarkHtml}
         <div class="box-text">
           <h2>${game.title}</h2>
           <h3>${game.category}</h3>
@@ -33,7 +43,8 @@ function renderPopularGames(games) {
         </div>
       </div>
     </div>
-  `,
+  `;
+      }
     )
     .join("");
 }
@@ -58,9 +69,16 @@ function renderCategorySections() {
 
       const gameCardsHtml = games
         .map(
-          (game) => `
-        <div class="box">
+          (game) => {
+            const gameIdStr = (game.game_id || game.id || '').toString();
+            const isSaved = savedWishlistGameIds.has(gameIdStr);
+            const bookmarkIcon = isSaved ? '../assets/yellow_bookmarks.png' : '../assets/white_bookmarks.png';
+            const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? 'Xóa khỏi Wishlist' : 'Thêm vào Wishlist'}" />`;
+
+            return `
+        <div class="box" data-id="${gameIdStr}" style="position: relative;">
           <img src="${game.image}" alt="${game.title}" />
+          ${bookmarkHtml}
           <div class="box-text">
             <h2>${game.title}</h2>
             <h3>${game.category}</h3>
@@ -73,7 +91,8 @@ function renderCategorySections() {
             </div>
           </div>
         </div>
-      `,
+      `;
+          }
         )
         .join("");
 
@@ -97,7 +116,25 @@ function renderCategorySections() {
     .join("");
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+async function fetchUserWishlist() {
+  if (currentUser) {
+    try {
+      const userId = currentUser.id || currentUser.user_id;
+      const response = await fetch(`http://localhost:5000/api/wishlist/${userId}`);
+      const result = await response.json();
+      if (result.success) {
+        savedWishlistGameIds = new Set(result.data.map(g => (g.game_id || g.id).toString()));
+      }
+    } catch (error) {
+      console.error("Lỗi fetch wishlist:", error);
+    }
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async function () {
+  currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+  await fetchUserWishlist();
+
   renderPopularGames(popularGames);
   renderCategorySections();
 
@@ -129,4 +166,51 @@ document.addEventListener("DOMContentLoaded", function () {
       },
     });
   }
+
+  // Lắng nghe click vào nút Wishlist trên toàn bộ trang
+  document.body.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("wishlist-btn")) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!currentUser) {
+        if (typeof showToast === 'function') {
+          showToast("Vui lòng đăng nhập để lưu game", "error");
+        } else {
+          alert("Vui lòng đăng nhập để lưu game");
+        }
+        return;
+      }
+      const gameId = e.target.getAttribute("data-game-id");
+      if (!gameId) return;
+
+      const userId = currentUser.id || currentUser.user_id;
+      const isSaved = savedWishlistGameIds.has(gameId);
+      
+      try {
+        const method = isSaved ? 'DELETE' : 'POST';
+        const response = await fetch(`http://localhost:5000/api/wishlist/${userId}`, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ game_id: gameId })
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+          if (isSaved) {
+            savedWishlistGameIds.delete(gameId);
+            e.target.src = '../assets/white_bookmarks.png';
+            e.target.title = 'Thêm vào Wishlist';
+            if(typeof showToast === 'function') showToast("Đã xóa khỏi Wishlist", "success");
+          } else {
+            savedWishlistGameIds.add(gameId);
+            e.target.src = '../assets/yellow_bookmarks.png';
+            e.target.title = 'Xóa khỏi Wishlist';
+            if(typeof showToast === 'function') showToast("Đã thêm vào Wishlist", "success");
+          }
+        }
+      } catch (error) {
+        console.error("Lỗi toggle wishlist:", error);
+      }
+    }
+  });
 });

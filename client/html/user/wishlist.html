@@ -4,26 +4,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game Fit - Chi tiết Game</title>
-  <link rel="stylesheet" href="../css/style.css" />
-  <link rel="stylesheet" href="../css/components/cpu-gpu-combobox.css" />
-  <link rel="stylesheet" href="../css/pages/game-details.css" />
+  <title>Game Fit - Games</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/components/cpu-gpu-combobox.css" />
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 </head>
 
 <body>
   <header>
+    <!-- Navbar -->
     <div class="nav container">
       <a href="../home.html" class="logo">Game<span>Fit</span></a>
+
       <!-- Navigation Links hiển thị trên Header -->
       <ul class="nav-links">
-        <li><a href="home.html">Home</a></li>
-        <li><a href="games.html" class="active">Games</a></li>
-        <li><a href="pc_config.html">PC Check</a></li>
-        <li class="admin-only" style="display: none">
-          <a href="admin/dashboard.html">Dashboard</a>
-        </li>
+        <li><a href="../home.html">Home</a></li>
+        <li><a href="../games.html" class="active">Games</a></li>
+        <li><a href="../pc_config.html">PC Check</a></li>
+        <li class="admin-only" style="display: none;"><a href="../admin/dashboard.html">Dashboard</a></li>
       </ul>
+
       <!-- Nav icon -->
       <div class="nav-icon">
         <div class="search">
@@ -40,8 +40,8 @@
                 <i class="bx bxs-user-circle"></i>
               </div>
               <div class="user-info">
-                <h4 id="dropdown-username">Admin</h4>
-                <span id="dropdown-role" class="role-badge admin">Admin</span>
+                <h4 id="dropdown-username">Nicole Reeyn</h4>
+                <span id="dropdown-role" class="role-badge user">User</span>
               </div>
             </div>
             <ul class="dropdown-menu-list">
@@ -52,7 +52,7 @@
                 </a>
               </li>
               <li class="menu-item">
-                <a href="user/wishlist.html">
+                <a href="wishlist.html">
                   <i class="bx bx-bookmark-heart"></i>
                   <span>My Wishlist</span>
                 </a>
@@ -73,13 +73,14 @@
             </ul>
           </div>
         </div>
-        <!-- Menu Icon Responsive -->
+        <!-- Menu icon (tạm thời ẩn) -->
         <div class="menu-icon">
           <div class="line1"></div>
           <div class="line2"></div>
           <div class="line3"></div>
         </div>
       </div>
+
       <!-- Full Overlay Menu -->
       <div class="menu">
         <img src="../../assets/menu.png" alt="Menu Banner" />
@@ -87,78 +88,32 @@
           <li><a href="../home.html">Home</a></li>
           <li><a href="../games.html">Games</a></li>
           <li><a href="../pc_config.html">PC Check</a></li>
-          <li class="admin-only" style="display: none">
-            <a href="dashboard.html">Dashboard</a>
-          </li>
+          <li class="admin-only" style="display: none;"><a href="../admin/dashboard.html">Dashboard</a></li>
         </div>
       </div>
     </div>
   </header>
-
-  <!-- Main Game Details Section -->
-  <main class="game-details-container container">
-    <!-- Vùng Loading -->
-    <div id="loading-state" style="text-align: center; padding: 5rem 0">
-      <i class="bx bx-loader-alt bx-spin" style="font-size: 3rem; color: var(--main-color)"></i>
-      <p style="margin-top: 1rem; color: #fff">Đang tải thông tin game...</p>
+  <!-- Search Bar -->
+  <section class="wishlist-search-container container" style="display: flex; justify-content: center; margin-top: 2rem;">
+    <div class="search-box" style="position: relative; width: 100%; max-width: 600px;">
+      <input type="text" id="wishlist-search-input" placeholder="Tìm kiếm game trong Wishlist..." style="width: 100%; padding: 12px 20px; padding-left: 45px; border-radius: 25px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-primary); font-size: 1rem; outline: none;" />
+      <i class="bx bx-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 1.5rem; color: var(--text-secondary);"></i>
     </div>
-
-    <!-- Vùng Lỗi -->
-    <div id="error-state" style="display: none; text-align: center; padding: 5rem 0">
-      <i class="bx bx-error-circle" style="font-size: 4rem; color: #ff6b6b"></i>
-      <h2 style="margin-top: 1rem; color: #fff" id="error-message">
-        Không tìm thấy thông tin game!
-      </h2>
-      <a href="games.html" class="btn-back">Quay lại danh sách Game</a>
-    </div>
-
-    <!-- Vùng Nội dung chính (Ẩn lúc đầu) -->
-    <div id="game-content-state" style="display: none">
-      <!-- Banner Tiêu đề -->
-      <div class="game-header-banner">
-        <h1 id="gd-title">Tên Game</h1>
-        <p class="gd-subtitle" id="gd-subtitle">A downloadable PC Game</p>
-      </div>
-
-      <!-- Khối trên cùng: Ảnh cover và nút Download (Mô phỏng itch.io) -->
-      <div class="gd-top-section">
-        <div class="gd-buy-box">
-          <a href="#" id="gd-download-btn" target="_blank" class="btn-buy-now">Download Now</a>
-          <span class="gd-price">Free</span>
-          <p class="gd-buy-desc" id="gd-developer-desc">
-            Một tuyệt phẩm được phát triển bởi
-            <strong id="gd-dev-name">...</strong> và phát hành bởi
-            <strong id="gd-pub-name">...</strong>.
-          </p>
-          <div class="gd-badges">
-            <span class="gd-badge" id="gd-platform"><i class="bx bx-windows"></i> PC</span>
-            <span class="gd-badge"><i class="bx bx-calendar"></i>
-              <span id="gd-release-date">...</span></span>
-          </div>
-        </div>
-
-        <div class="gd-cover-box">
-          <img id="gd-cover-img" src="../assets/default-game.png" alt="Cover" />
-        </div>
-      </div>
-
-      <!-- Khối nội dung chi tiết -->
-      <div class="gd-main-content">
-        <div class="gd-description">
-          <h3>Về trò chơi này</h3>
-          <p id="gd-desc-text">Mô tả game...</p>
-        </div>
-
-        <!-- Yêu cầu cấu hình -->
-        <div class="gd-requirements-box">
-          <h3>Yêu cầu hệ thống</h3>
-          <div id="gd-requirements-list" class="req-grid">
-            <!-- Danh sách cấu hình sẽ được render qua JS -->
-          </div>
-        </div>
+  </section>
+  <section class="games container">
+    <div class="heading">
+      <div class="left-heading">
+        <i class="bx bx-bookmark-heart"></i>
+        <h2>My Wishlist</h2>
       </div>
     </div>
-  </main>
+    <div class="games-content">
+      <!-- New game boxes dynamically rendered by JS -->
+    </div>
+    <!-- Pagination -->
+    <div class="pagination-container" id="pagination-container">
+    </div>
+  </section>
   <!-- Modal Cập Nhật Thông Tin Cá Nhân -->
   <div class="modal" id="profile-modal">
     <div class="modal-overlay" id="profile-modal-overlay"></div>
@@ -259,15 +214,16 @@
   </div>
   <!-- Toast Notification -->
   <div id="home-toast" class="home-toast"></div>
-  <!-- Scripts -->
-  <script src="../js/utils/toast.js"></script>
-  <script src="../js/utils/auth-storage.js"></script>
-  <script src="../js/components/navbar.js"></script>
-  <script src="../js/components/user-dropdown.js"></script>
-  <script src="../js/components/profile-modal.js"></script>
-  <script src="../js/pages/game-details.js"></script>
-  <script src="../js/components/cpu-gpu-combobox.js"></script>
-  <script src="../js/components/pc-config-modal.js"></script>
+
+  <script src="../../js/utils/toast.js"></script>
+  <script src="../../js/utils/auth-storage.js"></script>
+  <script src="../../js/data/games-data.js"></script>
+  <script src="../../js/components/navbar.js"></script>
+  <script src="../../js/components/user-dropdown.js"></script>
+  <script src="../../js/components/profile-modal.js"></script>
+  <script src="../../js/pages/user/wishlist.js"></script>
+  <script src="../../js/components/cpu-gpu-combobox.js"></script>
+  <script src="../../js/components/pc-config-modal.js"></script>
 </body>
 
 </html>

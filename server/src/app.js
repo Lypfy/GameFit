@@ -42,6 +42,8 @@ const gamesRoutes = require("./routes/games.routes");
 const cpusRoutes = require("./routes/cpus.routes");
 const gpusRoutes = require("./routes/gpus.routes");
 const tagsRoutes = require("./routes/tags.routes");
+const wishlistRoutes = require("./routes/wishlist.routes");
+
 // Đăng ký các router
 app.use("/api/computer-config", computerConfigRoutes);
 app.use("/api/auth", authRoutes);
@@ -49,6 +51,7 @@ app.use("/api/games", gamesRoutes);
 app.use("/api/cpus", cpusRoutes);
 app.use("/api/gpus", gpusRoutes);
 app.use("/api/tags", tagsRoutes);
+app.use("/api/wishlist", wishlistRoutes);
 
 // Khởi tạo kết nối DB trước khi lắng nghe port
 connectDB().then(() => {
