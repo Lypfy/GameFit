@@ -8,7 +8,7 @@ function renderGames(gamesList) {
   gamesContent.innerHTML = gamesList
     .map(
       (game) => `
-    <div class="box">
+    <div class="box" data-id="${game.game_id || game.id || ''}" style="cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
       <img src="${game.image || '../assets/default-game.png'}" alt="${game.name || game.title}" />
       <div class="box-text">
         <h2 title="${game.name || game.title}">${game.name || game.title}</h2>
@@ -18,7 +18,6 @@ function renderGames(gamesList) {
             <i class="bx bxs-star"></i>
             <span>${game.rating || '5.0'}</span>
           </div>
-          <a href="${game.download_url || game.link || '#'}" class="box-btn">View</a>
         </div>
       </div>
     </div>
@@ -157,6 +156,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (typeof window.closeFilterModal === "function") {
       window.closeFilterModal();
+    }
+  });
+  // Lắng nghe click vào toàn bộ Card Game (Event Delegation)
+  document.querySelector(".games-content")?.addEventListener("click", async (e) => {
+    const box = e.target.closest(".box");
+    if (box) {
+      e.preventDefault();
+      const gameId = box.getAttribute("data-id");
+      if (!gameId) return;
+
+      // Chuyển hướng sang trang chi tiết game mới
+      window.location.href = `game-details.html?id=${gameId}`;
     }
   });
 });

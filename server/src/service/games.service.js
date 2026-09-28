@@ -43,4 +43,29 @@ const getGames = async (page = 1, limit = 20) => {
     }
 };
 
-module.exports = { getGames };
+const getGameDetail = async (game_id) => {
+    try {
+        const request = new sql.Request(); 
+        
+        request.input('game_id', sql.Int, game_id);
+        const checkQuery = 'SELECT dbo.fn_CheckGameExist(@game_id) AS IsExist';
+        const checkResult = await request.query(checkQuery);
+        
+        if (!checkResult.recordset[0].IsExist) {
+            return { success: false, message: 'Game không tồn tại trong hệ thống' };
+        }
+
+        const query = 'SELECT * FROM dbo.fn_GetGameDetail(@game_id)';
+        const result = await request.query(query);
+
+        return { 
+            success: true, 
+            data: result.recordset 
+        };
+    }
+    catch (error) {
+        console.log('Error in getGameDetail Service: ', error.message)
+        throw new Error('Lỗi khi lấy thông tin chi tiết game');
+    }
+}
+module.exports = { getGames, getGameDetail };
