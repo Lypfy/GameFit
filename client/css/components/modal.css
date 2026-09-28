@@ -153,3 +153,99 @@
   background: #ff6b6b;
   box-shadow: 0 4px 12px rgba(250, 83, 83, 0.4);
 }
+
+/* =============================================
+   Modal Modifier Classes
+   ============================================= */
+
+/* 1. Scrollable Modal (pins header/footer, scrolls body) */
+.modal-scrollable {
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-scrollable .modal-header,
+.modal-scrollable .modal-footer {
+  flex-shrink: 0;
+}
+
+.modal-scrollable form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.modal-scrollable .modal-body,
+.modal-scrollable form > .form-group {
+  /* Handle both structures: .modal-body wrapper OR direct form-groups */
+}
+
+/* If form has a modal-body wrapper */
+.modal-scrollable .modal-body {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+  margin-right: -4px;
+}
+
+/* If form has no wrapper, let the form itself scroll (old home.html struct) */
+.modal-scrollable-form form {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+  margin-right: -4px;
+}
+
+/* Thin Scrollbar */
+.modal-scrollable .modal-body::-webkit-scrollbar,
+.modal-scrollable-form form::-webkit-scrollbar { width: 5px; }
+.modal-scrollable .modal-body::-webkit-scrollbar-track,
+.modal-scrollable-form form::-webkit-scrollbar-track { background: transparent; }
+.modal-scrollable .modal-body::-webkit-scrollbar-thumb,
+.modal-scrollable-form form::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+}
+.modal-scrollable .modal-body::-webkit-scrollbar-thumb:hover,
+.modal-scrollable-form form::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* 2. Compact Modal (smaller sizes for dense forms like PC config) */
+.modal-compact {
+  max-width: 400px;
+  padding: 16px 18px;
+}
+
+.modal-compact .modal-header {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+}
+
+.modal-compact .modal-header h3,
+.modal-compact .modal-title h2 {
+  font-size: 1rem;
+}
+
+.modal-compact .modal-footer {
+  margin-top: 14px;
+}
+
+.modal-compact .form-group {
+  margin-bottom: 10px;
+  row-gap: 4px;
+}
+
+.modal-compact .form-group label {
+  font-size: 0.8rem;
+}
+
+.modal-compact .form-group input[type="text"],
+.modal-compact .form-group input[type="number"],
+.modal-compact .hw-combobox-input-wrap input {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+}

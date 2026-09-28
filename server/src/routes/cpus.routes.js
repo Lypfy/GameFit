@@ -5,6 +5,9 @@ const cpusController = require('../controller/cpus.controller');
 // Lấy danh sách CPU (có phân trang & tìm kiếm)
 router.get('/', cpusController.getCPUs);
 
+// Tìm kiếm CPU theo tên
+router.get('/search', cpusController.searchCPUByName);
+
 // Lấy chi tiết 1 CPU theo ID
 router.get('/:id', cpusController.getCPUById);
 

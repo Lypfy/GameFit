@@ -4,7 +4,7 @@ const getComputerConfig = async (user_id) => {
     try {
         const request = new sql.Request();
         request.input('user_id', user_id);
-        const result = await request.query('SELECT pc_name, cpu_id, gpu_id, ram, storage, os FROM dbo.getComputerConfig(@user_id)');
+        const result = await request.query('SELECT pc_id, pc_name, cpu_id, gpu_id, ram, storage, os FROM dbo.fn_getComputersConfig(@user_id)');
         return result.recordset;
     }
     catch (error) {

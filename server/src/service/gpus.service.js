@@ -66,9 +66,28 @@ const deleteGpu = async (gpu_id) => {
     }
 }
 
+const searchGpuByName = async (name) => {
+    try {
+        const request = new sql.Request();
+        request.input('name', `%${name}%`);
+
+        const query = `
+            SELECT gpu_id, name, brand, benchmark_score
+            FROM Gpus
+            WHERE name LIKE @name
+        `;
+        const result = await request.query(query);
+        return result.recordset;
+    } catch (error) {
+        console.error('Error in searchGpuByName Service:', error.message);
+        throw new Error('Lỗi khi tìm kiếm GPU theo tên');
+    }
+};
+
 module.exports = {
     getGpus,
     addGpu,
     updateGpu,
-    deleteGpu
+    deleteGpu,
+    searchGpuByName
 };

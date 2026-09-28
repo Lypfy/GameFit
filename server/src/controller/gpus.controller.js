@@ -119,10 +119,31 @@ const deleteGPU = async (req, res) => {
     }
 };
 
+const searchGpuByName = async (req, res) => {
+    try {
+        const name = req.query.name;
+        if (!name) {
+            return res.status(400).json({ success: false, message: 'Vui lòng cung cấp tên GPU' });
+        }
+        
+        const result = await gpusService.searchGpuByName(name);
+        
+        return res.status(200).json({
+            success: true,
+            message: 'Tìm kiếm GPU thành công',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error in searchGpuByName Controller:', error.message);
+        return res.status(500).json({ success: false, message: 'Lỗi server khi tìm kiếm GPU' });
+    }
+};
+
 module.exports = {
     getGPUs,
     getGPUById,
     addGPU,
     updateGPU,
-    deleteGPU
+    deleteGPU,
+    searchGpuByName
 };

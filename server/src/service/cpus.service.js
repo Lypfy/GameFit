@@ -108,10 +108,29 @@ const deleteCPU = async (cpu_id) => {
     }
 };
 
+const searchCPUByName = async (cpu_name) => {
+    try {
+        const request = new sql.Request();
+        request.input('cpu_name', `%${cpu_name}%`);
+
+        const query = `
+            SELECT cpu_id, name, brand, benchmark_score 
+            FROM Cpus
+            WHERE name LIKE @cpu_name
+        `;
+        const result = await request.query(query);
+        return result.recordset;
+    } catch (error) {
+        console.error('Error in searchCPUByName Service:', error.message);
+        throw new Error('Lỗi khi tìm kiếm CPU theo tên');
+    }
+};
+
 module.exports = {
     getCPUs,
     getCPUById,
     addCPU,
     updateCPU,
-    deleteCPU
+    deleteCPU,
+    searchCPUByName
 };

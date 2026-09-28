@@ -1,0 +1,183 @@
+/* ==========================================
+   Searchable CPU/GPU Combobox Component
+   ========================================== */
+
+.hw-combobox {
+  position: relative;
+  width: 100%;
+}
+
+.hw-combobox-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hw-combobox-input-wrap input[type="text"] {
+  width: 100%;
+  padding-right: 36px;
+  /* inherit the existing form-control / input styles */
+  background-color: var(--bg-input, #1e2130);
+  border: 1px solid var(--border-color, #2e3250);
+  border-radius: var(--radius-sm, 8px);
+  color: var(--text-primary, #e0e6ff);
+  font-size: 14px;
+  padding-left: 14px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  /* kill browser autocomplete / saved-info dropdown */
+  autocomplete: off;
+}
+
+.hw-combobox-input-wrap input[type="text"]:focus {
+  border-color: var(--primary, #6c63ff);
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+}
+
+/* clear / chevron icon */
+.hw-combobox-icon {
+  position: absolute;
+  right: 12px;
+  color: var(--text-secondary, #8890b5);
+  font-size: 18px;
+  pointer-events: none;
+  transition: transform 0.2s;
+}
+
+.hw-combobox.open .hw-combobox-icon {
+  transform: rotate(180deg);
+}
+
+/* hidden id storage */
+.hw-combobox-id {
+  display: none;
+}
+
+/* Dropdown list */
+.hw-combobox-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card, #161b2e);
+  border: 1px solid var(--border-color, #2e3250);
+  border-radius: var(--radius-sm, 8px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  max-height: 220px;
+  overflow-y: auto;
+  display: none;
+  animation: dropdownFade 0.15s ease;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hw-combobox.open .hw-combobox-dropdown {
+  display: block;
+}
+
+/* Scrollbar */
+.hw-combobox-dropdown::-webkit-scrollbar { width: 5px; }
+.hw-combobox-dropdown::-webkit-scrollbar-track { background: transparent; }
+.hw-combobox-dropdown::-webkit-scrollbar-thumb {
+  background: var(--border-hover, #3d4470);
+  border-radius: 4px;
+}
+
+/* Items */
+.hw-combobox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color, #2e3250);
+  transition: background 0.15s;
+}
+
+.hw-combobox-item:last-child {
+  border-bottom: none;
+}
+
+.hw-combobox-item:hover,
+.hw-combobox-item.highlighted {
+  background: rgba(108, 99, 255, 0.12);
+}
+
+.hw-combobox-item-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: rgba(108, 99, 255, 0.15);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary, #6c63ff);
+  font-size: 14px;
+}
+
+.hw-combobox-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.hw-combobox-item-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, #e0e6ff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hw-combobox-item-brand {
+  font-size: 11px;
+  color: var(--text-secondary, #8890b5);
+  margin-top: 2px;
+}
+
+/* Loading / empty states */
+.hw-combobox-status {
+  padding: 14px;
+  text-align: center;
+  color: var(--text-secondary, #8890b5);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.hw-combobox-status i {
+  font-size: 16px;
+}
+
+/* Selected chip shown below input (optional) */
+.hw-combobox-selected-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  background: rgba(108, 99, 255, 0.15);
+  border: 1px solid rgba(108, 99, 255, 0.35);
+  border-radius: 20px;
+  padding: 3px 10px 3px 8px;
+  font-size: 12px;
+  color: var(--primary, #6c63ff);
+  font-weight: 500;
+}
+
+.hw-combobox-selected-chip i {
+  font-size: 14px;
+}
+
+/* Override input type=text appearance to block browser "Saved info" */
+input.hw-combobox-text {
+  -webkit-appearance: none;
+}
