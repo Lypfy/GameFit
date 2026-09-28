@@ -190,6 +190,11 @@
 .tab-content:not(#tab-dashboard) .table-card {
   max-height: 480px;
   overflow-y: auto;
+  position: relative;
+  padding-top: 0;
+}
+.tab-content:not(#tab-dashboard) .table-header {
+  padding-top: 1.5rem;
 }
 
 /* Tiêu đề bảng cố định khi cuộn */

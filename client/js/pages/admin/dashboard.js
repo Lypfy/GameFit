@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initAdminTabs();
   initHardwareSubTabs();
   loadStatisticsTab();
+  loadTagsData();
 });
 
 function initAdminTabs() {
@@ -65,4 +66,46 @@ async function loadStatisticsTab() {
   } catch (err) {
     container.innerHTML = "<p>Không thể tải dữ liệu thống kê.</p>";
   }
+}
+// Gọi API lấy danh sách tag
+async function loadTagsData() {
+  try {
+    const response = await fetch("/api/tags");
+    const result = await response.json();
+    if (result.success) {
+      renderTagsTable(result.data);
+    } else {
+      console.error("Lỗi lấy danh sách tags:", result.message);
+    }
+  } catch (error) {
+    console.error("Lỗi khi gọi API tags:", error);
+  }
+}
+// Đổ dữ liệu vào tbody của bảng Tag
+function renderTagsTable(tags) {
+  const tbody = document.querySelector("#tab-genres table.data-table tbody");
+  if (!tbody) return;
+  if (!tags || tags.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align: center;">Chưa có tag nào trong hệ thống</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = tags
+    .map((tag) => {
+      return `
+    <tr>
+      <td>${tag.tag_id}</td>
+      <td class="text-highlight">${tag.name}</td>
+      <td class="text-highlight">${tag.soluonggame}</td>
+      <td class="text-right">
+        <button title="Sửa" class="btn-action btn-edit" data-id="${tag.tag_id}">
+          <i class="bx bx-edit"></i>
+        </button>
+        <button title="Xóa" class="btn-action btn-delete" data-id="${tag.tag_id}">
+          <i class="bx bx-trash"></i>
+        </button>
+      </td>
+    </tr>
+    `;
+    })
+    .join("");
 }
