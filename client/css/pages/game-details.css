@@ -1,0 +1,209 @@
+/* Trang Chi Tiết Game (Cảm hứng từ itch.io) */
+
+.game-details-container {
+  padding-top: 7rem; /* Tăng padding để không bị navbar che mất */
+  padding-bottom: 4rem;
+}
+
+/* Header Banner */
+.game-header-banner {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.game-header-banner h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  margin-bottom: 0.5rem;
+}
+
+.game-header-banner .gd-subtitle {
+  color: var(--main-color);
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+/* Top Section Layout */
+.gd-top-section {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2rem;
+  background: rgba(20, 18, 30, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+@media (min-width: 768px) {
+  .gd-top-section {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+/* Khối Nút Tải / Mua (Bên trái) */
+.gd-buy-box {
+  flex: 1;
+}
+
+.btn-buy-now {
+  display: inline-block;
+  background: #ff4757;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 12px 30px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+}
+
+.btn-buy-now:hover {
+  background: #ff6b81;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 71, 87, 0.6);
+}
+
+.gd-price {
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 600;
+  margin-left: 1rem;
+}
+
+.gd-buy-desc {
+  margin-top: 1.5rem;
+  color: #cbd5e1;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.gd-buy-desc strong {
+  color: #fff;
+}
+
+.gd-badges {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.gd-badge {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Khối Ảnh Cover (Bên phải) */
+.gd-cover-box {
+  flex: 1.5;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.gd-cover-box img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.gd-cover-box:hover img {
+  transform: scale(1.02);
+}
+
+/* Nội dung chính */
+.gd-main-content {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.gd-description h3, .gd-requirements-box h3 {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.gd-description p {
+  color: #94a3b8;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  white-space: pre-line;
+}
+
+/* Yêu cầu hệ thống */
+.gd-requirements-box {
+  margin-top: 3rem;
+}
+
+.req-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.req-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.req-card h4 {
+  color: var(--main-color);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-transform: capitalize;
+}
+
+.req-card ul {
+  list-style: none;
+}
+
+.req-card ul li {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  display: flex;
+}
+
+.req-card ul li strong {
+  color: #fff;
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.btn-back {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+
+.btn-back:hover {
+  background: rgba(255,255,255,0.2);
+}
