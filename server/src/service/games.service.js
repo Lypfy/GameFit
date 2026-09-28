@@ -45,22 +45,19 @@ const getGames = async (page = 1, limit = 20) => {
 
 const getGameDetail = async (game_id) => {
     try {
-        const request = new sql.Request(); 
-        
-        request.input('game_id', sql.Int, game_id);
-        const checkQuery = 'SELECT dbo.fn_CheckGameExist(@game_id) AS IsExist';
-        const checkResult = await request.query(checkQuery);
-        
-        if (!checkResult.recordset[0].IsExist) {
+        const request = new sql.Request();
+        request.input('game_id', game_id);
+        const checkGame = await request.query('SELECT dbo.fn_CheckGameExist(@game_id) AS IsExist');
+        if (!checkGame.recordset[0].IsExist) {
             return { success: false, message: 'Game không tồn tại trong hệ thống' };
         }
 
-        const query = 'SELECT * FROM dbo.fn_GetGameDetail(@game_id)';
-        const result = await request.query(query);
+        const query = 'SELECT * FROM fn_GetGameDetail(@game_id)'
+        const result = await request.query(query)
 
-        return { 
-            success: true, 
-            data: result.recordset 
+        return {
+            success: true,
+            data: result.recordset
         };
     }
     catch (error) {
@@ -68,4 +65,26 @@ const getGameDetail = async (game_id) => {
         throw new Error('Lỗi khi lấy thông tin chi tiết game');
     }
 }
-module.exports = { getGames, getGameDetail };
+
+const getGameRequirement = async (game_id) => {
+    try {
+        const request = new sql.Request();
+        request.input('game_id', game_id);
+
+        const checkGame = await request.query('SELECT dbo.fn_CheckGameExist(@game_id) AS IsExist');
+        if (!checkGame.recordset[0].IsExist) {
+            return { success: false, message: 'Cấu hình game không tồn tại trong hệ thống' };
+        }
+
+        const result = await request.query('SELECT * FROM dbo.fn_GetGameRequirementByID(@game_id)');
+        return {
+            success: true,
+            data: result.recordset
+        };
+    }
+    catch (error) {
+        console.log('Error in getGameRequirement Service: ', error.message)
+        throw new Error('Lỗi khi lấy thông tin cấu hình game');
+    }
+}
+module.exports = { getGames, getGameDetail, getGameRequirement };

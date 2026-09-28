@@ -23,31 +23,58 @@ const getGames = async (req, res) => {
 }
 const getGameDetail = async (req, res) => {
     try {
-        const { game_id } = req.params; 
-        
+        const { game_id } = req.params;
+
         if (!game_id) {
             return res.status(400).json({ success: false, message: 'Thiếu game_id không hợp lệ' });
         }
         const result = await gamesService.getGameDetail(game_id);
         if (!result.success) {
             return res.status(404).json({
-                success: false, 
+                success: false,
                 message: result.message || 'Lấy thông tin chi tiết game không thành công'
-            }); 
+            });
         }
         return res.status(200).json({
             success: true,
             message: 'Lấy thông tin chi tiết game thành công',
             data: result.data
         });
-    } 
+    }
     catch (error) {
         console.log('Error in getGameDetail Controller: ', error.message)
         return res.status(500).json({ success: false, message: 'Lỗi server khi lấy thông tin chi tiết game' });
     }
 }
 
+const getGameRequirement = async (req, res) => {
+    try {
+        const { game_id } = req.params;
+
+        if (!game_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu game_id không hợp lệ' });
+        }
+
+        const result = await gamesService.getGameRequirement(game_id);
+
+        if (!result.success && result.message) {
+            return res.status(404).json({ success: false, message: result.message });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Lấy thông tin cấu hình game thành công',
+            data: result.data
+        });
+    }
+    catch (error) {
+        console.log('Error in getGameRequirement Controller: ', error.message)
+        return res.status(500).json({ success: false, message: 'Lỗi server khi lấy thông tin cấu hình game' });
+    }
+}
+
 module.exports = {
     getGames,
-    getGameDetail
+    getGameDetail,
+    getGameRequirement
 }
