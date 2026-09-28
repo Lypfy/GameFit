@@ -1,7 +1,8 @@
 const tagsService = require("../service/tags.service");
 const getTags = async (req, res) => {
   try {
-    const tags = await tagsService.getTagsWithGameCount();
+    const search = req.query.search || "";
+    const tags = await tagsService.getTagsWithGameCount(search);
     return res.status(200).json({
       success: true,
       message: "Lấy danh sách Tag thành công",

@@ -1,15 +1,17 @@
 const { sql } = require("../config/db");
 // gọi fn lấy tags và số lượng game từ db
-const getTagsWithGameCount = async () => {
+const getTagsWithGameCount = async (search = "") => {
   try {
     const pool = await sql.connect();
-    const result = await pool
-      .request()
-      .query("SELECT * FROM dbo.fn_GetTagsWithGameCount()");
+    const request = pool.request();
+    request.input("search", sql.NVarChar, search);
+    const result = await request.query(
+      "SELECT * FROM dbo.fn_SearchTagsWithGameCount(@search)",
+    );
     return result.recordset;
   } catch (error) {
     console.error(
-      "Lỗi khi truy vấn dbo.fn_GetTagsWithGameCount():",
+      "Lỗi khi truy vấn dbo.fn_SearchTagsWithGameCount():",
       error.message,
     );
     throw error;

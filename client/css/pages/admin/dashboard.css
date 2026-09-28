@@ -193,6 +193,23 @@
   position: relative;
   padding-top: 0;
 }
+/* Scroll */
+.tab-content:not(#tab-dashboard) .table-card::-webkit-scrollbar {
+  width: 8px;
+}
+.tab-content:not(#tab-dashboard) .table-card::-webkit-scrollbar-track {
+  background: rgba(18, 16, 30, 0.6);
+  border-radius: 10px;
+}
+.tab-content:not(#tab-dashboard) .table-card::-webkit-scrollbar-thumb {
+  background: #3c375c;
+  border-radius: 10px;
+}
+/* Hỗ trợ trình duyệt Firefox */
+.tab-content:not(#tab-dashboard) .table-card {
+  scrollbar-width: thin;
+  scrollbar-color: #3c375c #211f34;
+}
 .tab-content:not(#tab-dashboard) .table-header {
   padding-top: 1.5rem;
 }

@@ -68,9 +68,11 @@ async function loadStatisticsTab() {
   }
 }
 // Gọi API lấy danh sách tag
-async function loadTagsData() {
+async function loadTagsData(search = "") {
   try {
-    const response = await fetch("/api/tags");
+    const response = await fetch(
+      `/api/tags?search=${encodeURIComponent(search)}`,
+    );
     const result = await response.json();
     if (result.success) {
       renderTagsTable(result.data);
@@ -109,3 +111,12 @@ function renderTagsTable(tags) {
     })
     .join("");
 }
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.querySelector("#tab-genres .table-search input");
+  if (searchInput) {
+    searchInput.addEventListener("input", function (e) {
+      const keyword = e.target.value.trim();
+      loadTagsData(keyword);
+    });
+  }
+});
