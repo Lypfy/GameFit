@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initHardwareSubTabs();
   loadStatisticsTab();
   loadTagsData();
+  initTagActions();
 });
 
 function initAdminTabs() {
@@ -111,12 +112,95 @@ function renderTagsTable(tags) {
     })
     .join("");
 }
-document.addEventListener("DOMContentLoaded", function () {
-  const searchInput = document.querySelector("#tab-genres .table-search input");
+// Hàm tagActions - Search - Add - Edit - Delete
+function initTagActions() {
+  const tabGenres = document.getElementById("tab-genres");
+  if (!tabGenres) return;
+  // Search
+  const searchInput = tabGenres.querySelector(".table-search input");
   if (searchInput) {
     searchInput.addEventListener("input", function (e) {
       const keyword = e.target.value.trim();
       loadTagsData(keyword);
     });
   }
-});
+  // Add
+  const addBtn = tabGenres.querySelector(".btn-add");
+  if (addBtn) {
+    addBtn.addEventListener("click", async function () {
+      const nameTag = prompt("Nhập tên tag:");
+      if (nameTag && nameTag.trim() !== "") {
+        try {
+          const res = await fetch("/api/tags", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: nameTag.trim(),
+            }),
+          });
+          const result = await res.json();
+          if (result.success) {
+            loadTagsData();
+          } else {
+            console.error("Lỗi thêm tag:", result.message);
+          }
+        } catch (error) {
+          console.error("Lỗi khi thêm tag:", error);
+        }
+      }
+    });
+  }
+  // Sửa, Xoá tag trong bản
+  const tbody = tabGenres.querySelector("table.data-table tbody");
+  if (tbody) {
+    tbody.addEventListener("click", async function (e) {
+      const btnEdit = e.target.closest(".btn-edit");
+      const btnDelete = e.target.closest(".btn-delete");
+      // sửa tag
+      if (btnEdit) {
+        const tagId = btnEdit.getAttribute("data-id");
+        const currentRow = btnEdit.closest("tr");
+        const currentName = currentRow.children[1].textContent.trim();
+        const newName = prompt("Nhập tên Tag mới:", currentName);
+        if (newName && newName.trim() !== "" && newName !== currentName) {
+          try {
+            const res = await fetch(`/api/tags/${tagId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name: newName.trim() }),
+            });
+            const result = await res.json();
+            if (result.success) {
+              alert("Cập nhật Tag thành công!");
+              loadTagsData();
+            } else {
+              alert(result.message);
+            }
+          } catch (err) {
+            alert("Lỗi kết nối khi sửa Tag!");
+          }
+        }
+      }
+      // xoá tag
+      if (btnDelete) {
+        const tagId = btnDelete.getAttribute("data-id");
+        if (confirm(`Bạn có chắc chắn muốn xóa Tag #${tagId} này không?`)) {
+          try {
+            const res = await fetch(`/api/tags/${tagId}`, { method: "DELETE" });
+            const result = await res.json();
+            if (result.success) {
+              alert("Xóa Tag thành công!");
+              loadTagsData();
+            } else {
+              alert(result.message);
+            }
+          } catch (err) {
+            alert("Lỗi kết nối khi xóa Tag!");
+          }
+        }
+      }
+    });
+  }
+}
