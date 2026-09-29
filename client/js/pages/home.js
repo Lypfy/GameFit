@@ -23,18 +23,17 @@ function renderPopularGames(games) {
 
         return `
     <div class="swiper-slide">
-      <div class="box" data-id="${gameIdStr}">
-        <img src="${game.image || '../assets/default-game.png'}" alt="${game.title || game.name}" />
+      <div class="box" data-id="${gameIdStr}" style="position: relative; cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <img src="${game.image || '../assets/default-game.png'}" alt="${game.name || game.title}" />
         ${bookmarkHtml}
         <div class="box-text">
-          <h2>${game.title || game.name}</h2>
-          <h3>${game.category || game.platform}</h3>
+          <h2 title="${game.name || game.title}">${game.name || game.title}</h2>
+          <h3>${game.platform || game.category || 'N/A'}</h3>
           <div class="rating-container">
             <div class="rating">
               <i class="bx bxs-star"></i>
               <span>${typeof game.rating === 'number' ? game.rating.toFixed(1) : (game.rating ? parseFloat(game.rating).toFixed(1) : '0.0')}</span>
             </div>
-            <a href="game-details.html?id=${gameIdStr}" class="box-btn">View</a>
           </div>
         </div>
       </div>
@@ -73,18 +72,17 @@ function renderCategorySections() {
             const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? 'Xóa khỏi Wishlist' : 'Thêm vào Wishlist'}" />`;
 
             return `
-        <div class="box" data-id="${gameIdStr}" style="position: relative;">
-          <img src="${game.image || '../assets/default-game.png'}" alt="${game.title || game.name}" />
+        <div class="box" data-id="${gameIdStr}" style="position: relative; cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="${game.image || '../assets/default-game.png'}" alt="${game.name || game.title}" />
           ${bookmarkHtml}
           <div class="box-text">
-            <h2>${game.title || game.name}</h2>
-            <h3>${game.category || game.platform}</h3>
+            <h2 title="${game.name || game.title}">${game.name || game.title}</h2>
+            <h3>${game.platform || game.category || 'N/A'}</h3>
             <div class="rating-container">
               <div class="rating">
                 <i class="bx bxs-star"></i>
                 <span>${typeof game.rating === 'number' ? game.rating.toFixed(1) : (game.rating ? parseFloat(game.rating).toFixed(1) : '0.0')}</span>
               </div>
-              <a href="game-details.html?id=${gameIdStr}" class="box-btn">View</a>
             </div>
           </div>
         </div>
@@ -229,6 +227,17 @@ document.addEventListener("DOMContentLoaded", async function () {
       } catch (error) {
         console.error("Lỗi toggle wishlist:", error);
       }
+      return;
+    }
+
+    const box = e.target.closest(".box");
+    if (box) {
+      e.preventDefault();
+      const gameId = box.getAttribute("data-id");
+      if (!gameId) return;
+
+      // Chuyển hướng sang trang chi tiết game mới
+      window.location.href = `game-details.html?id=${gameId}`;
     }
   });
 });

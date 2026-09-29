@@ -73,8 +73,62 @@ const getGameRequirement = async (req, res) => {
     }
 }
 
+const checkGameCompatibility = async (req, res) => {
+    try {
+        const user_id = req.user.user_id;
+        const { game_id, pc_id } = req.params;
+        const { type } = req.query;
+
+        if (!user_id) {
+            return res.status(400).json({
+                success: false,
+                message: 'Thiếu user_id hợp lệ'
+            });
+        }
+
+        if (!game_id) {
+            return res.status(400).json({
+                success: false,
+                message: 'Thiếu game_id hợp lệ'
+            });
+        }
+
+        if (!pc_id) {
+            return res.status(400).json({
+                success: false,
+                message: 'Thiếu pc_id hợp lệ'
+            });
+        }
+
+        const result = await gamesService.checkGameCompatibility(
+            user_id,
+            pc_id,
+            game_id,
+            type || 'MINIMUM'
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: 'Kiểm tra tương thích game thành công',
+            data: result.data
+        });
+    }
+    catch (error) {
+        console.log(
+            'Error in checkGameCompatibility Controller: ',
+            error.message
+        );
+
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi kiểm tra tương thích game'
+        });
+    }
+};
+
 module.exports = {
     getGames,
     getGameDetail,
-    getGameRequirement
+    getGameRequirement,
+    checkGameCompatibility
 }

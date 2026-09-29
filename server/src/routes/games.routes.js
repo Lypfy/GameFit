@@ -6,6 +6,6 @@ const { verifyToken } = require('../middleware/auth.middleware');
 router.get('/', gamesController.getGames);
 router.get('/:game_id', gamesController.getGameDetail);
 router.get('/:game_id/game_requirement', gamesController.getGameRequirement);
-router.get('/:game_id/compatibility/:pc_id', verifyToken, gameController.checkGameCompatibility);
+router.get('/:game_id/compatibility/:pc_id', verifyToken, gamesController.checkGameCompatibility);
 
 module.exports = router;
