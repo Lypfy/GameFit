@@ -259,3 +259,42 @@
   font-size: 1.1rem;
   pointer-events: none;
 }
+.tag-add-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tag-inline-input {
+  padding: 7px 12px;
+  background: rgba(27, 24, 43, 0.9);
+  border: 1px solid rgba(250, 83, 83, 0.5);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.tag-inline-input:focus {
+  border-color: var(--main-color);
+}
+.btn-action.btn-approve,
+.btn-action.btn-save-edit {
+  background: rgba(46, 204, 113, 0.2);
+  color: #2ecc71;
+}
+.btn-action.btn-approve:hover,
+.btn-action.btn-save-edit:hover {
+  background: #2ecc71;
+  color: #ffffff;
+}
+.btn-action.btn-cancel-edit,
+.btn-action.btn-cancel-add {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+.btn-action.btn-cancel-edit:hover,
+.btn-action.btn-cancel-add:hover {
+  background: #e74c3c;
+  color: #ffffff;
+}
