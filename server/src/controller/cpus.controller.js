@@ -125,9 +125,9 @@ const searchCPUByName = async (req, res) => {
         if (!name) {
             return res.status(400).json({ success: false, message: 'Vui lòng cung cấp tên CPU' });
         }
-        
+
         const result = await cpusService.searchCPUByName(name);
-        
+
         return res.status(200).json({
             success: true,
             message: 'Tìm kiếm CPU thành công',

@@ -7,6 +7,6 @@ router.get('/', gamesController.getGames);
 router.get('/tag/:tag_id', gamesController.getGameByTag);
 router.get('/:game_id', gamesController.getGameDetail);
 router.get('/:game_id/game_requirement', gamesController.getGameRequirement);
-router.get('/:game_id/compatibility/:pc_id', verifyToken, gamesController.checkGameCompatibility);
+router.get('/:game_id/compatibility', verifyToken, gamesController.checkGameCompatibility);
 
 module.exports = router;

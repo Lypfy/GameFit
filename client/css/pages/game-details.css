@@ -270,12 +270,15 @@
   display: flex;
   gap: 3px;
 }
+
 .star-display i {
   font-size: 1.3rem;
 }
+
 .star-display i.bxs-star {
   color: #ff4757;
 }
+
 .star-display i.bx-star {
   color: rgba(255, 71, 87, 0.3);
 }
@@ -387,6 +390,7 @@
   font-size: 3rem;
   color: rgba(255, 255, 255, 0.15);
 }
+
 .comments-empty p {
   color: var(--text-secondary, #8c97ab);
   font-size: 0.9rem;
@@ -440,12 +444,15 @@
   display: flex;
   gap: 2px;
 }
+
 .review-stars i {
   font-size: 0.85rem;
 }
+
 .review-stars i.bxs-star {
   color: #ff4757;
 }
+
 .review-stars i.bx-star {
   color: rgba(255, 71, 87, 0.3);
 }
@@ -486,6 +493,7 @@
   outline: none;
   border-color: var(--main-color);
 }
+
 .review-modal-card textarea::placeholder {
   color: var(--text-muted, #5e687e);
 }
@@ -506,4 +514,338 @@
 
 .star-pick.active {
   color: #ff4757;
+}
+
+
+/* --- CSS CHO MODAL KIỂM TRA CẤU HÌNH (GIAO DIỆN MỚI) --- */
+.cc-modal-card {
+  max-width: 950px !important;
+  width: 95% !important;
+  background: #0f172a !important;
+  /* Màu nền tối xanh đen */
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 0 !important;
+  overflow: hidden;
+  color: #f8fafc;
+}
+
+.cc-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 25px;
+  border-bottom: 1px solid #ff4757;
+  background: linear-gradient(90deg, rgba(255, 71, 87, 0.1) 0%, rgba(15, 23, 42, 0) 50%);
+}
+
+.cc-header-title {
+  display: flex;
+  gap: 15px;
+}
+
+.cc-header-title i {
+  font-size: 32px;
+  color: #ff4757;
+}
+
+.cc-header-title h3 {
+  margin: 0 0 5px 0;
+  font-size: 22px;
+}
+
+.cc-header-title p {
+  margin: 0;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.cc-modal-body {
+  display: flex;
+  height: 600px;
+}
+
+.cc-left-panel {
+  width: 38%;
+  background: #1e293b;
+  padding: 25px;
+  overflow-y: auto;
+  border-right: 1px solid #334155;
+}
+
+.cc-right-panel {
+  width: 62%;
+  padding: 25px;
+  overflow-y: auto;
+  background: #0f172a;
+}
+
+/* Cột Trái (Left Panel) */
+.cc-game-info {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.cc-game-info img {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ff4757;
+}
+
+.cc-game-title h4 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+}
+
+.cc-badge {
+  background: #334155;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.cc-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 20px 0;
+  font-size: 16px;
+}
+
+.cc-req-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 15px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.cc-req-item>i {
+  font-size: 24px;
+  color: #94a3b8;
+}
+
+.cc-req-info {
+  flex: 1;
+}
+
+.cc-req-info span {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.cc-req-info p {
+  margin: 2px 0 0 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.cc-req-badge {
+  background: #1e293b;
+  color: #64748b;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.cc-tip-box {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+  background: rgba(255, 193, 7, 0.05);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.cc-tip-box i {
+  color: #ffc107;
+  font-size: 20px;
+}
+
+.cc-tip-box p {
+  margin: 0;
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+/* Cột Phải (Right Panel) */
+.cc-right-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cc-btn-quick-compare {
+  background: transparent;
+  border: 1px solid #334155;
+  color: #94a3b8;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cc-pc-card {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  background: #1e293b;
+  border: 1px solid #ff4757;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.cc-pc-card:not(:first-child) {
+  border-color: #334155;
+}
+
+.cc-pc-img img {
+  width: 100px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.cc-pc-details {
+  flex: 1;
+}
+
+.cc-pc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cc-pc-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cc-pc-title h4 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.cc-match-badge {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cc-btn-recommend {
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cc-pc-subtitle {
+  color: #94a3b8;
+  font-size: 13px;
+  margin: 5px 0 15px 0;
+}
+
+.cc-pc-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.cc-spec-item {
+  display: flex;
+  gap: 10px;
+}
+
+.cc-spec-item i {
+  font-size: 20px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.cc-spec-item span {
+  font-size: 12px;
+  color: #94a3b8;
+  display: block;
+}
+
+.cc-spec-item p {
+  margin: 2px 0 0 0;
+  font-size: 13px;
+}
+
+.cc-spec-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.cc-pc-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.cc-btn-select {
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.cc-btn-select:hover {
+  background: #e84150;
+}
+
+.cc-btn-select.secondary {
+  background: transparent;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+}
+
+.cc-btn-select.secondary:hover {
+  background: #334155;
+  color: white;
+}
+
+#close-check-config-modal {
+  font-size: 36px;
+  line-height: 1;
+  color: #94a3b8;
+  transition: 0.2s;
+  /* Thêm 3 dòng dưới đây để bỏ ô vuông */
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+#close-check-config-modal:hover {
+  color: #ff4757;
+  /* Đổi sang màu đỏ khi rê chuột vào */
 }

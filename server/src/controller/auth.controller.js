@@ -59,13 +59,13 @@ const login = async (req, res) => {
 const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
-        
+
         if (!email) {
             return res.status(400).json({ success: false, message: 'Vui lòng cung cấp email của bạn' });
         }
 
         const result = await authService.forgotPassword(email);
-        
+
         if (!result.success) {
             return res.status(400).json(result);
         }
