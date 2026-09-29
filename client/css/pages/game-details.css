@@ -45,7 +45,9 @@
   }
 }
 
-.gd-buy-box { flex: 1; }
+.gd-buy-box {
+  flex: 1;
+}
 
 .btn-buy-now {
   display: inline-block;
@@ -59,7 +61,9 @@
   transition: background 0.2s;
 }
 
-.btn-buy-now:hover { background: #e03e4e; }
+.btn-buy-now:hover {
+  background: #e03e4e;
+}
 
 .gd-buy-desc {
   margin-top: 1.5rem;
@@ -68,7 +72,9 @@
   line-height: 1.6;
 }
 
-.gd-buy-desc strong { color: #fff; }
+.gd-buy-desc strong {
+  color: #fff;
+}
 
 .gd-badges {
   margin-top: 1.5rem;
@@ -109,6 +115,7 @@
 }
 
 .gd-description h3,
+.gd-tags-box h3,
 .gd-requirements-box h3 {
   font-size: 1.5rem;
   color: #fff;
@@ -125,8 +132,41 @@
   white-space: pre-line;
 }
 
+/* Tags Section */
+.gd-tags-box {
+  margin-top: 2rem;
+}
+
+.gd-tags-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0.5rem;
+}
+
+.detail-tag-badge {
+  background: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.detail-tag-badge:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
 /* System Requirements */
-.gd-requirements-box { margin-top: 3rem; }
+.gd-requirements-box {
+  margin-top: 3rem;
+}
 
 .req-grid {
   display: grid;
@@ -172,7 +212,9 @@
   transition: background 0.2s;
 }
 
-.btn-back:hover { background: rgba(255, 255, 255, 0.2); }
+.btn-back:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
 
 /* === REVIEW / RATING SECTION === */
 
@@ -210,7 +252,11 @@
   flex-shrink: 0;
 }
 
-.rating-info { display: flex; flex-direction: column; gap: 0.3rem; }
+.rating-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
 
 .rating-label {
   font-size: 0.72rem;
@@ -220,12 +266,25 @@
   text-transform: uppercase;
 }
 
-.star-display { display: flex; gap: 3px; }
-.star-display i          { font-size: 1.3rem; }
-.star-display i.bxs-star { color: #ff4757; }
-.star-display i.bx-star  { color: rgba(255, 71, 87, 0.3); }
+.star-display {
+  display: flex;
+  gap: 3px;
+}
+.star-display i {
+  font-size: 1.3rem;
+}
+.star-display i.bxs-star {
+  color: #ff4757;
+}
+.star-display i.bx-star {
+  color: rgba(255, 71, 87, 0.3);
+}
 
-.rating-score { display: flex; align-items: baseline; gap: 0.3rem; }
+.rating-score {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
 
 .rating-score span:first-child {
   font-size: 1.9rem;
@@ -234,7 +293,10 @@
   line-height: 1;
 }
 
-.rating-sep { font-size: 1rem; color: var(--text-secondary, #8c97ab); }
+.rating-sep {
+  font-size: 1rem;
+  color: var(--text-secondary, #8c97ab);
+}
 
 .review-count {
   display: flex;
@@ -244,7 +306,11 @@
   color: var(--text-secondary, #8c97ab);
 }
 
-.rating-card__right { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.rating-card__right {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
 
 .btn-write-review {
   display: inline-flex;
@@ -261,7 +327,9 @@
   transition: background 0.2s;
 }
 
-.btn-write-review:hover { background: #e03e4e; }
+.btn-write-review:hover {
+  background: #e03e4e;
+}
 
 .btn-edit-review {
   display: inline-flex;
@@ -278,7 +346,9 @@
   transition: border-color 0.2s;
 }
 
-.btn-edit-review:hover { border-color: rgba(255, 255, 255, 0.45); }
+.btn-edit-review:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+}
 
 /* Comments Section */
 .comments-section {
@@ -299,7 +369,10 @@
   color: #fff;
 }
 
-.comments-icon { font-size: 1.3rem; color: #ff4757; }
+.comments-icon {
+  font-size: 1.3rem;
+  color: #ff4757;
+}
 
 /* Empty State */
 .comments-empty {
@@ -310,8 +383,14 @@
   gap: 0.75rem;
 }
 
-.empty-chat-icon { font-size: 3rem; color: rgba(255, 255, 255, 0.15); }
-.comments-empty p { color: var(--text-secondary, #8c97ab); font-size: 0.9rem; }
+.empty-chat-icon {
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.15);
+}
+.comments-empty p {
+  color: var(--text-secondary, #8c97ab);
+  font-size: 0.9rem;
+}
 
 /* Review Card */
 .review-card {
@@ -321,7 +400,9 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.review-card:last-child { border-bottom: none; }
+.review-card:last-child {
+  border-bottom: none;
+}
 
 .review-avatar {
   width: 40px;
@@ -337,7 +418,9 @@
   flex-shrink: 0;
 }
 
-.review-body { flex: 1; }
+.review-body {
+  flex: 1;
+}
 
 .review-body__header {
   display: flex;
@@ -347,12 +430,25 @@
   flex-wrap: wrap;
 }
 
-.review-username { font-size: 0.9rem; font-weight: 700; color: #fff; }
+.review-username {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+}
 
-.review-stars { display: flex; gap: 2px; }
-.review-stars i          { font-size: 0.85rem; }
-.review-stars i.bxs-star { color: #ff4757; }
-.review-stars i.bx-star  { color: rgba(255, 71, 87, 0.3); }
+.review-stars {
+  display: flex;
+  gap: 2px;
+}
+.review-stars i {
+  font-size: 0.85rem;
+}
+.review-stars i.bxs-star {
+  color: #ff4757;
+}
+.review-stars i.bx-star {
+  color: rgba(255, 71, 87, 0.3);
+}
 
 .review-date {
   margin-left: auto;
@@ -360,10 +456,17 @@
   color: var(--text-muted, #5e687e);
 }
 
-.review-comment-text { font-size: 0.88rem; color: #94a3b8; line-height: 1.65; }
+.review-comment-text {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  line-height: 1.65;
+}
 
 /* Review Modal */
-.review-modal-card { max-width: 480px; width: 100%; }
+.review-modal-card {
+  max-width: 480px;
+  width: 100%;
+}
 
 .review-modal-card textarea {
   width: 100%;
@@ -379,11 +482,20 @@
   transition: border-color 0.2s;
 }
 
-.review-modal-card textarea:focus { outline: none; border-color: var(--main-color); }
-.review-modal-card textarea::placeholder { color: var(--text-muted, #5e687e); }
+.review-modal-card textarea:focus {
+  outline: none;
+  border-color: var(--main-color);
+}
+.review-modal-card textarea::placeholder {
+  color: var(--text-muted, #5e687e);
+}
 
 /* Star Picker */
-.star-picker { display: flex; gap: 6px; margin-top: 0.5rem; }
+.star-picker {
+  display: flex;
+  gap: 6px;
+  margin-top: 0.5rem;
+}
 
 .star-pick {
   font-size: 1.8rem;
@@ -392,4 +504,6 @@
   transition: color 0.15s;
 }
 
-.star-pick.active { color: #ff4757; }
+.star-pick.active {
+  color: #ff4757;
+}

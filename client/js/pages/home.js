@@ -7,39 +7,57 @@ let savedWishlistGameIds = new Set();
 let currentUser = null;
 let allGames = []; // Dữ liệu thật từ DB
 
+function getGameTagsHtml(game) {
+  if (!game.tags || game.tags.trim() === "") return "";
+  const tagArray = game.tags
+    .split(", ")
+    .map((t) => t.trim())
+    .filter(Boolean);
+  const maxDisplay = 3;
+  const displayTags = tagArray.slice(0, maxDisplay);
+  const remainingCount = tagArray.length - displayTags.length;
+  return `
+    <div class="game-tags-list" style="display: flex; gap: 4px; flex-wrap: wrap; margin: 6px 0;">
+      ${displayTags.map((tag) => `<span class="game-tag-badge">${tag}</span>`).join("")}
+      ${remainingCount > 0 ? `<span class="game-tag-badge more-tag">+${remainingCount}</span>` : ""}
+    </div>
+  `;
+}
+
 function renderPopularGames(games) {
   const swiperWrapper = document.querySelector(
     ".popular-content .swiper-wrapper",
   );
   if (!swiperWrapper) return;
   swiperWrapper.innerHTML = games
-    .map(
-      (game) => {
-        const gameIdStr = (game.game_id || game.id || '').toString();
-        const isSaved = savedWishlistGameIds.has(gameIdStr);
-        const bookmarkIcon = isSaved ? '../assets/yellow_bookmarks.png' : '../assets/white_bookmarks.png';
-        const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? 'Xóa khỏi Wishlist' : 'Thêm vào Wishlist'}" />`;
+    .map((game) => {
+      const gameIdStr = (game.game_id || game.id || "").toString();
+      const isSaved = savedWishlistGameIds.has(gameIdStr);
+      const bookmarkIcon = isSaved
+        ? "../assets/yellow_bookmarks.png"
+        : "../assets/white_bookmarks.png";
+      const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}" />`;
 
-        return `
+      return `
     <div class="swiper-slide">
       <div class="box" data-id="${gameIdStr}" style="position: relative; cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-        <img src="${game.image || '../assets/default-game.png'}" alt="${game.name || game.title}" />
+        <img src="${game.image || "../assets/default-game.png"}" alt="${game.name || game.title}" />
         ${bookmarkHtml}
         <div class="box-text">
           <h2 title="${game.name || game.title}">${game.name || game.title}</h2>
-          <h3>${game.platform || game.category || 'N/A'}</h3>
+          <h3>${game.platform || game.category || ""}</h3>
+          ${getGameTagsHtml(game)}
           <div class="rating-container">
             <div class="rating">
               <i class="bx bxs-star"></i>
-              <span>${typeof game.rating === 'number' ? game.rating.toFixed(1) : (game.rating ? parseFloat(game.rating).toFixed(1) : '0.0')}</span>
+              <span>${typeof game.rating === "number" ? game.rating.toFixed(1) : game.rating ? parseFloat(game.rating).toFixed(1) : "0.0"}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
   `;
-      }
-    )
+    })
     .join("");
 }
 
@@ -55,7 +73,7 @@ function renderCategorySections() {
       // Lấy danh sách game thuộc thể loại này (lấy tối đa 4 game)
       const filtered = allGames
         .filter((game) => {
-          const gameCat = game.category || game.platform || '';
+          const gameCat = game.category || game.platform || "";
           return gameCat.toLowerCase().includes(cat.filterKey.toLowerCase());
         })
         .slice(0, 4);
@@ -63,31 +81,32 @@ function renderCategorySections() {
       if (filtered.length === 0) return "";
 
       const gameCardsHtml = filtered
-        .map(
-          (game) => {
-            const gameIdStr = (game.game_id || game.id || '').toString();
-            const isSaved = savedWishlistGameIds.has(gameIdStr);
-            const bookmarkIcon = isSaved ? '../assets/yellow_bookmarks.png' : '../assets/white_bookmarks.png';
-            const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? 'Xóa khỏi Wishlist' : 'Thêm vào Wishlist'}" />`;
+        .map((game) => {
+          const gameIdStr = (game.game_id || game.id || "").toString();
+          const isSaved = savedWishlistGameIds.has(gameIdStr);
+          const bookmarkIcon = isSaved
+            ? "../assets/yellow_bookmarks.png"
+            : "../assets/white_bookmarks.png";
+          const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}" />`;
 
-            return `
+          return `
         <div class="box" data-id="${gameIdStr}" style="position: relative; cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-          <img src="${game.image || '../assets/default-game.png'}" alt="${game.name || game.title}" />
+          <img src="${game.image || "../assets/default-game.png"}" alt="${game.name || game.title}" />
           ${bookmarkHtml}
           <div class="box-text">
             <h2 title="${game.name || game.title}">${game.name || game.title}</h2>
-            <h3>${game.platform || game.category || 'N/A'}</h3>
+            <h3>${game.platform || game.category || ""}</h3>
+            ${getGameTagsHtml(game)}
             <div class="rating-container">
               <div class="rating">
                 <i class="bx bxs-star"></i>
-                <span>${typeof game.rating === 'number' ? game.rating.toFixed(1) : (game.rating ? parseFloat(game.rating).toFixed(1) : '0.0')}</span>
+                <span>${typeof game.rating === "number" ? game.rating.toFixed(1) : game.rating ? parseFloat(game.rating).toFixed(1) : "0.0"}</span>
               </div>
             </div>
           </div>
         </div>
       `;
-          }
-        )
+        })
         .join("");
 
       return `
@@ -118,7 +137,9 @@ async function fetchAndRenderActionGames() {
     const actionTagId = 1; // Theo chỉ định, tag_id của Action là 1
 
     // Lấy game theo tag
-    const gamesRes = await fetch(`http://localhost:5000/api/games/tag/${actionTagId}`);
+    const gamesRes = await fetch(
+      `http://localhost:5000/api/games/tag/${actionTagId}`,
+    );
     const gamesData = await gamesRes.json();
 
     if (gamesData.success && gamesData.data.length > 0) {
@@ -128,20 +149,23 @@ async function fetchAndRenderActionGames() {
         .map((game) => {
           const gameIdStr = (game.game_id || game.id || "").toString();
           const isSaved = savedWishlistGameIds.has(gameIdStr);
-          const bookmarkIcon = isSaved ? "../assets/yellow_bookmarks.png" : "../assets/white_bookmarks.png";
-          const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? 'Xóa khỏi Wishlist' : 'Thêm vào Wishlist'}" />`;
+          const bookmarkIcon = isSaved
+            ? "../assets/yellow_bookmarks.png"
+            : "../assets/white_bookmarks.png";
+          const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}" />`;
 
           return `
         <div class="box" data-id="${gameIdStr}" style="position: relative; cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-          <img src="${game.image || '../assets/default-game.png'}" alt="${game.name || game.title}" />
+          <img src="${game.image || "../assets/default-game.png"}" alt="${game.name || game.title}" />
           ${bookmarkHtml}
           <div class="box-text">
             <h2 title="${game.name || game.title}">${game.name || game.title}</h2>
-            <h3>${game.platform || game.category || 'N/A'}</h3>
+            <h3>${game.platform || game.category || ""}</h3>
+            ${getGameTagsHtml(game)}
             <div class="rating-container">
               <div class="rating">
                 <i class="bx bxs-star"></i>
-                <span>${typeof game.rating === 'number' ? game.rating.toFixed(1) : (game.rating ? parseFloat(game.rating).toFixed(1) : '0.0')}</span>
+                <span>${typeof game.rating === "number" ? game.rating.toFixed(1) : game.rating ? parseFloat(game.rating).toFixed(1) : "0.0"}</span>
               </div>
             </div>
           </div>
@@ -167,7 +191,7 @@ async function fetchAndRenderActionGames() {
         </section>
       `;
 
-      container.insertAdjacentHTML('afterbegin', sectionHtml);
+      container.insertAdjacentHTML("afterbegin", sectionHtml);
     }
   } catch (error) {
     console.error("Lỗi khi fetch Action games by tag:", error);
@@ -178,10 +202,14 @@ async function fetchUserWishlist() {
   if (currentUser) {
     try {
       const userId = currentUser.id || currentUser.user_id;
-      const response = await fetch(`http://localhost:5000/api/wishlist/${userId}`);
+      const response = await fetch(
+        `http://localhost:5000/api/wishlist/${userId}`,
+      );
       const result = await response.json();
       if (result.success) {
-        savedWishlistGameIds = new Set(result.data.map(g => (g.game_id || g.id).toString()));
+        savedWishlistGameIds = new Set(
+          result.data.map((g) => (g.game_id || g.id).toString()),
+        );
       }
     } catch (error) {
       console.error("Lỗi fetch wishlist:", error);
@@ -199,12 +227,12 @@ async function fetchAllGames() {
   } catch (error) {
     console.error("Lỗi fetch games:", error);
     // Fallback: dùng mảng tĩnh nếu API sập
-    if (typeof gamesData !== 'undefined') allGames = gamesData;
+    if (typeof gamesData !== "undefined") allGames = gamesData;
   }
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
-  currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+  currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
 
   await fetchAllGames();
   await fetchUserWishlist();
@@ -253,7 +281,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       e.preventDefault();
       e.stopPropagation();
       if (!currentUser) {
-        if (typeof showToast === 'function') {
+        if (typeof showToast === "function") {
           showToast("Vui lòng đăng nhập để lưu game", "error");
         } else {
           alert("Vui lòng đăng nhập để lưu game");
@@ -267,25 +295,30 @@ document.addEventListener("DOMContentLoaded", async function () {
       const isSaved = savedWishlistGameIds.has(gameId);
 
       try {
-        const method = isSaved ? 'DELETE' : 'POST';
-        const response = await fetch(`http://localhost:5000/api/wishlist/${userId}`, {
-          method: method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ game_id: gameId })
-        });
+        const method = isSaved ? "DELETE" : "POST";
+        const response = await fetch(
+          `http://localhost:5000/api/wishlist/${userId}`,
+          {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ game_id: gameId }),
+          },
+        );
         const result = await response.json();
 
         if (result.success) {
           if (isSaved) {
             savedWishlistGameIds.delete(gameId);
-            e.target.src = '../assets/white_bookmarks.png';
-            e.target.title = 'Thêm vào Wishlist';
-            if (typeof showToast === 'function') showToast("Đã xóa khỏi Wishlist", "success");
+            e.target.src = "../assets/white_bookmarks.png";
+            e.target.title = "Thêm vào Wishlist";
+            if (typeof showToast === "function")
+              showToast("Đã xóa khỏi Wishlist", "success");
           } else {
             savedWishlistGameIds.add(gameId);
-            e.target.src = '../assets/yellow_bookmarks.png';
-            e.target.title = 'Xóa khỏi Wishlist';
-            if (typeof showToast === 'function') showToast("Đã thêm vào Wishlist", "success");
+            e.target.src = "../assets/yellow_bookmarks.png";
+            e.target.title = "Xóa khỏi Wishlist";
+            if (typeof showToast === "function")
+              showToast("Đã thêm vào Wishlist", "success");
           }
         }
       } catch (error) {
