@@ -11,15 +11,12 @@ const getGames = async (page = 1, limit = 20) => {
     const countQuery = `SELECT dbo.fn_TotalGames() AS totalItems;`;
 
     try {
-        // 3. Thực thi query
-        const pool = await sql.connect(); // Đảm bảo bạn gọi connection pool của bạn ở đây
+        const pool = await sql.connect();
         const request = pool.request();
 
-        // Truyền tham số an toàn
         request.input('offset', sql.Int, offset);
         request.input('limit', sql.Int, limit);
 
-        // Chạy song song 2 query để tối ưu thời gian (Lấy data và đếm tổng)
         const [gamesResult, countResult] = await Promise.all([
             request.query(query),
             pool.request().query(countQuery)
@@ -28,26 +25,7 @@ const getGames = async (page = 1, limit = 20) => {
         const totalItems = countResult.recordset[0].totalItems;
 
         const games = gamesResult.recordset;
-        
-        // Lấy điểm trung bình cho từng game
-        for (let game of games) {
-            const gameId = game.game_id || game.id;
-            if (gameId) {
-                const r = pool.request();
-                r.input('game_id', sql.Int, gameId);
-                try {
-                    const ratingRes = await r.query('SELECT dbo.fn_GetAverageRating(@game_id) AS avgRating');
-                    const avg = ratingRes.recordset[0].avgRating;
-                    game.rating = avg !== null ? Number(avg) : 0;
-                } catch (e) {
-                    game.rating = 0;
-                }
-            } else {
-                game.rating = 0;
-            }
-        }
 
-        // Trả về cấu trúc JSON đẹp cho Controller
         return {
             data: games,
             pagination: {
@@ -107,4 +85,49 @@ const getGameRequirement = async (game_id) => {
         throw new Error('Lỗi khi lấy thông tin cấu hình game');
     }
 }
-module.exports = { getGames, getGameDetail, getGameRequirement };
+
+const checkGameCompatibility = async (user_id, pc_id, game_id, type) => {
+    try {
+        const request = new sql.Request();
+
+        request.input('user_id', sql.Int, user_id);
+        request.input('pc_id', sql.Int, pc_id);
+        request.input('game_id', sql.Int, game_id);
+        request.input('type', sql.VarChar(20), type);
+
+        const result = await request.execute('sp_CheckGameCompatibility');
+
+        return {
+            success: true,
+            data: result.recordset
+        };
+    }
+    catch (error) {
+        console.log(
+            'Error in checkGameCompatibility Service: ',
+            error.message
+        );
+
+        throw new Error(error.message);
+    }
+}
+
+const getGameByTag = async (tag_id) => {
+    try {
+        const pool = await sql.connect();
+        const request = pool.request();
+        request.input('tag_id', sql.Int, tag_id);
+
+        const result = await request.query('SELECT * FROM dbo.fn_GetGamesByTag(@tag_id)');
+
+        return {
+            success: true,
+            data: result.recordset
+        };
+    } catch (error) {
+        console.error("Lỗi khi lấy game theo tag:", error);
+        throw error;
+    }
+};
+
+module.exports = { getGames, getGameDetail, getGameRequirement, checkGameCompatibility, getGameByTag };

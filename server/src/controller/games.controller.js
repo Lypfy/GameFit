@@ -100,12 +100,7 @@ const checkGameCompatibility = async (req, res) => {
             });
         }
 
-        const result = await gamesService.checkGameCompatibility(
-            user_id,
-            pc_id,
-            game_id,
-            type || 'MINIMUM'
-        );
+        const result = await gameService.checkGameCompatibility(user_id, pc_id, game_id, type || 'MINIMUM');
 
         return res.status(200).json({
             success: true,
@@ -114,21 +109,39 @@ const checkGameCompatibility = async (req, res) => {
         });
     }
     catch (error) {
-        console.log(
-            'Error in checkGameCompatibility Controller: ',
-            error.message
-        );
-
-        return res.status(400).json({
-            success: false,
-            message: error.message || 'Lỗi server khi kiểm tra tương thích game'
-        });
+        console.log('Error in checkGameCompatibility Controller: ', error.message);
+        return res.status(400).json({ success: false, message: error.message || 'Lỗi server khi kiểm tra tương thích game' });
     }
 };
+
+const getGameByTag = async (req, res) => {
+    try {
+        const { tag_id } = req.params;
+
+        if (!tag_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu tag_id không hợp lệ' });
+        }
+
+        const result = await gamesService.getGameByTag(tag_id);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Lấy danh sách game theo tag thành công',
+            data: result.data
+        });
+    }
+    catch (error) {
+        console.log('Error in getGameByTag Controller: ', error.message);
+        return res.status(500).json({ success: false, message: 'Lỗi server khi lấy thông tin game theo tag' });
+    }
+}
 
 module.exports = {
     getGames,
     getGameDetail,
     getGameRequirement,
-    checkGameCompatibility
-}
+    checkGameCompatibility,
+    getGameByTag
+};
+
+
