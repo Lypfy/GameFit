@@ -116,6 +116,6 @@
 
 .new-content {
   display: grid;
-  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  grid-template-columns: repeat(5, minmax(194px, 1fr));
   gap: 1.25rem;
 }

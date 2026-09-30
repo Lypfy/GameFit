@@ -15,7 +15,7 @@ function renderGames(gamesList) {
       const bookmarkIcon = isSaved
         ? "../assets/yellow_bookmarks.png"
         : "../assets/white_bookmarks.png";
-      const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}" />`;
+      const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" loading="lazy" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}" />`;
       // Xử lý Tags (Giữ độ cao cố định 1 dòng)
       const tagString = game.tags || "";
       const tagArray = tagString
@@ -33,7 +33,7 @@ function renderGames(gamesList) {
       const tagsHtml = `<div class="game-tags-list">${tagsContent}</div>`;
       return `
     <div class="box" data-id="${gameIdStr}" style="position: relative; cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-      <img src="${game.image || "../assets/default-game.png"}" alt="${game.name || game.title}" />
+      <img src="${game.image || "../assets/default-game.png"}" loading="lazy" alt="${game.name || game.title}" />
       ${bookmarkHtml}
       <div class="box-text">
         <h2 title="${game.name || game.title}">${game.name || game.title}</h2>

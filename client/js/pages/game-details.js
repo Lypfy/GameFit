@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       ? "../assets/yellow_bookmarks.png"
       : "../assets/white_bookmarks.png";
     document.getElementById("gd-wishlist-container").innerHTML = `
-      <img src="${bookmarkIcon}" class="wishlist-btn" id="gd-wishlist-btn" data-game-id="${gameIdStr}" style="width: 32px; height: 32px; cursor: pointer; vertical-align: middle; margin-left: 10px;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}" />
+      <img src="${bookmarkIcon}" class="wishlist-btn" loading="lazy" id="gd-wishlist-btn" data-game-id="${gameIdStr}" style="width: 32px; height: 32px; cursor: pointer; vertical-align: middle; margin-left: 10px;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}" />
     `;
 
     // Cập nhật Mô tả
@@ -215,26 +215,34 @@ document.addEventListener("click", async (e) => {
     // Lấy Tối thiểu hay Đề xuất và lưu vào modal để lát lấy ra dùng
     const reqCard = checkBtn.closest(".req-card");
     const reqTypeRaw = reqCard.querySelector("h4").innerText;
-    const reqType = reqTypeRaw.toLowerCase().includes("minimum") ? "MINIMUM" : "RECOMMENDED";
+    const reqType = reqTypeRaw.toLowerCase().includes("minimum")
+      ? "MINIMUM"
+      : "RECOMMENDED";
     modal.dataset.reqType = reqType; // <--- Lưu type vào modal
 
     const reqItems = reqCard.querySelectorAll("ul li");
     let reqs = {};
-    reqItems.forEach(li => {
-      const key = li.querySelector("strong").innerText.replace(":", "").trim().toLowerCase();
+    reqItems.forEach((li) => {
+      const key = li
+        .querySelector("strong")
+        .innerText.replace(":", "")
+        .trim()
+        .toLowerCase();
       const val = li.querySelector("span").innerText.trim();
       reqs[key] = val;
     });
 
-    document.getElementById("cc-game-name").innerText = document.getElementById("gd-title").innerText;
-    document.getElementById("cc-game-img").src = document.getElementById("gd-cover-img").src;
+    document.getElementById("cc-game-name").innerText =
+      document.getElementById("gd-title").innerText;
+    document.getElementById("cc-game-img").src =
+      document.getElementById("gd-cover-img").src;
 
     document.getElementById("cc-req-list").innerHTML = `
-      <div class="cc-req-item"><i class="bx bxl-windows"></i><div class="cc-req-info"><span>OS</span><p>${reqs.os || 'N/A'}</p></div></div>
-      <div class="cc-req-item"><i class="bx bx-chip"></i><div class="cc-req-info"><span>CPU</span><p>${reqs.cpu || 'N/A'}</p></div></div>
-      <div class="cc-req-item"><i class="bx bx-video"></i><div class="cc-req-info"><span>GPU</span><p>${reqs.gpu || 'N/A'}</p></div></div>
-      <div class="cc-req-item"><i class="bx bx-memory-card"></i><div class="cc-req-info"><span>RAM</span><p>${reqs.ram ? reqs.ram + (reqs.ram.includes('GB') ? '' : ' GB') : 'N/A'}</p></div></div>
-      <div class="cc-req-item"><i class="bx bx-hdd"></i><div class="cc-req-info"><span>Storage</span><p>${reqs.storage ? reqs.storage + (reqs.storage.includes('GB') ? '' : ' GB') : 'N/A'}</p></div></div>
+      <div class="cc-req-item"><i class="bx bxl-windows"></i><div class="cc-req-info"><span>OS</span><p>${reqs.os || "N/A"}</p></div></div>
+      <div class="cc-req-item"><i class="bx bx-chip"></i><div class="cc-req-info"><span>CPU</span><p>${reqs.cpu || "N/A"}</p></div></div>
+      <div class="cc-req-item"><i class="bx bx-video"></i><div class="cc-req-info"><span>GPU</span><p>${reqs.gpu || "N/A"}</p></div></div>
+      <div class="cc-req-item"><i class="bx bx-memory-card"></i><div class="cc-req-info"><span>RAM</span><p>${reqs.ram ? reqs.ram + (reqs.ram.includes("GB") ? "" : " GB") : "N/A"}</p></div></div>
+      <div class="cc-req-item"><i class="bx bx-hdd"></i><div class="cc-req-info"><span>Storage</span><p>${reqs.storage ? reqs.storage + (reqs.storage.includes("GB") ? "" : " GB") : "N/A"}</p></div></div>
     `;
 
     // --- XỬ LÝ CỘT PHẢI (Danh sách máy của User) ---
@@ -246,14 +254,19 @@ document.addEventListener("click", async (e) => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch('/api/computer-config', {
+      const response = await fetch("/api/computer-config", {
         method: "GET",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
       const result = await response.json();
 
       if (result.success && result.data && result.data.length > 0) {
-        listContainer.innerHTML = result.data.map(config => `
+        listContainer.innerHTML = result.data
+          .map(
+            (config) => `
           <div class="cc-pc-card">
             <div class="cc-pc-img">
               <img src="https://cdn-icons-png.flaticon.com/512/3082/3082383.png" alt="PC">
@@ -261,17 +274,17 @@ document.addEventListener("click", async (e) => {
             <div class="cc-pc-details">
               <div class="cc-pc-header">
                 <div class="cc-pc-title">
-                  <h4>${config.pc_name || 'Máy tính của tôi'}</h4>
+                  <h4>${config.pc_name || "Máy tính của tôi"}</h4>
                 </div>
               </div>
-              <p class="cc-pc-subtitle">PC Gaming - ${config.ram ? config.ram + 'GB' : 'N/A'} RAM</p>
+              <p class="cc-pc-subtitle">PC Gaming - ${config.ram ? config.ram + "GB" : "N/A"} RAM</p>
               
               <div class="cc-pc-specs">
-                <div class="cc-spec-item"><i class="bx bxl-windows"></i><div><span>OS</span><p>${config.os || 'N/A'}</p></div></div>
-                <div class="cc-spec-item"><i class="bx bx-memory-card"></i><div><span>RAM</span><p>${config.ram ? config.ram + 'GB' : 'N/A'}</p></div></div>
-                <div class="cc-spec-item"><i class="bx bx-chip"></i><div><span>CPU</span><p>${config.cpu_name || 'N/A'}</p></div></div>
-                <div class="cc-spec-item"><i class="bx bx-hdd"></i><div><span>Storage</span><p>${config.storage ? config.storage + 'GB SSD' : 'N/A'}</p></div></div>
-                <div class="cc-spec-item full-width"><i class="bx bx-video"></i><div><span>GPU</span><p>${config.gpu_name || 'N/A'}</p></div></div>
+                <div class="cc-spec-item"><i class="bx bxl-windows"></i><div><span>OS</span><p>${config.os || "N/A"}</p></div></div>
+                <div class="cc-spec-item"><i class="bx bx-memory-card"></i><div><span>RAM</span><p>${config.ram ? config.ram + "GB" : "N/A"}</p></div></div>
+                <div class="cc-spec-item"><i class="bx bx-chip"></i><div><span>CPU</span><p>${config.cpu_name || "N/A"}</p></div></div>
+                <div class="cc-spec-item"><i class="bx bx-hdd"></i><div><span>Storage</span><p>${config.storage ? config.storage + "GB SSD" : "N/A"}</p></div></div>
+                <div class="cc-spec-item full-width"><i class="bx bx-video"></i><div><span>GPU</span><p>${config.gpu_name || "N/A"}</p></div></div>
               </div>
               
               <div class="cc-pc-action">
@@ -281,11 +294,12 @@ document.addEventListener("click", async (e) => {
               </div>
             </div>
           </div>
-        `).join('');
+        `,
+          )
+          .join("");
       } else {
         listContainer.innerHTML = `<div style="text-align: center; padding: 40px;"><i class="bx bx-desktop" style="font-size: 40px; color: #94a3b8;"></i><p>Bạn chưa thêm cấu hình máy tính nào.</p></div>`;
       }
-
     } catch (error) {
       listContainer.innerHTML = `<p style="text-align: center; color: #ff6b6b;">Lỗi kết nối khi lấy dữ liệu cấu hình.</p>`;
     }
@@ -296,7 +310,9 @@ document.addEventListener("click", async (e) => {
   if (selectBtn) {
     const pcId = selectBtn.getAttribute("data-pc-id");
     const gameId = new URLSearchParams(window.location.search).get("id");
-    const reqType = document.getElementById("check-config-modal").dataset.reqType || "MINIMUM";
+    const reqType =
+      document.getElementById("check-config-modal").dataset.reqType ||
+      "MINIMUM";
 
     // Hiệu ứng đang tải (Loading) trên nút
     const originalText = selectBtn.innerHTML;
@@ -305,10 +321,13 @@ document.addEventListener("click", async (e) => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`/api/games/${gameId}/compatibility?pc_id=${pcId}&type=${reqType}`, {
-        method: "GET",
-        headers: { "Authorization": `Bearer ${token}` }
-      });
+      const response = await fetch(
+        `/api/games/${gameId}/compatibility?pc_id=${pcId}&type=${reqType}`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       const result = await response.json();
 
       selectBtn.innerHTML = originalText;
@@ -323,16 +342,22 @@ document.addEventListener("click", async (e) => {
     } catch (error) {
       selectBtn.innerHTML = originalText;
       selectBtn.disabled = false;
-      showResultPopup("error", "Lỗi hệ thống", "Lỗi kết nối khi phân tích cấu hình.");
+      showResultPopup(
+        "error",
+        "Lỗi hệ thống",
+        "Lỗi kết nối khi phân tích cấu hình.",
+      );
     }
   }
 
   // 3. Đóng modal
-  if (e.target.id === "close-check-config-modal" || e.target.id === "check-config-overlay") {
+  if (
+    e.target.id === "close-check-config-modal" ||
+    e.target.id === "check-config-overlay"
+  ) {
     document.getElementById("check-config-modal").classList.remove("active");
   }
 });
-
 
 // --- HÀM VẼ POPUP THÔNG BÁO KẾT QUẢ ---
 function showResultPopup(type, title, message) {
@@ -342,7 +367,8 @@ function showResultPopup(type, title, message) {
   const msgEl = document.getElementById("result-message");
 
   if (type === "success") {
-    icon.innerHTML = '<i class="bx bxs-check-circle" style="color: #4ade80;"></i>';
+    icon.innerHTML =
+      '<i class="bx bxs-check-circle" style="color: #4ade80;"></i>';
     titleEl.style.color = "#4ade80"; // Màu xanh lá
   } else {
     icon.innerHTML = '<i class="bx bxs-x-circle" style="color: #ff4757;"></i>';
@@ -363,10 +389,12 @@ function showResultPopup(type, title, message) {
   modal.classList.add("active");
 }
 
-
 // Xử lý đóng Popup Thông báo
 document.addEventListener("click", (e) => {
-  if (e.target.id === "close-result-modal" || e.target.id === "result-overlay") {
+  if (
+    e.target.id === "close-result-modal" ||
+    e.target.id === "result-overlay"
+  ) {
     document.getElementById("result-modal").classList.remove("active");
   }
 });
