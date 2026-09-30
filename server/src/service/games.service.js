@@ -41,26 +41,27 @@ const getGames = async (page = 1, limit = 20) => {
     }
 };
 
-const getGameDetail = async (game_id) => {
+const getFullGameDetail = async (game_id) => {
     try {
-        const request = new sql.Request();
-        request.input('game_id', game_id);
-        const checkGame = await request.query('SELECT dbo.fn_CheckGameExist(@game_id) AS IsExist');
-        if (!checkGame.recordset[0].IsExist) {
-            return { success: false, message: 'Game không tồn tại trong hệ thống' };
-        }
+        const pool = await sql.connect();
+        const request = pool.request();
+        request.input('game_id', sql.Int, game_id);
 
-        const query = 'SELECT * FROM fn_GetGameDetail(@game_id)'
-        const result = await request.query(query)
+        const [gameInfoResult, reqInfoResult] = await Promise.all([
+            request.query('SELECT * FROM fn_GetGameDetail(@game_id)'),
+            request.query('SELECT * FROM fn_GetGameRequirementByID(@game_id)')
+        ]);
 
         return {
             success: true,
-            data: result.recordset
+            data: {
+                info: gameInfoResult.recordset[0],
+                requirements: reqInfoResult.recordset
+            }
         };
-    }
-    catch (error) {
-        console.log('Error in getGameDetail Service: ', error.message)
-        throw new Error('Lỗi khi lấy thông tin chi tiết game');
+    } catch (error) {
+        console.error('Error in getFullGameDetail:', error);
+        throw new Error('Lỗi khi lấy thông tin chi tiết game đầy đủ');
     }
 }
 
@@ -69,10 +70,10 @@ const getGameRequirement = async (game_id) => {
         const request = new sql.Request();
         request.input('game_id', game_id);
 
-        const checkGame = await request.query('SELECT dbo.fn_CheckGameExist(@game_id) AS IsExist');
-        if (!checkGame.recordset[0].IsExist) {
-            return { success: false, message: 'Cấu hình game không tồn tại trong hệ thống' };
-        }
+        // const checkGame = await request.query('SELECT dbo.fn_CheckGameExist(@game_id) AS IsExist');
+        // if (!checkGame.recordset[0].IsExist) {
+        //     return { success: false, message: 'Cấu hình game không tồn tại trong hệ thống' };
+        // }
 
         const result = await request.query('SELECT * FROM dbo.fn_GetGameRequirementByID(@game_id)');
         return {
@@ -130,4 +131,4 @@ const getGameByTag = async (tag_id) => {
     }
 };
 
-module.exports = { getGames, getGameDetail, getGameRequirement, checkGameCompatibility, getGameByTag };
+module.exports = { getGames, getFullGameDetail, getGameRequirement, checkGameCompatibility, getGameByTag };
