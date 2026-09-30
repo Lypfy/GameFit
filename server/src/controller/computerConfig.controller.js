@@ -99,6 +99,7 @@ const deleteComputerConfig = async (req, res) => {
     }
 }
 
+
 module.exports = {
     getComputerConfig,
     addComputerConfig,

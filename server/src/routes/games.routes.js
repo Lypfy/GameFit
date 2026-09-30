@@ -8,5 +8,8 @@ router.get('/tag/:tag_id', gamesController.getGameByTag);
 router.get('/:game_id/full_detail', gamesController.getFullGameDetail);
 router.get('/:game_id/game_requirement', gamesController.getGameRequirement);
 router.get('/:game_id/compatibility', verifyToken, gamesController.checkGameCompatibility);
+router.post('/add', gamesController.addGame);
+router.post('/update', gamesController.updateGame);
+router.post('/delete', gamesController.deleteGame);
 
 module.exports = router;

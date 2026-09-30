@@ -103,6 +103,7 @@
               <input
                 type="text"
                 class="form-control"
+                id="game-developer"
                 placeholder="Nhập tên nhà phát triển..."
               />
             </div>
@@ -112,6 +113,7 @@
               <input
                 type="text"
                 class="form-control"
+                id="game-publisher"
                 placeholder="Nhập tên nhà phát hành..."
               />
             </div>
@@ -145,6 +147,7 @@
               <input
                 type="url"
                 class="form-control"
+                id="game-download-url"
                 placeholder="https://..."
               />
             </div>
@@ -153,6 +156,7 @@
               <label class="form-label">Mô tả game</label>
               <textarea
                 class="form-control"
+                id="game-description"
                 rows="4"
                 placeholder="Nhập tóm tắt nội dung cốt truyện, gameplay..."
                 oninput="
@@ -474,8 +478,8 @@
           Black Myth: Wukong đã được thêm vào hệ thống.
         </div>
         <div class="dialog-actions">
-          <button class="btn btn-primary" onclick="window.location.reload()">
-            Đóng
+          <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">
+            Về trang Dashboard
           </button>
         </div>
       </div>
@@ -596,18 +600,63 @@
         confirmDialog.classList.remove("show");
       });
 
-      btnDialogConfirm.addEventListener("click", () => {
+      btnDialogConfirm.addEventListener("click", async () => {
         confirmDialog.classList.remove("show");
-        document.getElementById("success-message").innerText =
-          `${gameNameInput.value} đã được thêm vào hệ thống.`;
 
-        setTimeout(() => {
-          successDialog.classList.add("show");
+        const gameName = gameNameInput.value.trim();
+        const developer = document.getElementById("game-developer")?.value.trim() || "";
+        const publisher = document.getElementById("game-publisher")?.value.trim() || "";
+        const downloadUrl = document.getElementById("game-download-url")?.value.trim() || "";
+        const description = document.getElementById("game-description")?.value.trim() || "";
 
-          // Final stepper state
-          marker2.classList.remove("active");
-          marker2.classList.add("completed");
-        }, 300);
+        const day = (document.getElementById("release-day")?.value || "1").padStart(2, "0");
+        const month = (document.getElementById("release-month")?.value || "1").padStart(2, "0");
+        const year = document.getElementById("release-year")?.value || new Date().getFullYear();
+        const releaseDate = `${year}-${month}-${day}`;
+
+        const tagElements = document.querySelectorAll("#genre-container .tag");
+        const tagList = Array.from(tagElements).map((t) => {
+          const clone = t.cloneNode(true);
+          const removeIcon = clone.querySelector(".tag-remove");
+          if (removeIcon) removeIcon.remove();
+          return clone.textContent.trim();
+        }).filter(Boolean);
+        const nameTag = tagList.join(", ");
+
+        const payload = {
+          name: gameName,
+          description: description,
+          publisher: publisher,
+          developer: developer,
+          name_tag: nameTag,
+          release_date: releaseDate,
+          download_url: downloadUrl,
+        };
+
+        try {
+          const baseUrl = typeof API_URL !== "undefined" ? API_URL : "http://localhost:5000/api";
+          const res = await fetch(`${baseUrl}/games/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const result = await res.json();
+
+          if (result.success) {
+            document.getElementById("success-message").innerText =
+              `${gameName} đã được thêm vào hệ thống thành công.`;
+            setTimeout(() => {
+              successDialog.classList.add("show");
+              marker2.classList.remove("active");
+              marker2.classList.add("completed");
+            }, 300);
+          } else {
+            alert(result.message || "Không thể thêm game vào hệ thống!");
+          }
+        } catch (err) {
+          console.error("Lỗi khi thêm game:", err);
+          alert("Lỗi khi thêm game: " + (err.message || "Không thể kết nối server"));
+        }
       });
 
       // Clear error on input

@@ -1,38 +1,37 @@
-const sql = require('mssql'); // Đảm bảo bạn đã import thư viện
+const { sql } = require('../config/db');
 
 const getGames = async (page = 1, limit = 20) => {
-    // 1. Tính toán số dòng cần OFFSET
-    const offset = (page - 1) * limit;
+    const validPage = Math.max(1, parseInt(page) || 1);
+    const validLimit = Math.max(1, parseInt(limit) || 20);
+    const offset = (validPage - 1) * validLimit;
 
-    // 2. Viết câu query T-SQL gọi Function bạn vừa tạo
     const query = `SELECT * FROM dbo.fn_GetGames(@offset, @limit);`;
-
-    // Câu query phụ để lấy tổng số game (để FE tính tổng số trang)
     const countQuery = `SELECT dbo.fn_TotalGames() AS totalItems;`;
 
     try {
         const pool = await sql.connect();
-        const request = pool.request();
+        
+        const reqGames = pool.request();
+        reqGames.input('offset', sql.Int, offset);
+        reqGames.input('limit', sql.Int, validLimit);
 
-        request.input('offset', sql.Int, offset);
-        request.input('limit', sql.Int, limit);
+        const reqCount = pool.request();
 
         const [gamesResult, countResult] = await Promise.all([
-            request.query(query),
-            pool.request().query(countQuery)
+            reqGames.query(query),
+            reqCount.query(countQuery)
         ]);
 
-        const totalItems = countResult.recordset[0].totalItems;
-
-        const games = gamesResult.recordset;
+        const totalItems = countResult.recordset?.[0]?.totalItems || 0;
+        const games = gamesResult.recordset || [];
 
         return {
             data: games,
             pagination: {
-                currentPage: page,
-                limit: limit,
+                currentPage: validPage,
+                limit: validLimit,
                 totalItems: totalItems,
-                totalPages: Math.ceil(totalItems / limit)
+                totalPages: Math.ceil(totalItems / validLimit) || 1
             }
         };
     } catch (error) {
@@ -44,52 +43,60 @@ const getGames = async (page = 1, limit = 20) => {
 const getFullGameDetail = async (game_id) => {
     try {
         const pool = await sql.connect();
-        const request = pool.request();
-        request.input('game_id', sql.Int, game_id);
+        
+        const reqInfo = pool.request();
+        reqInfo.input('game_id', sql.Int, game_id);
+
+        const reqRequirements = pool.request();
+        reqRequirements.input('game_id', sql.Int, game_id);
 
         const [gameInfoResult, reqInfoResult] = await Promise.all([
-            request.query('SELECT * FROM fn_GetGameDetail(@game_id)'),
-            request.query('SELECT * FROM fn_GetGameRequirementByID(@game_id)')
+            reqInfo.query('SELECT * FROM fn_GetGameDetail(@game_id)'),
+            reqRequirements.query('SELECT * FROM fn_GetGameRequirementByID(@game_id)')
         ]);
+
+        const gameInfo = gameInfoResult.recordset?.[0];
+        if (!gameInfo) {
+            return {
+                success: false,
+                message: 'Không tìm thấy thông tin chi tiết game'
+            };
+        }
 
         return {
             success: true,
             data: {
-                info: gameInfoResult.recordset[0],
-                requirements: reqInfoResult.recordset
+                info: gameInfo,
+                requirements: reqInfoResult.recordset || []
             }
         };
     } catch (error) {
         console.error('Error in getFullGameDetail:', error);
         throw new Error('Lỗi khi lấy thông tin chi tiết game đầy đủ');
     }
-}
+};
 
 const getGameRequirement = async (game_id) => {
     try {
-        const request = new sql.Request();
-        request.input('game_id', game_id);
-
-        // const checkGame = await request.query('SELECT dbo.fn_CheckGameExist(@game_id) AS IsExist');
-        // if (!checkGame.recordset[0].IsExist) {
-        //     return { success: false, message: 'Cấu hình game không tồn tại trong hệ thống' };
-        // }
+        const pool = await sql.connect();
+        const request = pool.request();
+        request.input('game_id', sql.Int, game_id);
 
         const result = await request.query('SELECT * FROM dbo.fn_GetGameRequirementByID(@game_id)');
         return {
             success: true,
-            data: result.recordset
+            data: result.recordset || []
         };
-    }
-    catch (error) {
-        console.log('Error in getGameRequirement Service: ', error.message)
+    } catch (error) {
+        console.log('Error in getGameRequirement Service: ', error.message);
         throw new Error('Lỗi khi lấy thông tin cấu hình game');
     }
-}
+};
 
 const checkGameCompatibility = async (user_id, pc_id, game_id, type) => {
     try {
-        const request = new sql.Request();
+        const pool = await sql.connect();
+        const request = pool.request();
 
         request.input('user_id', sql.Int, user_id);
         request.input('pc_id', sql.Int, pc_id);
@@ -100,18 +107,13 @@ const checkGameCompatibility = async (user_id, pc_id, game_id, type) => {
 
         return {
             success: true,
-            data: result.recordset
+            data: result.recordset || []
         };
-    }
-    catch (error) {
-        console.log(
-            'Error in checkGameCompatibility Service: ',
-            error.message
-        );
-
+    } catch (error) {
+        console.log('Error in checkGameCompatibility Service: ', error.message);
         throw new Error(error.message);
     }
-}
+};
 
 const getGameByTag = async (tag_id) => {
     try {
@@ -123,7 +125,7 @@ const getGameByTag = async (tag_id) => {
 
         return {
             success: true,
-            data: result.recordset
+            data: result.recordset || []
         };
     } catch (error) {
         console.error("Lỗi khi lấy game theo tag:", error);
@@ -131,4 +133,81 @@ const getGameByTag = async (tag_id) => {
     }
 };
 
-module.exports = { getGames, getFullGameDetail, getGameRequirement, checkGameCompatibility, getGameByTag };
+const addGame = async (game) => {
+    try {
+        const pool = await sql.connect();
+        const request = pool.request();
+
+        request.input('name', sql.NVarChar(255), game.name);
+        request.input('description', sql.NVarChar(sql.MAX), game.description || '');
+        request.input('publisher', sql.NVarChar(255), game.publisher || '');
+        request.input('developer', sql.NVarChar(255), game.developer || '');
+        request.input('name_tag', sql.NVarChar(sql.MAX), game.name_tag || '');
+        request.input('release_date', sql.DateTime, game.release_date ? new Date(game.release_date) : new Date());
+        request.input('download_url', sql.VarChar(500), game.download_url || '');
+
+        const result = await request.execute('sp_addGame');
+
+        return {
+            success: true,
+            data: result.recordset || []
+        };
+    } catch (error) {
+        console.error("Lỗi khi thêm game:", error);
+        throw error;
+    }
+};
+
+const updateGame = async (game) => {
+    try {
+        const pool = await sql.connect();
+        const request = pool.request();
+
+        request.input('game_id', sql.Int, game.game_id);
+        request.input('name', sql.VarChar(30), game.name);
+        request.input('name_tag', sql.VarChar(sql.MAX), game.name_tag);
+        request.input('developer', sql.VarChar(30), game.developer);
+        request.input('is_active', sql.Bit, game.is_active);
+
+        const result = await request.execute('sp_updateGame');
+
+        return {
+            success: true,
+            data: result.recordset || []
+        };
+    } catch (error) {
+        console.error("Lỗi khi cập nhật game:", error);
+        throw error;
+    }
+};
+
+const deleteGame = async (game_id) => {
+    try {
+        const pool = await sql.connect();
+        const request = pool.request();
+
+        request.input('game_id', sql.Int, game_id);
+
+        const result = await request.execute('sp_deleteGame');
+
+        return {
+            success: true,
+            data: result.recordset || []
+        };
+    } catch (error) {
+        console.error("Lỗi khi xóa game:", error);
+        throw error;
+    }
+};
+
+module.exports = { 
+    getGames, 
+    getFullGameDetail, 
+    getGameRequirement, 
+    checkGameCompatibility, 
+    getGameByTag, 
+    addGame, 
+    updateGame, 
+    deleteGame 
+};
+

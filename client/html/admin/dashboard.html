@@ -146,10 +146,10 @@
               <h2>Quản lý Danh sách Game</h2>
               <div class="table-actions">
                 <div class="table-search">
-                  <input type="text" placeholder="Tìm kiếm game..." />
+                  <input type="text" id="game-search-input" placeholder="Tìm kiếm game..." />
                   <i class="bx bx-search"></i>
                 </div>
-                <button class="btn-add">
+                <button class="btn-add" id="btn-add-game">
                   <i class="bx bx-plus"></i> Thêm Game mới
                 </button>
               </div>
@@ -165,47 +165,8 @@
                   <th class="text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>#G-001</td>
-                  <td class="text-highlight">Black Myth: Wukong</td>
-                  <td>
-                    <div class="genre-tags">
-                      <span class="genre-badge">Action</span>
-                      <span class="genre-badge">RPG</span>
-                    </div>
-                  </td>
-                  <td>Game Science</td>
-                  <td><span class="status-badge active">Hoạt động</span></td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#G-002</td>
-                  <td class="text-highlight">Elden Ring</td>
-                  <td>
-                    <div class="genre-tags">
-                      <span class="genre-badge">Souls-like</span>
-                      <span class="genre-badge">RPG</span>
-                    </div>
-                  </td>
-                  <td>FromSoftware</td>
-                  <td><span class="status-badge danger">Ngừng hỗ trợ</span></td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
+              <tbody id="games-table-body">
+                <!-- Data rendered dynamically from JS -->
               </tbody>
             </table>
           </div>
@@ -802,6 +763,109 @@
         <div class="modal-footer" style="justify-content: center; gap: 12px; margin-top: 16px; border-top: none; padding-top: 0;">
           <button type="button" class="btn-cancel" id="cancel-delete-tag-btn">Hủy</button>
           <button type="button" class="btn-save" id="confirm-delete-tag-btn" style="background: #ef4444;">Xóa ngay</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Thêm Game Mới -->
+    <div class="modal" id="game-add-modal">
+      <div class="modal-overlay" id="game-add-overlay"></div>
+      <div class="modal-card modal-compact modal-scrollable-form">
+        <div class="modal-header">
+          <h3><i class="bx bx-joystick"></i> Thêm Game mới</h3>
+          <button type="button" class="close-btn" id="close-game-add-modal">&times;</button>
+        </div>
+        <form id="game-add-form">
+          <div class="form-group">
+            <label for="add-game-name">Tên Game <span style="color: red">*</span></label>
+            <input type="text" id="add-game-name" required placeholder="Nhập tên game..." />
+          </div>
+          <div class="form-group">
+            <label for="add-game-description">Mô tả <span style="color: red">*</span></label>
+            <textarea id="add-game-description" required rows="3" placeholder="Nhập mô tả game..." style="width: 100%; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px;"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="add-game-publisher">Nhà phát hành <span style="color: red">*</span></label>
+            <input type="text" id="add-game-publisher" required placeholder="Ví dụ: CD Projekt Red" />
+          </div>
+          <div class="form-group">
+            <label for="add-game-developer">Nhà phát triển <span style="color: red">*</span></label>
+            <input type="text" id="add-game-developer" required placeholder="Ví dụ: CD Projekt Red" />
+          </div>
+          <div class="form-group">
+            <label for="add-game-tags">Thể loại / Tags <span style="color: red">*</span></label>
+            <input type="text" id="add-game-tags" required placeholder="Ví dụ: Action, RPG, Open World (cách nhau bởi dấu phẩy)" />
+          </div>
+          <div class="form-group">
+            <label for="add-game-release">Ngày phát hành <span style="color: red">*</span></label>
+            <input type="date" id="add-game-release" required style="width: 100%; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px;" />
+          </div>
+          <div class="form-group">
+            <label for="add-game-url">Đường dẫn tải / Steam <span style="color: red">*</span></label>
+            <input type="url" id="add-game-url" required placeholder="https://store.steampowered.com/app/..." />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" id="cancel-game-add-btn">Hủy</button>
+            <button type="submit" class="btn-save">Thêm Game</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Cập Nhật Game -->
+    <div class="modal" id="game-edit-modal">
+      <div class="modal-overlay" id="game-edit-overlay"></div>
+      <div class="modal-card modal-compact modal-scrollable-form">
+        <div class="modal-header">
+          <h3><i class="bx bx-edit"></i> Cập nhật thông tin Game</h3>
+          <button type="button" class="close-btn" id="close-game-edit-modal">&times;</button>
+        </div>
+        <form id="game-edit-form">
+          <input type="hidden" id="edit-game-id" />
+          <div class="form-group">
+            <label for="edit-game-name">Tên Game <span style="color: red">*</span></label>
+            <input type="text" id="edit-game-name" required placeholder="Nhập tên game..." />
+          </div>
+          <div class="form-group">
+            <label for="edit-game-developer">Nhà phát triển <span style="color: red">*</span></label>
+            <input type="text" id="edit-game-developer" required placeholder="Ví dụ: Game Science" />
+          </div>
+          <div class="form-group">
+            <label for="edit-game-tags">Thể loại / Tags <span style="color: red">*</span></label>
+            <input type="text" id="edit-game-tags" required placeholder="Ví dụ: Action, RPG" />
+          </div>
+          <div class="form-group">
+            <label for="edit-game-status">Trạng thái <span style="color: red">*</span></label>
+            <select id="edit-game-status" required style="width: 100%; background: #1e1e2d; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px;">
+              <option value="1">Hoạt động</option>
+              <option value="0">Ngừng hỗ trợ</option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" id="cancel-game-edit-btn">Hủy</button>
+            <button type="submit" class="btn-save">Lưu thay đổi</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Xác nhận Xóa Game -->
+    <div class="modal" id="delete-game-modal">
+      <div class="modal-overlay" id="delete-game-overlay"></div>
+      <div class="modal-card modal-compact" style="max-width: 400px; text-align: center;">
+        <div class="modal-header" style="border-bottom: none; margin-bottom: 8px; justify-content: flex-end; padding-bottom: 0;">
+          <button type="button" class="close-btn" id="close-delete-game-modal">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 0 16px 16px 16px;">
+          <i class="bx bx-error-circle" style="font-size: 3.5rem; color: #ef4444; margin-bottom: 12px; display: block;"></i>
+          <h3 style="color: #ffffff; font-size: 1.2rem; font-weight: 600; margin-bottom: 8px;">Xác nhận xóa game</h3>
+          <p id="delete-game-confirm-msg" style="color: rgba(255, 255, 255, 0.7); font-size: 0.95rem; line-height: 1.5;">
+            Bạn có chắc chắn muốn xóa game này không?
+          </p>
+        </div>
+        <div class="modal-footer" style="justify-content: center; gap: 12px; margin-top: 16px; border-top: none; padding-top: 0;">
+          <button type="button" class="btn-cancel" id="cancel-delete-game-btn">Hủy</button>
+          <button type="button" class="btn-save" id="confirm-delete-game-btn" style="background: #ef4444;">Xóa ngay</button>
         </div>
       </div>
     </div>
