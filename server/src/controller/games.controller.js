@@ -256,11 +256,42 @@ const addGame = async (req, res) => {
     }
 };
 
+const getCompatibilityPercent = async (req, res) => {
+    try {
+        const { game_id, cpu_name, gpu_name, ram, storage, os } = req.body;
+
+        if (!game_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu game_id hợp lệ' });
+        }
+
+        const percent = await gamesService.getCompatibilityPercent(
+            game_id,
+            cpu_name,
+            gpu_name,
+            ram,
+            storage,
+            os
+        );
+
+        return res.status(200).json({
+            success: true,
+            percent: percent !== null && percent !== undefined ? parseFloat(percent) : null
+        });
+    } catch (error) {
+        console.log('Error in getCompatibilityPercent Controller: ', error.message);
+        return res.status(500).json({
+            success: false,
+            message: error.message || 'Lỗi server khi tính phần trăm tương thích'
+        });
+    }
+};
+
 module.exports = {
     getGames,
     getFullGameDetail,
     getGameRequirement,
     checkGameCompatibility,
+    getCompatibilityPercent,
     getGameByTag,
     addGame,
     deleteGame,

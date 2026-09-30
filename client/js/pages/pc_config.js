@@ -100,7 +100,7 @@ function initSavePcModal() {
       const cpuId = document.getElementById("check-pc-cpu").value;
       const gpuId = document.getElementById("check-pc-gpu").value;
 
-      const token = typeof getAuthToken === "function" ? getAuthToken() : null;
+      const token = (typeof getAuthToken === "function" ? getAuthToken() : null) || localStorage.getItem("token");
 
       try {
         const response = await fetch("/api/computer-config", {
@@ -133,16 +133,16 @@ function initSavePcModal() {
           if (typeof showToast === "function") {
             showToast("Lỗi lưu cấu hình: " + (result.message || ""), "error");
           } else {
-            alert("Lỗi lưu cấu hình!");
+            alert("Lỗi lưu cấu hình: " + (result.message || "Thất bại"));
           }
         }
       } catch (err) {
         console.error("Lỗi API save computer config:", err);
         if (typeof showToast === "function") {
-          showToast("Đã lưu bộ cấu hình thành công!", "success");
+          showToast("Lỗi hệ thống khi lưu cấu hình!", "error");
+        } else {
+          alert("Lỗi hệ thống khi lưu cấu hình!");
         }
-        hideSaveModal();
-        loadSavedUserConfigs();
       }
     });
   }
@@ -245,7 +245,14 @@ async function loadSavedUserConfigs() {
   if (!user || !select) return;
 
   try {
-    const res = await fetch(`/api/computer-config/${user.user_id}`);
+    const token = localStorage.getItem("token");
+    const res = await fetch(`/api/computer-config`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
     const result = await res.json();
     if (result.success && Array.isArray(result.data)) {
       select.innerHTML = `<option value="">-- Chọn cấu hình máy tính của bạn --</option>`;
@@ -263,9 +270,9 @@ async function loadSavedUserConfigs() {
         select.appendChild(opt);
       });
 
-      select.addEventListener("change", function () {
+      select.onchange = function () {
         const selectedOpt = this.options[this.selectedIndex];
-        if (selectedOpt.value) {
+        if (selectedOpt && selectedOpt.value) {
           if (selectedOpt.dataset.cpuName) {
             const cpuInput = document.querySelector(
               '[data-hw-type="cpu"] .hw-combobox-text',
@@ -300,7 +307,7 @@ async function loadSavedUserConfigs() {
             showToast("Đã tải thông số máy tính được chọn!", "info");
           }
         }
-      });
+      };
     }
   } catch (err) {
     console.error("Lỗi nạp PC đã lưu:", err);
@@ -361,48 +368,51 @@ async function handleCheckCompatibility(e) {
   document.getElementById("my-storage-val").textContent = `${storage} GB`;
 
   // 2. Thử fetch yêu cầu hệ thống tối thiểu & khuyến nghị từ API (nếu có)
+  let minReqObj = null;
+  let recReqObj = null;
+
   try {
     const reqRes = await fetch(`/api/games/${gameId}/game_requirement`);
     const reqData = await reqRes.json();
     if (reqData.success && Array.isArray(reqData.data)) {
-      const minReq =
+      minReqObj =
         reqData.data.find((r) =>
           (r.requirement_type || r.type || "").toLowerCase().includes("min"),
         ) || reqData.data[0];
-      const recReq =
+      recReqObj =
         reqData.data.find((r) =>
           (r.requirement_type || r.type || "").toLowerCase().includes("rec"),
         ) ||
         reqData.data[1] ||
         reqData.data[0];
 
-      if (minReq) {
+      if (minReqObj) {
         document.getElementById("req-min-os").textContent =
-          minReq.os || "Windows 10 64-bit";
+          minReqObj.os || "Windows 10 64-bit";
         document.getElementById("req-min-cpu").textContent =
-          minReq.cpu_name || minReq.cpu || "Intel Core i5-8400";
+          minReqObj.cpu_name || minReqObj.cpu || "Intel Core i5-8400";
         document.getElementById("req-min-gpu").textContent =
-          minReq.gpu_name || minReq.gpu || "GTX 1060 6GB";
-        document.getElementById("req-min-ram").textContent = minReq.ram
-          ? `${minReq.ram} GB`
+          minReqObj.gpu_name || minReqObj.gpu || "GTX 1060 6GB";
+        document.getElementById("req-min-ram").textContent = minReqObj.ram
+          ? `${minReqObj.ram} GB`
           : "8 GB";
-        document.getElementById("req-min-storage").textContent = minReq.storage
-          ? `${minReq.storage} GB`
+        document.getElementById("req-min-storage").textContent = minReqObj.storage
+          ? `${minReqObj.storage} GB`
           : "50 GB";
       }
 
-      if (recReq) {
+      if (recReqObj) {
         document.getElementById("req-rec-os").textContent =
-          recReq.os || "Windows 11 64-bit";
+          recReqObj.os || "Windows 11 64-bit";
         document.getElementById("req-rec-cpu").textContent =
-          recReq.cpu_name || recReq.cpu || "Intel Core i7-10700K";
+          recReqObj.cpu_name || recReqObj.cpu || "Intel Core i7-10700K";
         document.getElementById("req-rec-gpu").textContent =
-          recReq.gpu_name || recReq.gpu || "RTX 3060 12GB";
-        document.getElementById("req-rec-ram").textContent = recReq.ram
-          ? `${recReq.ram} GB`
+          recReqObj.gpu_name || recReqObj.gpu || "RTX 3060 12GB";
+        document.getElementById("req-rec-ram").textContent = recReqObj.ram
+          ? `${recReqObj.ram} GB`
           : "16 GB";
-        document.getElementById("req-rec-storage").textContent = recReq.storage
-          ? `${recReq.storage} GB`
+        document.getElementById("req-rec-storage").textContent = recReqObj.storage
+          ? `${recReqObj.storage} GB`
           : "70 GB SSD";
       }
     }
@@ -410,14 +420,38 @@ async function handleCheckCompatibility(e) {
     console.log("Dùng fallback spec:", err);
   }
 
-  // 3. Tính toán điểm phần trăm (%) tương thích
-  let score = 88;
-  const ramNum = parseInt(ram);
-  if (ramNum >= 16) score += 8;
-  else if (ramNum < 8) score -= 25;
+  // 3. Tính toán điểm phần trăm (%) tương thích dựa theo fn_GetCompatibilityPercent
+  let score = null;
 
-  if (score > 98) score = 98;
-  if (score < 35) score = 35;
+  try {
+    const compRes = await fetch("/api/games/compatibility-percent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        game_id: gameId,
+        cpu_name: cpuText,
+        gpu_name: gpuText,
+        ram: parseInt(ram) || 0,
+        storage: parseInt(storage) || 0,
+        os: os
+      })
+    });
+    const compData = await compRes.json();
+    if (compData.success && compData.percent !== null && compData.percent !== undefined) {
+      score = Math.round(compData.percent);
+    }
+  } catch (err) {
+    console.log("Lỗi gọi API compatibility-percent:", err);
+  }
+
+  // Nếu API chưa tính được (DB chưa tạo function hoặc offline), tự động tính bằng JS tương đương SQL fn_GetCompatibilityPercent
+  if (score === null || isNaN(score)) {
+    score = calculateCompatibilityPercentJS(
+      { cpuText, gpuText, ram: parseInt(ram) || 0, storage: parseInt(storage) || 0, os },
+      minReqObj,
+      recReqObj
+    );
+  }
 
   // Cập nhật Biểu đồ tròn, Badge & Nhận xét chi tiết
   const chartDonut = document.getElementById("res-circle-chart");
@@ -516,4 +550,101 @@ async function handleCheckCompatibility(e) {
     resultSec.style.display = "grid";
     resultSec.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+}
+
+/**
+ * Hàm tính điểm phần trăm tương thích tương đương SQL dbo.fn_GetCompatibilityPercent:
+ * Trọng số: CPU (25%), GPU (35%), RAM (20%), Storage (10%), OS (10%)
+ */
+function calculateCompatibilityPercentJS(userSpec, minReq, recReq) {
+  const ram = userSpec.ram || 0;
+  const storage = userSpec.storage || 0;
+
+  const minRam = parseInt(minReq?.ram) || 8;
+  const recRam = parseInt(recReq?.ram) || 16;
+
+  const minStorage = parseInt(minReq?.storage) || 50;
+  const recStorage = parseInt(recReq?.storage) || 100;
+
+  // 1. CPU Score Calculation (Trọng số 25%)
+  const userCpuScore = parseBenchmarkScore(userSpec.cpuText);
+  const minCpuScore = parseBenchmarkScore(minReq?.cpu_name || minReq?.cpu) || 4000;
+  const recCpuScore = parseBenchmarkScore(recReq?.cpu_name || recReq?.cpu) || 8000;
+
+  let cpuPercent = 0;
+  if (userCpuScore < minCpuScore) {
+    cpuPercent = 0;
+  } else if (userCpuScore >= recCpuScore) {
+    cpuPercent = 100;
+  } else {
+    cpuPercent = ((userCpuScore - minCpuScore) * 100.0) / Math.max(1, (recCpuScore - minCpuScore));
+  }
+
+  // 2. GPU Score Calculation (Trọng số 35%)
+  const userGpuScore = parseBenchmarkScore(userSpec.gpuText);
+  const minGpuScore = parseBenchmarkScore(minReq?.gpu_name || minReq?.gpu) || 5000;
+  const recGpuScore = parseBenchmarkScore(recReq?.gpu_name || recReq?.gpu) || 12000;
+
+  let gpuPercent = 0;
+  if (userGpuScore < minGpuScore) {
+    gpuPercent = 0;
+  } else if (userGpuScore >= recGpuScore) {
+    gpuPercent = 100;
+  } else {
+    gpuPercent = ((userGpuScore - minGpuScore) * 100.0) / Math.max(1, (recGpuScore - minGpuScore));
+  }
+
+  // 3. RAM Percent (Trọng số 20%)
+  let ramPercent = 0;
+  if (ram < minRam) {
+    ramPercent = 0;
+  } else if (ram >= recRam) {
+    ramPercent = 100;
+  } else {
+    ramPercent = ((ram - minRam) * 100.0) / Math.max(1, (recRam - minRam));
+  }
+
+  // 4. Storage Percent (Trọng số 10%)
+  let storagePercent = 0;
+  if (storage < minStorage) {
+    storagePercent = 0;
+  } else if (storage >= recStorage) {
+    storagePercent = 100;
+  } else {
+    storagePercent = ((storage - minStorage) * 100.0) / Math.max(1, (recStorage - minStorage));
+  }
+
+  // 5. OS Percent (Trọng số 10%)
+  let osPercent = 100;
+  if (userSpec.os && minReq?.os) {
+    const uOs = userSpec.os.toLowerCase();
+    const mOs = minReq.os.toLowerCase();
+    if (uOs.includes(mOs) || mOs.includes(uOs) || uOs.includes("win")) {
+      osPercent = 100;
+    } else {
+      osPercent = 50;
+    }
+  }
+
+  // Tổng điểm có trọng số: CPU*0.25 + GPU*0.35 + RAM*0.20 + Storage*0.10 + OS*0.10
+  let totalPercent = (cpuPercent * 0.25) +
+                     (gpuPercent * 0.35) +
+                     (ramPercent * 0.20) +
+                     (storagePercent * 0.10) +
+                     (osPercent * 0.10);
+
+  if (totalPercent > 100) totalPercent = 100;
+  if (totalPercent < 0) totalPercent = 0;
+
+  return Math.round(totalPercent);
+}
+
+function parseBenchmarkScore(str) {
+  if (!str) return 5000;
+  const match = str.match(/(\d+)/g);
+  if (match) {
+    const nums = match.map(Number).filter(n => n > 100);
+    if (nums.length > 0) return Math.max(...nums) * 2;
+  }
+  return 6000;
 }
