@@ -1,6 +1,8 @@
 function initStatistics(parent = document) {
+  const root = parent || document;
+
   // Xử lý chuyển đổi nút Lọc (Filter)
-  const filterBtns = document.querySelectorAll(".filter-btn");
+  const filterBtns = root.querySelectorAll(".filter-btn");
   filterBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
       filterBtns.forEach((b) => b.classList.remove("active"));
@@ -8,34 +10,44 @@ function initStatistics(parent = document) {
     });
   });
 
-  // Xử lý chuyển đổi Tabs
-  const tabBtns = document.querySelectorAll(".tab-btn");
-  const tabContents = document.querySelectorAll(".tab-content");
-  const filterBar = document.querySelector(".filter-bar");
+  // Xử lý chuyển đổi Sub-Tabs Thống kê
+  const tabBtns = root.querySelectorAll(".tab-btn");
+  const tabContents = root.querySelectorAll("#tab-1, #tab-2, #tab-3");
+  const filterBar = root.querySelector(".filter-bar");
 
   tabBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      // Xóa class active ở tất cả các tab
+      // Xóa class active ở tất cả các sub-tab thống kê
       tabBtns.forEach((b) => b.classList.remove("active"));
       tabContents.forEach((c) => c.classList.remove("active"));
 
       // Kích hoạt tab được bấm
       btn.classList.add("active");
       const tabId = btn.getAttribute("data-tab");
-      document.getElementById(tabId).classList.add("active");
+      const targetTab =
+        root.querySelector(`#${tabId}`) || document.getElementById(tabId);
+      if (targetTab) {
+        targetTab.classList.add("active");
+      }
 
       // Hiển thị filter bar ở tab 2 và 3
-      if (tabId === "tab-1") {
-        filterBar.classList.add("hidden");
-      } else {
-        filterBar.classList.remove("hidden");
+      if (filterBar) {
+        if (tabId === "tab-1") {
+          filterBar.classList.add("hidden");
+        } else {
+          filterBar.classList.remove("hidden");
+        }
       }
     });
   });
 }
-// để mở độc lập statistic.html
+
+// Để mở độc lập statistics.html
 document.addEventListener("DOMContentLoaded", () => {
-  if (document.querySelector(".tab-btn")) {
+  if (
+    !document.getElementById("tab-dashboard") &&
+    document.querySelector(".tab-btn")
+  ) {
     initStatistics();
   }
 });
