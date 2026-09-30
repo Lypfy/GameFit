@@ -242,7 +242,7 @@ const getCompatibilityPercent = async (
     request.input("os", sql.VarChar(100), os || "");
 
     const result = await request.query(
-      "SELECT dbo.fn_GetCompatibilityPercent(@game_id, @cpu_name, @gpu_name, @ram, @storage, @os) AS percent",
+      "SELECT dbo.fn_GetCompatibilityPercent(@game_id, @cpu_name, @gpu_name, @ram, @storage, @os) AS [percent]",
     );
     return result.recordset?.[0]?.percent;
   } catch (error) {
