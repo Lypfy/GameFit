@@ -76,8 +76,8 @@ const getGameRequirement = async (req, res) => {
 const checkGameCompatibility = async (req, res) => {
     try {
         const user_id = req.user.user_id;
-        const { game_id, pc_id } = req.params;
-        const { type } = req.query;
+        const { game_id } = req.params;
+        const { pc_id, type } = req.query;
 
         if (!user_id) {
             return res.status(400).json({
@@ -100,7 +100,7 @@ const checkGameCompatibility = async (req, res) => {
             });
         }
 
-        const result = await gameService.checkGameCompatibility(user_id, pc_id, game_id, type || 'MINIMUM');
+        const result = await gamesService.checkGameCompatibility(user_id, pc_id, game_id, type || 'MINIMUM');
 
         return res.status(200).json({
             success: true,

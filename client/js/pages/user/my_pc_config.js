@@ -5,13 +5,13 @@
 document.addEventListener("DOMContentLoaded", function () {
   const configsGrid = document.getElementById("configs-grid");
   const btnAddConfigTop = document.getElementById("btn-add-config-top");
-  
+
   // Modal elements
   const pcConfigModal = document.getElementById("pc-config-overlay");
   const closePcConfigModal = document.getElementById("close-pc-config-modal");
   const cancelPcBtn = document.getElementById("cancel-pc-config-btn");
   const pcConfigForm = document.getElementById("pc-config-form");
-  
+
   // Form inputs
   const pcIdInput = document.getElementById("pc-id");
   const pcNameInput = document.getElementById("pc-name");
@@ -37,7 +37,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Fetch and render data
   async function loadConfigs() {
     try {
-      const response = await fetch(`/api/computer-config/${currentUser.user_id}`);
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/computer-config`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
       const result = await response.json();
 
       if (result.success) {
@@ -114,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Make functions global so inline onclick works
-  window.editConfig = function(pcId) {
+  window.editConfig = function (pcId) {
     const config = userConfigs.find(c => c.pc_id === pcId);
     if (!config) return;
 
@@ -137,17 +144,21 @@ document.addEventListener("DOMContentLoaded", function () {
     pcConfigModal.classList.add("active");
   };
 
-  window.deleteConfig = async function(pcId) {
+  window.deleteConfig = async function (pcId) {
     if (!confirm("Bạn có chắc chắn muốn xóa cấu hình này?")) return;
-    
+
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch("/api/computer-config", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ user_id: currentUser.user_id, pc_id: pcId })
       });
       const result = await response.json();
-      
+
       if (result.success) {
         showToast("Đã xóa cấu hình máy tính");
         loadConfigs();
@@ -177,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   closePcConfigModal.addEventListener("click", hideModal);
   cancelPcBtn.addEventListener("click", hideModal);
-  
+
   // Close when click outside
   pcConfigModal.addEventListener("click", (e) => {
     if (e.target === pcConfigModal) hideModal();
@@ -207,16 +218,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const pcId = pcIdInput.value.trim();
     let method = "POST";
-    
+
     if (pcId) {
       method = "PUT";
       pcData.pc_id = parseInt(pcId);
     }
 
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch("/api/computer-config", {
         method: method,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(pcData),
       });
 
