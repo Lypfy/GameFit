@@ -21,14 +21,14 @@ const getGames = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Lỗi server khi lấy thông tin game' });
     }
 }
-const getGameDetail = async (req, res) => {
+const getFullGameDetail = async (req, res) => {
     try {
         const { game_id } = req.params;
 
         if (!game_id) {
             return res.status(400).json({ success: false, message: 'Thiếu game_id không hợp lệ' });
         }
-        const result = await gamesService.getGameDetail(game_id);
+        const result = await gamesService.getFullGameDetail(game_id);
         if (!result.success) {
             return res.status(404).json({
                 success: false,
@@ -138,7 +138,7 @@ const getGameByTag = async (req, res) => {
 
 module.exports = {
     getGames,
-    getGameDetail,
+    getFullGameDetail,
     getGameRequirement,
     checkGameCompatibility,
     getGameByTag

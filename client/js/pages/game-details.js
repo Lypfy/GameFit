@@ -36,16 +36,12 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   try {
-    const response = await fetch(`http://localhost:5000/api/games/${gameId}`);
+    const response = await fetch(`http://localhost:5000/api/games/${gameId}/full_detail`);
     const result = await response.json();
 
-    const reqResponse = await fetch(
-      `http://localhost:5000/api/games/${gameId}/game_requirement`,
-    );
-    const reqResult = await reqResponse.json();
+    if (result.success && result.data && result.data.info) {
+      renderGameDetails([result.data.info], result.data.requirements || []);
 
-    if (result.success && result.data && result.data.length > 0) {
-      renderGameDetails(result.data, reqResult.success ? reqResult.data : []);
 
       // Ẩn loading, hiện content
       loadingState.style.display = "none";
@@ -145,8 +141,6 @@ document.addEventListener("DOMContentLoaded", async function () {
               <i class='bx bx-laptop' style="font-size: 18px;"></i> Kiểm tra cấu hình
             </button>
           </div>
-          <ul>
-            <li><strong>OS:</strong> <span>${req.os || "N/A"}</span></li>
           <ul>
             <li><strong>OS:</strong> <span>${req.os || "N/A"}</span></li>
             <li><strong>CPU:</strong> <span>${req.cpu_name}</span></li>

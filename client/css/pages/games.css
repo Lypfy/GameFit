@@ -2,6 +2,7 @@
 .games {
   padding-top: 1rem;
 }
+
 .games-content {
   display: grid;
   grid-template-columns: repeat(5, minmax(194px, 1fr));
