@@ -5,7 +5,14 @@ const getGames = async (req, res) => {
         const page = Math.max(1, parseInt(req.query.page) || 1);
         const limit = Math.max(1, parseInt(req.query.limit) || 20);
 
-        const result = await gamesService.getGames(page, limit);
+        // Đọc filter từ query parameters mà frontend gửi lên
+        const filters = {
+            categories: req.query.categories || null,
+            publishers: req.query.publishers || null,
+            rams: req.query.rams || null,
+        };
+
+        const result = await gamesService.getGames(page, limit, filters);
         return res.status(200).json({
             success: true,
             message: 'Lấy thông tin game thành công',
@@ -17,6 +24,7 @@ const getGames = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Lỗi server khi lấy thông tin game' });
     }
 };
+
 
 const getFullGameDetail = async (req, res) => {
     try {
@@ -248,11 +256,42 @@ const addGame = async (req, res) => {
     }
 };
 
+const getCompatibilityPercent = async (req, res) => {
+    try {
+        const { game_id, cpu_name, gpu_name, ram, storage, os } = req.body;
+
+        if (!game_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu game_id hợp lệ' });
+        }
+
+        const percent = await gamesService.getCompatibilityPercent(
+            game_id,
+            cpu_name,
+            gpu_name,
+            ram,
+            storage,
+            os
+        );
+
+        return res.status(200).json({
+            success: true,
+            percent: percent !== null && percent !== undefined ? parseFloat(percent) : null
+        });
+    } catch (error) {
+        console.log('Error in getCompatibilityPercent Controller: ', error.message);
+        return res.status(500).json({
+            success: false,
+            message: error.message || 'Lỗi server khi tính phần trăm tương thích'
+        });
+    }
+};
+
 module.exports = {
     getGames,
     getFullGameDetail,
     getGameRequirement,
     checkGameCompatibility,
+    getCompatibilityPercent,
     getGameByTag,
     addGame,
     deleteGame,

@@ -1,27 +1,40 @@
 const { sql } = require('../config/db');
 
-const getGames = async (page = 1, limit = 20) => {
+const getGames = async (page = 1, limit = 20, filters = {}) => {
     const validPage = Math.max(1, parseInt(page) || 1);
     const validLimit = Math.max(1, parseInt(limit) || 20);
     const offset = (validPage - 1) * validLimit;
 
-    const query = `SELECT * FROM dbo.fn_GetGames(@offset, @limit);`;
-    const countQuery = `SELECT dbo.fn_TotalGames() AS totalItems;`;
+    // Gọi SQL Function với 3 tham số lọc
+    const query = `SELECT * FROM dbo.fn_GetGames(@offset, @limit, @categories, @publishers, @rams);`;
+    const countQuery = `SELECT dbo.fn_TotalGames(@categories, @publishers, @rams) AS totalItems;`;
 
     try {
         const pool = await sql.connect();
-        
+
+        // Khởi tạo các biến lọc, gán null nếu client không truyền
+        const categories = filters.categories || null;
+        const publishers = filters.publishers || null;
+        const rams = filters.rams || null;
+
         const reqGames = pool.request();
         reqGames.input('offset', sql.Int, offset);
         reqGames.input('limit', sql.Int, validLimit);
+        reqGames.input('categories', sql.NVarChar(sql.MAX), categories);
+        reqGames.input('publishers', sql.NVarChar(sql.MAX), publishers);
+        reqGames.input('rams', sql.NVarChar(sql.MAX), rams);
 
         const reqCount = pool.request();
+        reqCount.input('categories', sql.NVarChar(sql.MAX), categories);
+        reqCount.input('publishers', sql.NVarChar(sql.MAX), publishers);
+        reqCount.input('rams', sql.NVarChar(sql.MAX), rams);
 
         const [gamesResult, countResult] = await Promise.all([
             reqGames.query(query),
             reqCount.query(countQuery)
         ]);
 
+        // Lấy ra danh sách game và tổng số game
         const totalItems = countResult.recordset?.[0]?.totalItems || 0;
         const games = gamesResult.recordset || [];
 
@@ -40,10 +53,11 @@ const getGames = async (page = 1, limit = 20) => {
     }
 };
 
+
 const getFullGameDetail = async (game_id) => {
     try {
         const pool = await sql.connect();
-        
+
         const reqInfo = pool.request();
         reqInfo.input('game_id', sql.Int, game_id);
 
@@ -200,14 +214,48 @@ const deleteGame = async (game_id) => {
     }
 };
 
+<<<<<<< Updated upstream
+module.exports = {
+    getGames,
+    getFullGameDetail,
+    getGameRequirement,
+    checkGameCompatibility,
+    getGameByTag,
+    addGame,
+    updateGame,
+    deleteGame
+=======
+const getCompatibilityPercent = async (game_id, cpu_name, gpu_name, ram, storage, os) => {
+    try {
+        const pool = await sql.connect();
+        const request = pool.request();
+        request.input('game_id', sql.Int, parseInt(game_id));
+        request.input('cpu_name', sql.VarChar(100), cpu_name || '');
+        request.input('gpu_name', sql.VarChar(100), gpu_name || '');
+        request.input('ram', sql.Int, parseInt(ram) || 0);
+        request.input('storage', sql.Int, parseInt(storage) || 0);
+        request.input('os', sql.VarChar(100), os || '');
+
+        const result = await request.query(
+            'SELECT dbo.fn_GetCompatibilityPercent(@game_id, @cpu_name, @gpu_name, @ram, @storage, @os) AS percent'
+        );
+        return result.recordset?.[0]?.percent;
+    } catch (error) {
+        console.error('Error in getCompatibilityPercent Service:', error.message);
+        return null;
+    }
+};
+
 module.exports = { 
     getGames, 
     getFullGameDetail, 
     getGameRequirement, 
     checkGameCompatibility, 
+    getCompatibilityPercent,
     getGameByTag, 
     addGame, 
     updateGame, 
     deleteGame 
+>>>>>>> Stashed changes
 };
 

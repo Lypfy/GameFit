@@ -18,6 +18,10 @@ function setCurrentUser(user) {
   localStorage.setItem("currentUser", JSON.stringify(user));
 }
 
+function getAuthToken() {
+  return localStorage.getItem("token");
+}
+
 function logoutUser() {
   localStorage.removeItem("currentUser");
   localStorage.removeItem("token");
