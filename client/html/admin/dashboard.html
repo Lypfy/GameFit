@@ -344,6 +344,15 @@
                   </tr>
                 </tbody>
               </table>
+              <div class="table-pagination" id="cpu-pagination" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.08);">
+                <div class="pagination-info" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                  Trang <strong id="cpu-current-page">1</strong> / <span id="cpu-total-pages">1</span> (Tổng <span id="cpu-total-items">0</span> linh kiện)
+                </div>
+                <div class="pagination-buttons" style="display: flex; gap: 8px;">
+                  <button class="btn-action" id="btn-cpu-prev" title="Trang trước" style="padding: 6px 12px; height: auto; width: auto;"><i class="bx bx-chevron-left"></i> Trước</button>
+                  <button class="btn-action" id="btn-cpu-next" title="Trang sau" style="padding: 6px 12px; height: auto; width: auto;">Sau <i class="bx bx-chevron-right"></i></button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -387,36 +396,17 @@
                       </button>
                     </td>
                   </tr>
-                  <tr>
-                    <td>#GPU-002</td>
-                    <td class="text-highlight">AMD Radeon RX 7900 XT</td>
-                    <td>AMD</td>
-                    <td class="score-val">22,500</td>
-                    <td class="text-right">
-                      <button title="Sửa" class="btn-action btn-edit">
-                        <i class="bx bx-edit"></i>
-                      </button>
-                      <button title="Xóa" class="btn-action btn-delete">
-                        <i class="bx bx-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#GPU-003</td>
-                    <td class="text-highlight">NVIDIA GeForce RTX 3060 Ti</td>
-                    <td>NVIDIA</td>
-                    <td class="score-val">14,300</td>
-                    <td class="text-right">
-                      <button title="Sửa" class="btn-action btn-edit">
-                        <i class="bx bx-edit"></i>
-                      </button>
-                      <button title="Xóa" class="btn-action btn-delete">
-                        <i class="bx bx-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
                 </tbody>
               </table>
+              <div class="table-pagination" id="gpu-pagination" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.08);">
+                <div class="pagination-info" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                  Trang <strong id="gpu-current-page">1</strong> / <span id="gpu-total-pages">1</span> (Tổng <span id="gpu-total-items">0</span> linh kiện)
+                </div>
+                <div class="pagination-buttons" style="display: flex; gap: 8px;">
+                  <button class="btn-action" id="btn-gpu-prev" title="Trang trước" style="padding: 6px 12px; height: auto; width: auto;"><i class="bx bx-chevron-left"></i> Trước</button>
+                  <button class="btn-action" id="btn-gpu-next" title="Trang sau" style="padding: 6px 12px; height: auto; width: auto;">Sau <i class="bx bx-chevron-right"></i></button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

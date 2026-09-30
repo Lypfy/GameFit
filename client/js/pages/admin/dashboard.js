@@ -6,6 +6,9 @@ document.addEventListener("DOMContentLoaded", function () {
   initGameActions();
   loadTagsData();
   initTagActions();
+  loadCpuData();
+  loadGpuData();
+  initHardwareActions();
 });
 
 let allAdminGames = [];
@@ -25,7 +28,7 @@ async function loadGamesData(search = "") {
           (g) =>
             (g.name && g.name.toLowerCase().includes(keyword)) ||
             (g.developer && g.developer.toLowerCase().includes(keyword)) ||
-            (g.tags && g.tags.toLowerCase().includes(keyword))
+            (g.tags && g.tags.toLowerCase().includes(keyword)),
         );
       }
       renderGamesTable(filtered);
@@ -128,7 +131,9 @@ function initGameActions() {
       e.preventDefault();
       const newGame = {
         name: document.getElementById("add-game-name").value.trim(),
-        description: document.getElementById("add-game-description").value.trim(),
+        description: document
+          .getElementById("add-game-description")
+          .value.trim(),
         publisher: document.getElementById("add-game-publisher").value.trim(),
         developer: document.getElementById("add-game-developer").value.trim(),
         name_tag: document.getElementById("add-game-tags").value.trim(),
@@ -218,8 +223,10 @@ function initGameActions() {
     pendingDeleteGameId = null;
   }
 
-  if (closeDeleteModal) closeDeleteModal.addEventListener("click", hideDeleteModal);
-  if (cancelDeleteBtn) cancelDeleteBtn.addEventListener("click", hideDeleteModal);
+  if (closeDeleteModal)
+    closeDeleteModal.addEventListener("click", hideDeleteModal);
+  if (cancelDeleteBtn)
+    cancelDeleteBtn.addEventListener("click", hideDeleteModal);
   if (deleteOverlay) deleteOverlay.addEventListener("click", hideDeleteModal);
 
   if (confirmDeleteBtn) {
@@ -256,15 +263,21 @@ function initGameActions() {
       if (btnEdit) {
         const gameId = btnEdit.getAttribute("data-id");
         const targetGame = allAdminGames.find(
-          (g) => (g.game_id || g.id).toString() === gameId.toString()
+          (g) => (g.game_id || g.id).toString() === gameId.toString(),
         );
         if (targetGame) {
-          document.getElementById("edit-game-id").value = targetGame.game_id || targetGame.id;
-          document.getElementById("edit-game-name").value = targetGame.name || "";
-          document.getElementById("edit-game-developer").value = targetGame.developer || "";
-          document.getElementById("edit-game-tags").value = targetGame.tags || "";
+          document.getElementById("edit-game-id").value =
+            targetGame.game_id || targetGame.id;
+          document.getElementById("edit-game-name").value =
+            targetGame.name || "";
+          document.getElementById("edit-game-developer").value =
+            targetGame.developer || "";
+          document.getElementById("edit-game-tags").value =
+            targetGame.tags || "";
           document.getElementById("edit-game-status").value =
-            targetGame.is_active !== false && targetGame.is_active !== 0 ? "1" : "0";
+            targetGame.is_active !== false && targetGame.is_active !== 0
+              ? "1"
+              : "0";
           if (editModal) editModal.classList.add("active");
         }
       }
@@ -272,7 +285,7 @@ function initGameActions() {
       if (btnDelete) {
         const gameId = btnDelete.getAttribute("data-id");
         const targetGame = allAdminGames.find(
-          (g) => (g.game_id || g.id).toString() === gameId.toString()
+          (g) => (g.game_id || g.id).toString() === gameId.toString(),
         );
         pendingDeleteGameId = gameId;
         const confirmMsg = document.getElementById("delete-game-confirm-msg");
@@ -660,3 +673,230 @@ async function saveTagEdit(tagId, newName, oldName = "") {
   }
 }
 
+// --- QUẢN LÝ DỮ LIỆU HARDWARE (CPU & GPU) ---
+let cpuCurrentPage = 1;
+let cpuTotalPages = 1;
+let cpuSearchKeyword = "";
+
+let gpuCurrentPage = 1;
+let gpuTotalPages = 1;
+let gpuSearchKeyword = "";
+
+// 1. Lấy và hiển thị danh sách CPU từ DBMS (Có phân trang & sắp xếp theo CPU ID)
+async function loadCpuData(page = 1, search = cpuSearchKeyword) {
+  try {
+    cpuCurrentPage = page;
+    cpuSearchKeyword = search;
+
+    const url = `/api/cpus?page=${page}&limit=20&search=${encodeURIComponent(search.trim())}`;
+
+    const res = await fetch(url);
+    const result = await res.json();
+    if (result.success) {
+      const cpus = Array.isArray(result.data)
+        ? result.data
+        : result.data?.data || [];
+      renderCpuTable(cpus);
+
+      const pagination = result.pagination || result.data?.pagination || {};
+      cpuTotalPages = pagination.totalPages || 1;
+      const totalItems = pagination.totalItems || cpus.length;
+
+      updateCpuPaginationUI(cpuCurrentPage, cpuTotalPages, totalItems);
+    }
+  } catch (error) {
+    console.error("Lỗi khi tải dữ liệu CPU:", error);
+  }
+}
+
+function updateCpuPaginationUI(page, totalPages, totalItems) {
+  const elPage = document.getElementById("cpu-current-page");
+  const elTotalPages = document.getElementById("cpu-total-pages");
+  const elTotalItems = document.getElementById("cpu-total-items");
+  const btnPrev = document.getElementById("btn-cpu-prev");
+  const btnNext = document.getElementById("btn-cpu-next");
+
+  if (elPage) elPage.textContent = page;
+  if (elTotalPages) elTotalPages.textContent = totalPages;
+  if (elTotalItems)
+    elTotalItems.textContent = totalItems.toLocaleString("vi-VN");
+
+  if (btnPrev) btnPrev.disabled = page <= 1;
+  if (btnNext) btnNext.disabled = page >= totalPages;
+}
+
+function renderCpuTable(cpus) {
+  const tbody = document.querySelector("#hw-cpu table.data-table tbody");
+  if (!tbody) return;
+
+  if (!cpus || cpus.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">Chưa có dữ liệu CPU trong hệ thống</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = cpus
+    .map((cpu) => {
+      const cpuId = cpu.cpu_id || cpu.id;
+      const name = cpu.name || cpu.cpu_name || "-";
+      const brand = cpu.brand || "-";
+      const score =
+        cpu.benchmark_score != null
+          ? Number(cpu.benchmark_score).toLocaleString("vi-VN")
+          : "0";
+
+      return `
+        <tr data-id="${cpuId}">
+          <td>${cpuId}</td>
+          <td class="text-highlight">${name}</td>
+          <td>${brand}</td>
+          <td class="score-val">${score}</td>
+          <td class="text-right">
+            <button title="Sửa" class="btn-action btn-edit">
+              <i class="bx bx-edit"></i>
+            </button>
+            <button title="Xóa" class="btn-action btn-delete">
+              <i class="bx bx-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+}
+
+// 2. Lấy và hiển thị danh sách GPU từ DBMS (Có phân trang & sắp xếp theo GPU ID)
+async function loadGpuData(page = 1, search = gpuSearchKeyword) {
+  try {
+    gpuCurrentPage = page;
+    gpuSearchKeyword = search;
+
+    const url = `/api/gpus?page=${page}&limit=20&search=${encodeURIComponent(search.trim())}`;
+
+    const res = await fetch(url);
+    const result = await res.json();
+    if (result.success) {
+      const gpus = Array.isArray(result.data)
+        ? result.data
+        : result.data?.data || [];
+      renderGpuTable(gpus);
+
+      const pagination = result.pagination || result.data?.pagination || {};
+      gpuTotalPages = pagination.totalPages || 1;
+      const totalItems = pagination.totalItems || gpus.length;
+
+      updateGpuPaginationUI(gpuCurrentPage, gpuTotalPages, totalItems);
+    }
+  } catch (error) {
+    console.error("Lỗi khi tải dữ liệu GPU:", error);
+  }
+}
+
+function updateGpuPaginationUI(page, totalPages, totalItems) {
+  const elPage = document.getElementById("gpu-current-page");
+  const elTotalPages = document.getElementById("gpu-total-pages");
+  const elTotalItems = document.getElementById("gpu-total-items");
+  const btnPrev = document.getElementById("btn-gpu-prev");
+  const btnNext = document.getElementById("btn-gpu-next");
+
+  if (elPage) elPage.textContent = page;
+  if (elTotalPages) elTotalPages.textContent = totalPages;
+  if (elTotalItems)
+    elTotalItems.textContent = totalItems.toLocaleString("vi-VN");
+
+  if (btnPrev) btnPrev.disabled = page <= 1;
+  if (btnNext) btnNext.disabled = page >= totalPages;
+}
+
+function renderGpuTable(gpus) {
+  const tbody = document.querySelector("#hw-gpu table.data-table tbody");
+  if (!tbody) return;
+
+  if (!gpus || gpus.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">Chưa có dữ liệu GPU trong hệ thống</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = gpus
+    .map((gpu) => {
+      const gpuId = gpu.gpu_id || gpu.id;
+      const name = gpu.name || gpu.gpu_name || "-";
+      const brand = gpu.brand || "-";
+      const score =
+        gpu.benchmark_score != null
+          ? Number(gpu.benchmark_score).toLocaleString("vi-VN")
+          : "0";
+
+      return `
+        <tr data-id="${gpuId}">
+          <td>${gpuId}</td>
+          <td class="text-highlight">${name}</td>
+          <td>${brand}</td>
+          <td class="score-val">${score}</td>
+          <td class="text-right">
+            <button title="Sửa" class="btn-action btn-edit">
+              <i class="bx bx-edit"></i>
+            </button>
+            <button title="Xóa" class="btn-action btn-delete">
+              <i class="bx bx-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+}
+
+// Khởi tạo các sự kiện phân trang và tìm kiếm cho CPU / GPU
+function initHardwareActions() {
+  // Tìm kiếm CPU
+  const cpuSearch = document.querySelector("#hw-cpu .table-search input");
+  if (cpuSearch) {
+    cpuSearch.addEventListener("input", function (e) {
+      loadCpuData(1, e.target.value.trim());
+    });
+  }
+
+  // Nút Phân trang CPU
+  const btnCpuPrev = document.getElementById("btn-cpu-prev");
+  const btnCpuNext = document.getElementById("btn-cpu-next");
+  if (btnCpuPrev) {
+    btnCpuPrev.addEventListener("click", () => {
+      if (cpuCurrentPage > 1) {
+        loadCpuData(cpuCurrentPage - 1);
+      }
+    });
+  }
+  if (btnCpuNext) {
+    btnCpuNext.addEventListener("click", () => {
+      if (cpuCurrentPage < cpuTotalPages) {
+        loadCpuData(cpuCurrentPage + 1);
+      }
+    });
+  }
+
+  // Tìm kiếm GPU
+  const gpuSearch = document.querySelector("#hw-gpu .table-search input");
+  if (gpuSearch) {
+    gpuSearch.addEventListener("input", function (e) {
+      loadGpuData(1, e.target.value.trim());
+    });
+  }
+
+  // Nút Phân trang GPU
+  const btnGpuPrev = document.getElementById("btn-gpu-prev");
+  const btnGpuNext = document.getElementById("btn-gpu-next");
+  if (btnGpuPrev) {
+    btnGpuPrev.addEventListener("click", () => {
+      if (gpuCurrentPage > 1) {
+        loadGpuData(gpuCurrentPage - 1);
+      }
+    });
+  }
+  if (btnGpuNext) {
+    btnGpuNext.addEventListener("click", () => {
+      if (gpuCurrentPage < gpuTotalPages) {
+        loadGpuData(gpuCurrentPage + 1);
+      }
+    });
+  }
+}

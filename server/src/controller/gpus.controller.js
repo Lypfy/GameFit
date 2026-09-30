@@ -6,7 +6,7 @@ const getGPUs = async (req, res) => {
         const limit = parseInt(req.query.limit) || 20;
         const search = req.query.search || '';
 
-        const result = await gpusService.getGPUs({ page, limit, search });
+        const result = await gpusService.getGpus({ page, limit, search });
 
         return res.status(200).json({
             success: true,
