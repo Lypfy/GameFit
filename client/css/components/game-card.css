@@ -136,3 +136,9 @@
   max-width: none;
   flex-shrink: 0;
 }
+
+/* Kích thước bookmark (wishlist icon) */
+.wishlist-btn {
+  width: 25px !important;
+  height: 34px !important;
+}

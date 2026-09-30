@@ -58,51 +58,32 @@ document.addEventListener("DOMContentLoaded", function () {
   const limit = 20;
 
   // Lấy dữ liệu từ Database thông qua API
-  async function fetchGames(page = 1) {
+  // Lấy dữ liệu từ Database thông qua API có hỗ trợ Filter
+  async function fetchGames(page = 1, filters = {}) {
     try {
-      // Giả sử server Backend đang chạy ở port 5000
-      const response = await fetch(
-        `http://localhost:5000/api/games?page=${page}&limit=${limit}`,
-      );
+      let url = `http://localhost:5000/api/games?page=${page}&limit=${limit}`;
+
+      // Gắn tham số lọc vào URL
+      if (filters.categories?.length) url += `&categories=${filters.categories.join(',')}`;
+      if (filters.publishers?.length) url += `&publishers=${filters.publishers.join(',')}`;
+      if (filters.rams?.length) url += `&rams=${filters.rams.join(',')}`;
+
+      const response = await fetch(url);
       const result = await response.json();
 
       if (result.success) {
-        games = result.data; // Lưu lại vào biến games toàn cục để dùng cho bộ lọc bên dưới
+        games = result.data;
         currentPage = result.pagination?.currentPage || 1;
         totalPages = result.pagination?.totalPages || 1;
 
-        // Xử lý đọc tham số category từ URL sau khi đã có data
-        const urlParams = new URLSearchParams(window.location.search);
-        const categoryParam = urlParams.get("category");
-        if (categoryParam) {
-          const filteredGames = games.filter((game) => {
-            const cat = game.category || game.platform || "";
-            return cat.toLowerCase().includes(categoryParam.toLowerCase());
-          });
-          renderGames(filteredGames);
-
-          const categoryChip = document.querySelectorAll(
-            '[data-filter-type="category"] .filter-chip',
-          );
-          categoryChip.forEach((chip) => {
-            if (
-              categoryParam
-                .toLowerCase()
-                .includes(chip.dataset.value.toLowerCase())
-            ) {
-              chip.classList.add("active");
-            }
-          });
-        } else {
-          renderGames(games);
-        }
+        // Render ra giao diện
+        renderGames(games);
         renderPagination();
       } else {
         console.error("Lỗi từ server:", result.message);
       }
     } catch (error) {
       console.error("Lỗi khi gọi API fetch games:", error);
-      // Fallback: nếu lỗi API, dùng data cũ để giao diện không bị trắng
       if (typeof gamesData !== "undefined") {
         games = gamesData;
         renderGames(games);
@@ -195,27 +176,12 @@ document.addEventListener("DOMContentLoaded", function () {
       if (type === "ram") selectedRams.push(value);
     });
 
-    const filteredGames = games.filter((game) => {
-      const matchCategory =
-        selectedCategories.length === 0 ||
-        selectedCategories.some((category) => {
-          const cat = game.category || game.platform || "";
-          return cat.toLowerCase().includes(category.toLowerCase());
-        });
-
-      const matchPublisher =
-        selectedPublishers.length === 0 ||
-        (game.publisher && selectedPublishers.includes(game.publisher));
-
-      const req = requirements.find((r) => r.gameId === game.id);
-      const matchRam =
-        selectedRams.length === 0 ||
-        (req && selectedRams.includes(req.minimum?.ram));
-
-      return matchCategory && matchPublisher && matchRam;
+    // Thay vì lọc bằng JS tĩnh, gọi API yêu cầu backend lọc
+    fetchGames(1, {
+      categories: selectedCategories,
+      publishers: selectedPublishers,
+      rams: selectedRams
     });
-
-    renderGames(filteredGames);
 
     if (typeof window.closeFilterModal === "function") {
       window.closeFilterModal();

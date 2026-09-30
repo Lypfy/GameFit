@@ -5,7 +5,14 @@ const getGames = async (req, res) => {
         const page = Math.max(1, parseInt(req.query.page) || 1);
         const limit = Math.max(1, parseInt(req.query.limit) || 20);
 
-        const result = await gamesService.getGames(page, limit);
+        // Đọc filter từ query parameters mà frontend gửi lên
+        const filters = {
+            categories: req.query.categories || null,
+            publishers: req.query.publishers || null,
+            rams: req.query.rams || null,
+        };
+
+        const result = await gamesService.getGames(page, limit, filters);
         return res.status(200).json({
             success: true,
             message: 'Lấy thông tin game thành công',
@@ -17,6 +24,7 @@ const getGames = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Lỗi server khi lấy thông tin game' });
     }
 };
+
 
 const getFullGameDetail = async (req, res) => {
     try {
