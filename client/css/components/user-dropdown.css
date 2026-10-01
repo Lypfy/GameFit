@@ -4,6 +4,109 @@
   align-items: center;
 }
 
+/* Nút Đăng nhập khi CHƯA đăng nhập */
+.btn-nav-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #fa5353, #ff2a6d);
+  color: #ffffff !important;
+  padding: 3.5px 17px;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(250, 83, 83, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  white-space: nowrap;
+}
+
+.btn-nav-login:hover {
+  background: linear-gradient(135deg, #ff6b6b, #ff3377);
+  transform: translateY(-2px);
+  color: #ffffff !important;
+}
+
+.btn-nav-login:active {
+  transform: scale(0.96);
+}
+
+/* Khung Capsule Profile khi ĐÃ đăng nhập */
+.user-profile-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 10px 2px 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.user-profile-capsule:hover,
+.user-profile-capsule.active {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(250, 83, 83, 0.5);
+}
+
+/* Avatar chữ cái đầu */
+.user-avatar-badge {
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fa5353, #ff2a6d);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(250, 83, 83, 0.4);
+  flex-shrink: 0;
+}
+
+.user-profile-capsule .user-display-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-right: 0;
+  white-space: nowrap;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-profile-capsule .nav-dropdown-arrow {
+  transition: transform 0.25s ease, color 0.25s ease;
+  color: #94a3b8;
+  font-size: 1.15rem;
+}
+
+.user-profile-capsule.active .nav-dropdown-arrow {
+  color: var(--main-color);
+  transform: rotate(180deg);
+}
+
+/* Override styling từ navbar.css cho icon trong nút và capsule */
+.nav-icon .btn-nav-login .bx,
+.nav-icon .user-profile-capsule .bx {
+  width: auto !important;
+  height: auto !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  display: inline-flex !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  place-items: initial !important;
+}
+
 .user-display-name {
   font-size: 0.88rem;
   font-weight: 500;

@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                   style="width: 100%; padding: 15px; background-color: transparent; color: #ff4757; border: 1px solid #ff4757; border-radius: 0; cursor: pointer; font-size: 16px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;" 
                   onmouseover="this.style.backgroundColor='#ff4757'; this.style.color='#ffffff'" 
                   onmouseout="this.style.backgroundColor='transparent'; this.style.color='#ff4757'">
-            <i class='bx bx-laptop' style="font-size: 20px;"></i> Kiểm tra cấu hình
+            <i class='' style="font-size: 20px;"></i> Kiểm tra cấu hình
           </button>
         </div>
       `;

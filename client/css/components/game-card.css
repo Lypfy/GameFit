@@ -102,7 +102,6 @@
   box-shadow: 0 4px 5px rgba(250, 83, 83, 0.4);
 }
 
-/* Container Tag cố định chiều cao giúp tất cả thẻ game đều nhau */
 .box .game-tags-list {
   display: flex;
   align-items: center;
@@ -137,17 +136,16 @@
   flex-shrink: 0;
 }
 
-/* Kích thước bookmark (wishlist icon) */
 .wishlist-btn {
   width: 25px !important;
   height: 34px !important;
 }
 
-/* Skeleton Loading Effects */
 @keyframes skeleton-shimmer {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -164,12 +162,10 @@
 }
 
 .skeleton-element {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.04) 25%,
-    rgba(255, 255, 255, 0.12) 50%,
-    rgba(255, 255, 255, 0.04) 75%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.04) 25%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.04) 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s infinite linear;
   border-radius: 4px;
