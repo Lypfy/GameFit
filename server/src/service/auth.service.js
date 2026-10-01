@@ -18,15 +18,15 @@ const registerUser = async (username, password, email, role = 'User') => {
         // 3. Thực thi Stored Procedure
         const result = await request.execute('sp_Register');
 
-        return { 
-            success: true, 
+        return {
+            success: true,
             user_id: result.recordset[0].user_id,
             role: role
         };
     }
     catch (error) {
         console.error('Error in registerUser Service:', error.message);
-        
+
         // 4. Bắt lỗi RAISERROR từ SQL Server
         if (error.message.includes('Email này đã có người dùng') || error.message.includes('Tên này đã có người sử dụng')) {
             return { success: false, message: error.message };
@@ -62,8 +62,8 @@ const loginUser = async (username, password) => {
 
         // 4. Tạo Token JWT có chứa Role
         const token = jwt.sign(
-            { 
-                user_id: user.user_id, 
+            {
+                user_id: user.user_id,
                 username: user.user_name, // Trả về user_name theo DB
                 role: user.role || 'User'
             },
@@ -71,8 +71,8 @@ const loginUser = async (username, password) => {
             { expiresIn: '1d' }
         );
 
-        return { 
-            success: true, 
+        return {
+            success: true,
             token: token,
             user: {
                 user_id: user.user_id,
@@ -98,7 +98,7 @@ const forgotPassword = async (email) => {
     try {
         const request = new sql.Request();
         request.input('email', email);
-        
+
         // 1. Kiểm tra email có tồn tại không
         const checkUser = await request.query('SELECT user_id FROM Users WHERE email = @email');
         if (checkUser.recordset.length === 0) {
@@ -107,10 +107,10 @@ const forgotPassword = async (email) => {
 
         // 2. Tạo mã OTP ngẫu nhiên (6 chữ số)
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // 3. Lưu OTP vào bộ nhớ đệm (Gắn kèm thời gian hết hạn sau 5 phút nếu muốn làm nâng cao, ở đây tạm lưu cứng)
         otpCache.set(email, otpCode);
-        
+
         // 4. Gửi email
         await emailService.sendOTPEmail(email, otpCode);
 
@@ -154,9 +154,73 @@ const resetPassword = async (email, otp, newPassword) => {
     }
 };
 
+const updateUserProfile = async (userId, newUsername, newPassword = null) => {
+    try {
+        const checkReq = new sql.Request();
+        checkReq.input('user_id', sql.Int, userId);
+        checkReq.input('new_user_name', sql.VarChar, newUsername);
+
+        // 1. Kiểm tra xem user_name đã bị tài khoản khác sử dụng chưa
+        const checkResult = await checkReq.query(
+            'SELECT 1 FROM Users WHERE user_name = @new_user_name AND user_id != @user_id'
+        );
+        if (checkResult.recordset && checkResult.recordset.length > 0) {
+            return { success: false, message: 'Tên người dùng này đã có người sử dụng' };
+        }
+
+        // 2. Thực thi Stored Procedure sp_UpdateInformationAccount
+        const updateReq = new sql.Request();
+        updateReq.input('user_id', sql.Int, userId);
+        updateReq.input('new_user_name', sql.VarChar, newUsername);
+        updateReq.input('new_email', sql.VarChar, null);
+        await updateReq.execute('sp_UpdateInformationAccount');
+
+        // 3. Nếu người dùng muốn đổi cả mật khẩu
+        if (newPassword) {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(newPassword, salt);
+            const pwdReq = new sql.Request();
+            pwdReq.input('user_id', sql.Int, userId);
+            pwdReq.input('password', sql.VarChar, hashedPassword);
+            await pwdReq.query('UPDATE Users SET password = @password WHERE user_id = @user_id');
+        }
+
+        // 4. Lấy thông tin mới nhất trả về
+        const userReq = new sql.Request();
+        userReq.input('user_id', sql.Int, userId);
+        const userRes = await userReq.query('SELECT user_id, user_name, email, role, status FROM Users WHERE user_id = @user_id');
+        const updatedUser = userRes.recordset[0];
+
+        return {
+            success: true,
+            message: 'Cập nhật thông tin thành công',
+            user: {
+                user_id: updatedUser.user_id,
+                username: updatedUser.user_name,
+                user_name: updatedUser.user_name,
+                email: updatedUser.email,
+                role: updatedUser.role || 'User',
+                status: updatedUser.status
+            }
+        };
+    } catch (error) {
+        console.error('Error in updateUserProfile Service:', error.message);
+        if (
+            // Dùng để bắt lỗi khi HQTCSDL trả về thông báo bị lỗi font
+            error.message.includes('Tên này đã có người sử dụng') ||
+            error.message.includes('ngu?i s? d?ng') ||
+            error.message.toLowerCase().includes('người sử dụng')
+        ) {
+            return { success: false, message: 'Tên người dùng này đã có người sử dụng' };
+        }
+        return { success: false, message: error.message || 'Lỗi khi cập nhật thông tin người dùng' };
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    updateUserProfile
 };

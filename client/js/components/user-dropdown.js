@@ -60,7 +60,10 @@ function renderUserDropdownUI() {
   if (userDisplayName) userDisplayName.style.display = "none";
   if (userIcon) userIcon.style.display = "none";
 
-  const username = currentUser.username || currentUser.name || "Người dùng";
+  const username =
+    currentUser.user_name ||
+    currentUser.username ||
+    "Người dùng";
   const initial = username.trim().charAt(0).toUpperCase() || "U";
 
   if (!userCapsule) {

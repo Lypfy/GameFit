@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
           localStorage.setItem("token", data.token);
           setCurrentUser(data.user);
 
-          showToast(`Xin chào ${data.user.username}!`, false, "toast");
+          showToast(`Đăng nhập thành công!`, false, "toast");
 
           setTimeout(() => {
             window.location.href = "../home.html";

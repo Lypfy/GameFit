@@ -25,7 +25,7 @@
   }
 
   function getInitial(name) {
-    return name ? name.charAt(0).toUpperCase() : '?';
+    return name && name.trim() ? name.trim().charAt(0).toUpperCase() : 'U';
   }
 
   function formatDate(date) {
@@ -116,6 +116,8 @@
 
     commentsEmpty.style.display = 'none';
 
+    const activeUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+
     reviews.forEach(review => {
       const card = document.createElement('div');
       card.className = 'review-card';
@@ -128,7 +130,16 @@
       }
 
       const reviewDate = review.created_at || review.createdAt || new Date().toISOString();
-      const userName = review.username || review.display_name || 'Người dùng';
+      const isMyReview = activeUser && (
+        review.user_id === activeUser.user_id ||
+        review.user_id === activeUser.id
+      );
+
+      const userName =
+        (isMyReview ? (activeUser.user_name || activeUser.username) : null) ||
+        review.user_name ||
+        review.username ||
+        'Người dùng';
 
       card.innerHTML = `
         <div class="review-avatar">${getInitial(userName)}</div>
@@ -147,12 +158,13 @@
   }
 
   function updateButtons() {
-    if (!currentUser) {
+    const activeUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+    if (!activeUser) {
       btnEditReview.style.display = 'none';
       return;
     }
     // Check if current user has already reviewed
-    const myReview = reviews.find(r => r.user_id === currentUser.user_id || r.user_id === currentUser.id);
+    const myReview = reviews.find(r => r.user_id === activeUser.user_id || r.user_id === activeUser.id);
     if (myReview) {
       btnOpenModal.style.display = 'none'; // Đã viết rồi thì ẩn nút viết
       btnEditReview.style.display = 'inline-flex'; // Hiện nút sửa
@@ -312,8 +324,13 @@
   });
 
   /* =============================================
-     KHỞI TẠO
+     KHỞI TẠO & LẮNG NGHE SỰ KIỆN
      ============================================= */
+  window.addEventListener('userProfileUpdated', () => {
+    renderReviews();
+    updateButtons();
+  });
+
   if (gameId) {
     fetchReviews();
   }
