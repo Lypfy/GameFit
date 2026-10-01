@@ -11,7 +11,10 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../css/pages/admin/dashboard.css" />
-    <link rel="stylesheet" href="../../css/pages/admin/add_hardware_modal.css" />
+    <link
+      rel="stylesheet"
+      href="../../css/pages/admin/add_hardware_modal.css"
+    />
     <!-- Nhúng CSS của trang thống kê -->
     <link rel="stylesheet" href="../../css/pages/admin/statistics.css" />
   </head>
@@ -118,18 +121,6 @@
             <div class="line1"></div>
             <div class="line2"></div>
             <div class="line3"></div>
-          </div>
-        </div>
-        <!-- Full Overlay Menu -->
-        <div class="menu">
-          <img src="../../assets/menu.png" alt="Menu Banner" loading="lazy" />
-          <div class="navbar">
-            <li><a href="../home.html">Home</a></li>
-            <li><a href="../games.html">Games</a></li>
-            <li><a href="../pc_config.html">PC Check</a></li>
-            <li class="admin-only" style="display: none">
-              <a href="dashboard.html">Dashboard</a>
-            </li>
           </div>
         </div>
       </div>
@@ -1486,7 +1477,9 @@
               <h2>Thêm CPU (Vi xử lý) Mới</h2>
             </div>
           </div>
-          <button type="button" class="btn-close" id="close-cpu-add-modal"><i class="bx bx-x"></i></button>
+          <button type="button" class="btn-close" id="close-cpu-add-modal">
+            <i class="bx bx-x"></i>
+          </button>
         </div>
 
         <!-- Body -->
@@ -1494,20 +1487,36 @@
           <div class="modal-body">
             <!-- Tên CPU -->
             <div class="form-group">
-              <label class="form-label">Tên CPU <span class="required">*</span></label>
+              <label class="form-label"
+                >Tên CPU <span class="required">*</span></label
+              >
               <div class="input-wrapper">
                 <i class="bx bx-microchip prefix"></i>
-                <input type="text" id="add-cpu-name" class="form-control with-prefix" placeholder="Ví dụ: Intel Core i7-13700K..." required />
+                <input
+                  type="text"
+                  id="add-cpu-name"
+                  class="form-control with-prefix"
+                  placeholder="Ví dụ: Intel Core i7-13700K..."
+                  required
+                />
               </div>
             </div>
 
             <!-- Hãng sản xuất -->
             <div class="form-group">
-              <label class="form-label">Hãng sản xuất <span class="required">*</span></label>
+              <label class="form-label"
+                >Hãng sản xuất <span class="required">*</span></label
+              >
               <div class="input-wrapper">
                 <i class="bx bx-buildings prefix"></i>
-                <select id="add-cpu-brand" class="form-control with-prefix" required>
-                  <option value="" disabled selected>Chọn hãng sản xuất...</option>
+                <select
+                  id="add-cpu-brand"
+                  class="form-control with-prefix"
+                  required
+                >
+                  <option value="" disabled selected>
+                    Chọn hãng sản xuất...
+                  </option>
                   <option value="Intel">Intel</option>
                   <option value="AMD">AMD</option>
                   <option value="Khác">Khác</option>
@@ -1518,18 +1527,33 @@
 
             <!-- Điểm Benchmark -->
             <div class="form-group">
-              <label class="form-label">Điểm Benchmark <span class="required">*</span></label>
+              <label class="form-label"
+                >Điểm Benchmark <span class="required">*</span></label
+              >
               <div class="input-wrapper">
                 <i class="bx bx-bar-chart-alt-2 prefix"></i>
-                <input type="number" id="add-cpu-score" class="form-control with-prefix" placeholder="Ví dụ: 18500" required />
+                <input
+                  type="number"
+                  id="add-cpu-score"
+                  class="form-control with-prefix"
+                  placeholder="Ví dụ: 18500"
+                  required
+                />
               </div>
             </div>
           </div>
 
           <!-- Footer -->
-          <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px;">
-            <button type="button" class="btn-secondary" id="cancel-cpu-add-btn">Hủy</button>
-            <button type="submit" class="btn-primary"><i class="bx bx-save"></i> Lưu CPU</button>
+          <div
+            class="modal-footer"
+            style="display: flex; justify-content: flex-end; gap: 12px"
+          >
+            <button type="button" class="btn-secondary" id="cancel-cpu-add-btn">
+              Hủy
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="bx bx-save"></i> Lưu CPU
+            </button>
           </div>
         </form>
       </div>
@@ -1548,7 +1572,9 @@
               <h2>Thêm GPU (Card đồ họa) Mới</h2>
             </div>
           </div>
-          <button type="button" class="btn-close" id="close-gpu-add-modal"><i class="bx bx-x"></i></button>
+          <button type="button" class="btn-close" id="close-gpu-add-modal">
+            <i class="bx bx-x"></i>
+          </button>
         </div>
 
         <!-- Body -->
@@ -1556,20 +1582,36 @@
           <div class="modal-body">
             <!-- Tên GPU -->
             <div class="form-group">
-              <label class="form-label">Tên GPU <span class="required">*</span></label>
+              <label class="form-label"
+                >Tên GPU <span class="required">*</span></label
+              >
               <div class="input-wrapper">
                 <i class="bx bxs-microchip prefix"></i>
-                <input type="text" id="add-gpu-name" class="form-control with-prefix" placeholder="Ví dụ: NVIDIA GeForce RTX 4070..." required />
+                <input
+                  type="text"
+                  id="add-gpu-name"
+                  class="form-control with-prefix"
+                  placeholder="Ví dụ: NVIDIA GeForce RTX 4070..."
+                  required
+                />
               </div>
             </div>
 
             <!-- Hãng sản xuất -->
             <div class="form-group">
-              <label class="form-label">Hãng sản xuất <span class="required">*</span></label>
+              <label class="form-label"
+                >Hãng sản xuất <span class="required">*</span></label
+              >
               <div class="input-wrapper">
                 <i class="bx bx-buildings prefix"></i>
-                <select id="add-gpu-brand" class="form-control with-prefix" required>
-                  <option value="" disabled selected>Chọn hãng sản xuất...</option>
+                <select
+                  id="add-gpu-brand"
+                  class="form-control with-prefix"
+                  required
+                >
+                  <option value="" disabled selected>
+                    Chọn hãng sản xuất...
+                  </option>
                   <option value="NVIDIA">NVIDIA</option>
                   <option value="AMD">AMD</option>
                   <option value="Intel">Intel</option>
@@ -1581,18 +1623,33 @@
 
             <!-- Điểm Benchmark -->
             <div class="form-group">
-              <label class="form-label">Điểm Benchmark <span class="required">*</span></label>
+              <label class="form-label"
+                >Điểm Benchmark <span class="required">*</span></label
+              >
               <div class="input-wrapper">
                 <i class="bx bx-bar-chart-alt-2 prefix"></i>
-                <input type="number" id="add-gpu-score" class="form-control with-prefix" placeholder="Ví dụ: 21200" required />
+                <input
+                  type="number"
+                  id="add-gpu-score"
+                  class="form-control with-prefix"
+                  placeholder="Ví dụ: 21200"
+                  required
+                />
               </div>
             </div>
           </div>
 
           <!-- Footer -->
-          <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px;">
-            <button type="button" class="btn-secondary" id="cancel-gpu-add-btn">Hủy</button>
-            <button type="submit" class="btn-primary"><i class="bx bx-save"></i> Lưu GPU</button>
+          <div
+            class="modal-footer"
+            style="display: flex; justify-content: flex-end; gap: 12px"
+          >
+            <button type="button" class="btn-secondary" id="cancel-gpu-add-btn">
+              Hủy
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="bx bx-save"></i> Lưu GPU
+            </button>
           </div>
         </form>
       </div>
@@ -1601,7 +1658,7 @@
     <!-- Toast Notification -->
     <div id="home-toast" class="home-toast"></div>
 
-    <!-- Shared App JavaScript Modules -->
+    <!-- JavaScript Modules -->
     <script src="../../js/utils/toast.js" defer></script>
     <script src="../../js/utils/auth-storage.js" defer></script>
     <script src="../../js/data/games-data.js" defer></script>
