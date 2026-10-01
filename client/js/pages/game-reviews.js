@@ -37,33 +37,33 @@
   /* =============================================
      CÁC PHẦN TỬ DOM
      ============================================= */
-  const starDisplay       = document.getElementById('star-display');
-  const avgScoreEl        = document.getElementById('avg-score');
-  const reviewCountLabel  = document.getElementById('review-count-label');
-  const commentsCountLbl  = document.getElementById('comments-count-label');
-  const commentsList      = document.getElementById('comments-list');
-  const commentsEmpty     = document.getElementById('comments-empty');
+  const starDisplay = document.getElementById('star-display');
+  const avgScoreEl = document.getElementById('avg-score');
+  const reviewCountLabel = document.getElementById('review-count-label');
+  const commentsCountLbl = document.getElementById('comments-count-label');
+  const commentsList = document.getElementById('comments-list');
+  const commentsEmpty = document.getElementById('comments-empty');
 
-  const btnOpenModal      = document.getElementById('btn-open-review-modal');
-  const btnEditReview     = document.getElementById('btn-edit-review');
-  const reviewModal       = document.getElementById('review-modal');
-  const reviewModalOverlay= document.getElementById('review-modal-overlay');
-  const closReviewModal   = document.getElementById('close-review-modal');
-  const cancelReviewBtn   = document.getElementById('cancel-review-btn');
-  const reviewForm        = document.getElementById('review-form');
-  const reviewModalTitle  = document.getElementById('review-modal-title');
-  const submitReviewBtn   = document.getElementById('submit-review-btn');
+  const btnOpenModal = document.getElementById('btn-open-review-modal');
+  const btnEditReview = document.getElementById('btn-edit-review');
+  const reviewModal = document.getElementById('review-modal');
+  const reviewModalOverlay = document.getElementById('review-modal-overlay');
+  const closReviewModal = document.getElementById('close-review-modal');
+  const cancelReviewBtn = document.getElementById('cancel-review-btn');
+  const reviewForm = document.getElementById('review-form');
+  const reviewModalTitle = document.getElementById('review-modal-title');
+  const submitReviewBtn = document.getElementById('submit-review-btn');
 
-  const starPicker        = document.getElementById('star-picker');
-  const ratingValueInput  = document.getElementById('review-rating-value');
-  const reviewCommentEl   = document.getElementById('review-comment');
+  const starPicker = document.getElementById('star-picker');
+  const ratingValueInput = document.getElementById('review-rating-value');
+  const reviewCommentEl = document.getElementById('review-comment');
 
   /* =============================================
      ĐỒNG BỘ ẢNH THUMBNAIL
      ============================================= */
   function syncThumbnail() {
     const reviewThumb = document.getElementById('review-game-thumb');
-    const mainCover   = document.getElementById('gd-cover-img');
+    const mainCover = document.getElementById('gd-cover-img');
     if (reviewThumb && mainCover && mainCover.src) {
       if (mainCover.complete) {
         reviewThumb.src = mainCover.src;
@@ -90,13 +90,14 @@
      ============================================= */
   function updateRatingSummary() {
     const total = reviews.length;
-    const avg   = total > 0
+    const avg = total > 0
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / total
       : 0;
 
-    avgScoreEl.textContent      = avg.toFixed(1);
-    reviewCountLabel.textContent = `${total} Reviews`;
-    commentsCountLbl.textContent = `${total} Comments`;
+    avgScoreEl.textContent = avg.toFixed(1);
+    const reviewText = `${total} ${total === 1 ? 'Review' : 'Reviews'}`;
+    if (reviewCountLabel) reviewCountLabel.textContent = reviewText;
+    if (commentsCountLbl) commentsCountLbl.textContent = reviewText;
 
     renderStars(starDisplay, avg);
   }
@@ -224,15 +225,15 @@
 
     if (mode === 'edit' && existingReview) {
       reviewModalTitle.textContent = 'Chỉnh sửa đánh giá';
-      submitReviewBtn.textContent  = 'Lưu thay đổi';
-      reviewCommentEl.value        = existingReview.comment;
-      selectedRating               = existingReview.rating;
+      submitReviewBtn.textContent = 'Lưu thay đổi';
+      reviewCommentEl.value = existingReview.comment;
+      selectedRating = existingReview.rating;
       updateStarPicker(selectedRating);
     } else {
       reviewModalTitle.textContent = 'Viết đánh giá';
-      submitReviewBtn.textContent  = 'Gửi đánh giá';
-      reviewCommentEl.value        = '';
-      selectedRating               = 0;
+      submitReviewBtn.textContent = 'Gửi đánh giá';
+      reviewCommentEl.value = '';
+      selectedRating = 0;
       updateStarPicker(0);
     }
   }
@@ -263,7 +264,7 @@
       return;
     }
 
-    const rating  = parseInt(ratingValueInput.value, 10);
+    const rating = parseInt(ratingValueInput.value, 10);
     const comment = reviewCommentEl.value.trim();
 
     if (rating === 0) {
