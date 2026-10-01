@@ -125,40 +125,23 @@
       <!-- Nhóm 1: Thể loại Game -->
       <div class="filter-group">
         <h4>Thể loại</h4>
-        <div class="chip-list" data-filter-type="category">
-          <button class="filter-chip" data-value="Action">Action</button>
-          <button class="filter-chip" data-value="RPG">RPG</button>
-          <button class="filter-chip" data-value="FPS">FPS</button>
-          <button class="filter-chip" data-value="MOBA">MOBA</button>
-          <button class="filter-chip" data-value="Sandbox">Sandbox</button>
-        </div>
+        <div class="chip-list" data-filter-type="category" id="category-filter-list"
+          style="max-height: 150px; overflow-y: auto;"></div>
       </div>
       <!-- Nhóm 2: Nhà phát hành -->
       <div class="filter-group">
         <h4>Nhà phát hành</h4>
-        <div class="chip-list" data-filter-type="publisher">
-          <button class="filter-chip" data-value="HoYoverse">
-            HoYoverse
-          </button>
-          <button class="filter-chip" data-value="Riot Games">
-            Riot Games
-          </button>
-          <button class="filter-chip" data-value="Valve">Valve</button>
-          <button class="filter-chip" data-value="Kuro Games">
-            Kuro Games
-          </button>
-          <button class="filter-chip" data-value="Mojang Studios">
-            Mojang Studios
-          </button>
+        <div class="chip-list" data-filter-type="publisher" id="publisher-filter-list"
+          style="max-height: 150px; overflow-y: auto;">
         </div>
       </div>
       <!-- Nhóm 3: Yêu cầu RAM tối thiểu -->
       <div class="filter-group">
-        <h4>Yêu cầu RAM</h4>
+        <h4>Yêu cầu RAM tối thiểu</h4>
         <div class="chip-list" data-filter-type="ram">
-          <button class="filter-chip" data-value="4 GB">4 GB</button>
-          <button class="filter-chip" data-value="8 GB">8 GB</button>
-          <button class="filter-chip" data-value="16 GB">16 GB</button>
+          <button class="filter-chip" data-value="4">4 GB</button>
+          <button class="filter-chip" data-value="8">8 GB</button>
+          <button class="filter-chip" data-value="16">16 GB</button>
         </div>
       </div>
       <!-- Footer chứa nút Bỏ chọn & Xem kết quả -->
@@ -247,8 +230,7 @@
           <label>CPU <span style="color:red">*</span></label>
           <div class="hw-combobox" data-hw-type="cpu">
             <div class="hw-combobox-input-wrap">
-              <input type="text" class="hw-combobox-text" data-hw-search
-                     placeholder="Nhập CPU..." autocomplete="off" />
+              <input type="text" class="hw-combobox-text" data-hw-search placeholder="Nhập CPU..." autocomplete="off" />
               <i class="bx bx-chevron-down hw-combobox-icon"></i>
             </div>
             <input type="hidden" id="pc-cpu" data-hw-id />
@@ -259,8 +241,7 @@
           <label>GPU <span style="color:red">*</span></label>
           <div class="hw-combobox" data-hw-type="gpu">
             <div class="hw-combobox-input-wrap">
-              <input type="text" class="hw-combobox-text" data-hw-search
-                     placeholder="Nhập GPU..." autocomplete="off" />
+              <input type="text" class="hw-combobox-text" data-hw-search placeholder="Nhập GPU..." autocomplete="off" />
               <i class="bx bx-chevron-down hw-combobox-icon"></i>
             </div>
             <input type="hidden" id="pc-gpu" data-hw-id />

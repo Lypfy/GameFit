@@ -286,6 +286,25 @@ const getCompatibilityPercent = async (req, res) => {
     }
 };
 
+const getCategories = async (req, res) => {
+    try {
+        const categories = await gamesService.getAllCategories();
+        return res.status(200).json({ success: true, data: categories });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: 'Lỗi server' });
+    }
+};
+
+
+const getPublishers = async (req, res) => {
+    try {
+        const publishers = await gamesService.getAllPublishers();
+        return res.status(200).json({ success: true, data: publishers });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: 'Lỗi server' });
+    }
+};
+
 module.exports = {
     getGames,
     getFullGameDetail,
@@ -295,7 +314,9 @@ module.exports = {
     getGameByTag,
     addGame,
     deleteGame,
-    updateGame
+    updateGame,
+    getCategories,
+    getPublishers
 };
 
 

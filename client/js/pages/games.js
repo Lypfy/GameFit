@@ -154,7 +154,22 @@ document.addEventListener("DOMContentLoaded", function () {
     currentUser =
       typeof getCurrentUser === "function" ? getCurrentUser() : null;
     await fetchUserWishlist();
-    await fetchGames();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryFromUrl = urlParams.get('category');
+
+    const filters = {};
+    if (categoryFromUrl) {
+      filters.categories = [categoryFromUrl];
+
+      // Đợi danh sách tag được render xong rồi đánh dấu active
+      setTimeout(() => {
+        const btn = document.querySelector(`.filter-chip[data-value="${categoryFromUrl}"]`);
+        if (btn) btn.classList.add('active');
+      }, 500);
+    }
+
+    await fetchGames(1, filters);
   }
 
   initializeData();

@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       const tagsContainer = document.getElementById("gd-tags-container");
       if (tagsContainer) {
         tagsContainer.innerHTML = allTags
-          .map((tag) => `<span class="detail-tag-badge">${tag}</span>`)
+          .map((tag) => `<a href="games.html?category=${encodeURIComponent(tag)}" class="detail-tag-badge">${tag}</a>`)
           .join("");
       }
     }

@@ -251,6 +251,23 @@ const getCompatibilityPercent = async (
   }
 };
 
+const getAllCategories = async () => {
+  // Thay đổi câu query này theo đúng tên bảng chứa Tags trong Database của bạn
+  const query = `SELECT name FROM Tags`;
+
+  const pool = await sql.connect();
+  const result = await pool.request().query(query);
+  return result.recordset.map(row => row.name); // trả về mảng chuỗi
+};
+
+
+const getAllPublishers = async () => {
+  const query = `SELECT DISTINCT publisher FROM Games WHERE publisher IS NOT NULL AND publisher != ''`;
+  const pool = await sql.connect();
+  const result = await pool.request().query(query);
+  return result.recordset.map(row => row.publisher);
+};
+
 module.exports = {
   getGames,
   getFullGameDetail,
@@ -261,4 +278,6 @@ module.exports = {
   addGame,
   updateGame,
   deleteGame,
+  getAllCategories,
+  getAllPublishers
 };
