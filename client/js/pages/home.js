@@ -217,9 +217,26 @@ async function fetchUserWishlist() {
   }
 }
 
+function renderPopularSkeleton(count = 4) {
+  const wrapper = document.querySelector(".popular-content .swiper-wrapper");
+  if (!wrapper) return;
+  wrapper.innerHTML = Array(count)
+    .fill(
+      `<div class="swiper-slide">
+        <div class="skeleton-box">
+          <div class="skeleton-element skeleton-img"></div>
+          <div class="skeleton-element skeleton-title"></div>
+          <div class="skeleton-element skeleton-sub"></div>
+          <div class="skeleton-element skeleton-badge"></div>
+        </div>
+      </div>`,
+    )
+    .join("");
+}
+
 async function fetchAllGames() {
   try {
-    const res = await fetch(`http://localhost:5000/api/games?page=1&limit=50`);
+    const res = await fetch(`http://localhost:5000/api/games?page=1&limit=8`);
     const data = await res.json();
     if (data.success) {
       allGames = data.data;
@@ -231,23 +248,12 @@ async function fetchAllGames() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", async function () {
-  currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+let popularSwiper = null;
 
-  await fetchAllGames();
-  await fetchUserWishlist();
-
-  // Lọc lấy 8 games có rating cao nhất cho phần Popular Games
-  const popularGames = [...allGames]
-    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-    .slice(0, 8);
-
-  renderPopularGames(popularGames);
-  renderCategorySections();
-  await fetchAndRenderActionGames();
-
-  if (typeof Swiper !== "undefined") {
-    new Swiper(".popular-content", {
+function initOrUpdateSwiper() {
+  if (typeof Swiper === "undefined") return;
+  if (!popularSwiper) {
+    popularSwiper = new Swiper(".popular-content", {
       slidesPerView: 1,
       spaceBetween: 10,
       pagination: {
@@ -272,6 +278,42 @@ document.addEventListener("DOMContentLoaded", async function () {
           spaceBetween: 20,
         },
       },
+    });
+  } else {
+    popularSwiper.update();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async function () {
+  currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+
+  // Render skeleton và khởi tạo Swiper ngay lập tức để giữ khung 4 cột (không bị trượt 1 hình to)
+  renderPopularSkeleton(4);
+  initOrUpdateSwiper();
+
+  await fetchAllGames();
+
+  // Lọc lấy 8 games có rating cao nhất cho phần Popular Games
+  const popularGames = [...allGames]
+    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    .slice(0, 8);
+
+  renderPopularGames(popularGames);
+  initOrUpdateSwiper();
+
+  renderCategorySections();
+  await fetchAndRenderActionGames();
+  fetchUserWishlist().then(() => {
+    updateWishlistUI();
+  });
+
+  function updateWishlistUI() {
+    document.querySelectorAll(".wishlist-btn").forEach((btn) => {
+      const gameId = btn.getAttribute("data-game-id");
+      if (gameId && savedWishlistGameIds.has(gameId)) {
+        btn.src = "../assets/yellow_bookmarks.png";
+        btn.title = "Xóa khỏi Wishlist";
+      }
     });
   }
 

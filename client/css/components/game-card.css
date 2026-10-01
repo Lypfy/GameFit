@@ -102,7 +102,6 @@
   box-shadow: 0 4px 5px rgba(250, 83, 83, 0.4);
 }
 
-/* Container Tag cố định chiều cao giúp tất cả thẻ game đều nhau */
 .box .game-tags-list {
   display: flex;
   align-items: center;
@@ -137,40 +136,61 @@
   flex-shrink: 0;
 }
 
-/* Kích thước & Hiệu ứng bookmark (Wishlist - Option 1: Gold Amber) */
 .wishlist-btn {
-  width: 16px !important;
-  height: 22px !important;
-  bottom: 20px !important;
-  right: 15px !important;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  cursor: pointer !important;
-  user-select: none;
+  width: 25px !important;
+  height: 34px !important;
 }
 
-/* Trạng thái chưa thêm (White bookmark) */
-.wishlist-btn[src*="white_bookmarks"] {
-  opacity: 0.7;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
-.wishlist-btn[src*="white_bookmarks"]:hover {
-  opacity: 1;
-  transform: scale(1.06);
-  filter: drop-shadow(0 1px 4px rgba(255, 255, 255, 0.8));
+.skeleton-box {
+  pointer-events: none;
+  background: var(--light-color, #1e293b);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-/* Trạng thái ĐÃ thêm (Yellow bookmark - Vàng hổ phách phát sáng) */
-.wishlist-btn[src*="yellow_bookmarks"] {
-  opacity: 1;
+.skeleton-element {
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.04) 25%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.04) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite linear;
+  border-radius: 4px;
 }
 
-.wishlist-btn[src*="yellow_bookmarks"]:hover {
-  transform: scale(1.06);
-  filter: drop-shadow(0 1px 4px rgba(255, 183, 3, 0.6));
+.skeleton-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
 }
 
-/* Hiệu ứng khi click */
-.wishlist-btn:active {
-  transform: scale(0.9) !important;
+.skeleton-title {
+  width: 75%;
+  height: 18px;
+  margin: 14px 16px 8px;
+}
+
+.skeleton-sub {
+  width: 45%;
+  height: 14px;
+  margin: 0 16px 12px;
+}
+
+.skeleton-badge {
+  width: 35%;
+  height: 24px;
+  margin: 0 16px 14px;
+  border-radius: 12px;
 }
