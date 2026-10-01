@@ -5,10 +5,18 @@ const filterOverlay = document.getElementById("filter-modal-overlay");
 const btnResetFilter = document.getElementById("btn-reset-filter");
 
 document.addEventListener("DOMContentLoaded", function () {
+  let isFilterDataLoaded = false;
+
   // Mở - Đóng bộ lộc
-  function openFilterModal() {
+  async function openFilterModal() {
     filterModal?.classList.add("active");
     filterOverlay?.classList.add("active");
+
+    // Chỉ gọi API 1 lần duy nhất khi người dùng click mở Filter
+    if (!isFilterDataLoaded) {
+      await Promise.all([loadCategoriesFilter(), loadPublishersFilter()]);
+      isFilterDataLoaded = true;
+    }
   }
   window.closeFilterModal = function () {
     filterModal?.classList.remove("active");
@@ -32,12 +40,19 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 async function loadCategoriesFilter() {
+  const categoryContainer = document.getElementById("category-filter-list");
+  if (categoryContainer) {
+    categoryContainer.innerHTML = Array(10)
+      .fill(
+        '<div class="skeleton-element" style="width: 65px; height: 28px; border-radius: 8px; display: inline-block;"></div>',
+      )
+      .join("");
+  }
   try {
     const res = await fetch("http://localhost:5000/api/games/categories");
     const result = await res.json();
 
-    if (result.success && result.data) {
-      const categoryContainer = document.getElementById("category-filter-list");
+    if (result.success && result.data && categoryContainer) {
       categoryContainer.innerHTML = ""; // Xóa rỗng trước khi đổ
 
       // Lặp qua 72 tags và tạo các nút
@@ -61,14 +76,19 @@ async function loadCategoriesFilter() {
 }
 
 async function loadPublishersFilter() {
+  const publisherContainer = document.getElementById("publisher-filter-list");
+  if (publisherContainer) {
+    publisherContainer.innerHTML = Array(8)
+      .fill(
+        '<div class="skeleton-element" style="width: 90px; height: 28px; border-radius: 8px; display: inline-block;"></div>',
+      )
+      .join("");
+  }
   try {
     const res = await fetch("http://localhost:5000/api/games/publishers");
     const result = await res.json();
 
-    if (result.success && result.data) {
-      const publisherContainer = document.getElementById(
-        "publisher-filter-list",
-      );
+    if (result.success && result.data && publisherContainer) {
       publisherContainer.innerHTML = ""; // Xóa rỗng trước khi đổ
 
       result.data.forEach((publisherName) => {
@@ -88,6 +108,3 @@ async function loadPublishersFilter() {
     console.error("Lỗi khi load danh sách nhà phát hành:", error);
   }
 }
-
-loadCategoriesFilter();
-loadPublishersFilter();

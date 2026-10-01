@@ -142,3 +142,59 @@
   width: 25px !important;
   height: 34px !important;
 }
+
+/* Skeleton Loading Effects */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-box {
+  pointer-events: none;
+  background: var(--light-color, #1e293b);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.skeleton-element {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite linear;
+  border-radius: 4px;
+}
+
+.skeleton-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.skeleton-title {
+  width: 75%;
+  height: 18px;
+  margin: 14px 16px 8px;
+}
+
+.skeleton-sub {
+  width: 45%;
+  height: 14px;
+  margin: 0 16px 12px;
+}
+
+.skeleton-badge {
+  width: 35%;
+  height: 24px;
+  margin: 0 16px 14px;
+  border-radius: 12px;
+}

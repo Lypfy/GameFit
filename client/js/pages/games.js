@@ -67,9 +67,25 @@ document.addEventListener("DOMContentLoaded", function () {
   let totalPages = 1;
   const limit = 20;
 
-  // Lấy dữ liệu từ Database thông qua API
+  function renderSkeletonCards(count = 12) {
+    const gamesContent = document.querySelector(".games-content");
+    if (!gamesContent) return;
+    const skeletonHtml = Array(count)
+      .fill(
+        `<div class="skeleton-box">
+          <div class="skeleton-element skeleton-img"></div>
+          <div class="skeleton-element skeleton-title"></div>
+          <div class="skeleton-element skeleton-sub"></div>
+          <div class="skeleton-element skeleton-badge"></div>
+        </div>`,
+      )
+      .join("");
+    gamesContent.innerHTML = skeletonHtml;
+  }
+
   // Lấy dữ liệu từ Database thông qua API có hỗ trợ Filter
   async function fetchGames(page = 1, filters = {}) {
+    renderSkeletonCards(12);
     try {
       let url = `http://localhost:5000/api/games?page=${page}&limit=${limit}`;
 
@@ -165,7 +181,6 @@ document.addEventListener("DOMContentLoaded", function () {
   async function initializeData() {
     currentUser =
       typeof getCurrentUser === "function" ? getCurrentUser() : null;
-    await fetchUserWishlist();
 
     const urlParams = new URLSearchParams(window.location.search);
     const categoryFromUrl = urlParams.get("category");
@@ -182,8 +197,19 @@ document.addEventListener("DOMContentLoaded", function () {
         if (btn) btn.classList.add("active");
       }, 500);
     }
-
     await fetchGames(1, filters);
+    fetchUserWishlist().then(() => {
+      updateWishlistUI();
+    });
+  }
+  function updateWishlistUI() {
+    document.querySelectorAll(".wishlist-btn").forEach((btn) => {
+      const gameId = btn.getAttribute("data-game-id");
+      if (gameId && savedWishlistGameIds.has(gameId)) {
+        btn.src = "../assets/yellow_bookmarks.png";
+        btn.title = "Xóa khỏi Wishlist";
+      }
+    });
   }
 
   initializeData();
