@@ -1,466 +1,594 @@
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thống kê - Báo cáo</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <!-- BoxIcons -->
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../../css/pages/admin/statistics.css" />
-  </head>
 
-  <body>
-    <div class="page-container">
-      <!-- Tabs Navigation -->
-      <div class="tabs-container">
-        <button class="tab-btn active" data-tab="tab-1">Thống kê chung</button>
-        <button class="tab-btn" data-tab="tab-2">Phân bố thể loại</button>
-        <button class="tab-btn" data-tab="tab-3">Top đánh giá</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thống kê - Báo cáo</title>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- BoxIcons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../../css/pages/admin/statistics.css" />
+</head>
+
+<body>
+  <div class="page-container">
+    <!-- Tabs Navigation & Export Actions -->
+    <div class="tabs-container">
+      <div class="tabs-nav-group">
+        <button class="tab-btn active" data-tab="tab-1">Chung</button>
+        <button class="tab-btn" data-tab="tab-2">Thể loại</button>
+        <button class="tab-btn" data-tab="tab-3">Wishlist & Đánh giá</button>
+        <button class="tab-btn" data-tab="tab-4">Phần cứng</button>
       </div>
 
-      <!-- Filter Bar -->
-      <div class="filter-bar hidden">
-        <div class="filter-group">
-          <button class="filter-btn">Day</button>
-          <button class="filter-btn">Week</button>
-          <button class="filter-btn active">Month</button>
-          <button class="filter-btn">Year</button>
-          <button class="filter-btn">All time</button>
+      <div class="tabs-export-group">
+        <div class="export-scope-wrapper">
+          <i class="bx bx-filter-alt"></i>
+          <select id="export-scope-select" class="export-scope-select" title="Chọn phạm vi dữ liệu xuất">
+            <option value="tab-1">Tab 1: Chung</option>
+            <option value="tab-2">Tab 2: Thể loại</option>
+            <option value="tab-3">Tab 3: Wishlist & Đánh giá</option>
+            <option value="tab-4">Tab 4: Phần cứng</option>
+            <option value="all">Tất cả các tab</option>
+          </select>
         </div>
+        <button type="button" id="btn-open-export-modal" class="btn-export-stats">
+          <i class="bx bx-export"></i> Xuất thống kê
+        </button>
+      </div>
+    </div>
 
-        <div class="custom-date">
-          <span>Từ ngày:</span>
-          <input type="date" value="2024-01-01" />
-          <span>Đến ngày:</span>
-          <input type="date" value="2024-12-31" />
+    <!-- Filter Bar cho Tab Thể loại -->
+    <div class="filter-bar hidden" id="genre-filter-bar">
+      <div class="filter-metric-group">
+        <span class="filter-title"><i class="bx bx-slider-alt"></i> Thống kê theo:</span>
+        <div class="filter-pills">
+          <button class="genre-metric-btn active" data-metric="games">
+            <i class="bx bx-joystick"></i> Số lượng game
+          </button>
+          <button class="genre-metric-btn" data-metric="wishlist">
+            <i class="bx bx-bookmark-heart"></i> Lượt Wishlist
+          </button>
+          <button class="genre-metric-btn" data-metric="rating">
+            <i class="bx bx-star"></i> Điểm đánh giá TB
+          </button>
         </div>
       </div>
 
-      <!-- TAB 1: BM_TKBC01 - Thống kê chung -->
-      <div id="tab-1" class="tab-content active">
-        <!-- Thẻ thông số -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon primary">
-              <i class="bx bx-joystick"></i>
-            </div>
-            <div class="stat-info">
-              <p>Tổng số game</p>
-              <h3>1,245</h3>
-            </div>
+      <div class="filter-sort-group">
+        <span class="filter-title"><i class="bx bx-sort"></i> Sắp xếp:</span>
+        <select id="genre-sort-select" class="genre-sort-select">
+          <option value="desc">Cao nhất ↓</option>
+          <option value="asc">Thấp nhất ↑</option>
+          <option value="alpha">Tên thể loại (A - Z)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- TAB 1: BM_TKBC01 - Thống kê chung -->
+    <div id="tab-1" class="tab-content active">
+      <!-- Thẻ thông số -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon primary">
+            <i class="bx bx-joystick"></i>
           </div>
-          <div class="stat-card">
-            <div class="stat-icon success">
-              <i class="bx bx-check-circle"></i>
-            </div>
-            <div class="stat-info">
-              <p>Đang hoạt động</p>
-              <h3>1,120</h3>
-            </div>
+          <div class="stat-info">
+            <p>Tổng số game</p>
+            <h3 id="stat-general-total">--</h3>
           </div>
-          <div class="stat-card">
-            <div class="stat-icon danger">
-              <i class="bx bx-block"></i>
-            </div>
-            <div class="stat-info">
-              <p>Ngừng hoạt động</p>
-              <h3>125</h3>
-            </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon success">
+            <i class="bx bx-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <p>Đang hoạt động</p>
+            <h3 id="stat-general-active">--</h3>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon danger">
+            <i class="bx bx-block"></i>
+          </div>
+          <div class="stat-info">
+            <p>Ngừng hoạt động</p>
+            <h3 id="stat-general-inactive">--</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khu vực biểu đồ -->
+      <div class="charts-grid">
+        <!-- Biểu đồ biến động (Line Chart) -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Biến động số lượng game theo năm</div>
+            <i class="bx bx-line-chart" style="color: var(--text-muted); font-size: 20px"></i>
+          </div>
+          <div id="general-trend-chart" class="trend-chart-container">
+            <!-- Biểu đồ đường SVG sinh động render động từ statistics.js -->
           </div>
         </div>
 
-        <!-- Khu vực biểu đồ -->
-        <div class="charts-grid">
-          <!-- Biểu đồ biến động (Line Chart) -->
-          <div class="chart-card">
-            <div class="chart-header">
-              <div class="chart-title">Biến động số lượng game</div>
-              <i
-                class="bx bx-line-chart"
-                style="color: var(--text-muted); font-size: 20px"
-              ></i>
-            </div>
-            <svg
-              class="line-chart-svg"
-              viewBox="0 0 600 200"
-              preserveAspectRatio="none"
-            >
-              <!-- Đường kẻ lưới (Grid lines) -->
-              <line
-                x1="0"
-                y1="50"
-                x2="600"
-                y2="50"
-                stroke="var(--border-color)"
-                stroke-width="1"
-                stroke-dasharray="4"
-              />
-              <line
-                x1="0"
-                y1="100"
-                x2="600"
-                y2="100"
-                stroke="var(--border-color)"
-                stroke-width="1"
-                stroke-dasharray="4"
-              />
-              <line
-                x1="0"
-                y1="150"
-                x2="600"
-                y2="150"
-                stroke="var(--border-color)"
-                stroke-width="1"
-                stroke-dasharray="4"
-              />
-
-              <!-- Đường cong biểu đồ -->
-              <polyline
-                points="0,180 100,140 200,60 300,120 400,90 500,40 600,70"
-                fill="none"
-                stroke="var(--primary)"
-                stroke-width="3"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-
-              <!-- Vùng màu dưới biểu đồ (Area) -->
-              <polygon
-                points="0,180 100,140 200,60 300,120 400,90 500,40 600,70 600,200 0,200"
-                fill="rgba(244, 63, 94, 0.1)"
-              />
-            </svg>
+        <!-- Biểu đồ trạng thái (Donut Chart) -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Trạng thái game</div>
+            <i class="bx bx-pie-chart-alt" style="color: var(--text-muted); font-size: 20px"></i>
           </div>
-
-          <!-- Biểu đồ trạng thái (Donut Chart) -->
-          <div class="chart-card">
-            <div class="chart-header">
-              <div class="chart-title">Trạng thái game</div>
-              <i
-                class="bx bx-pie-chart-alt"
-                style="color: var(--text-muted); font-size: 20px"
-              ></i>
-            </div>
-            <div class="donut-chart-container">
-              <div class="donut-chart">
-                <div class="donut-hole">
-                  <h3>1,245</h3>
-                  <p>Tổng số</p>
-                </div>
-              </div>
-              <div class="chart-legend">
-                <div class="legend-item">
-                  <div class="legend-color">
-                    <div class="color-dot success"></div>
-                    Đang hoạt động
-                  </div>
-                  <span>85%</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-color">
-                    <div class="color-dot danger"></div>
-                    Ngừng hoạt động
-                  </div>
-                  <span>15%</span>
-                </div>
-              </div>
-            </div>
+          <div class="donut-chart-container" id="general-donut-container">
+            <!-- Render động donut + chú thích -->
           </div>
         </div>
+      </div>
 
-        <!-- Bảng Game mới thêm -->
-        <div class="table-card">
-          <div class="table-header">
+      <!-- Bảng Game mới thêm -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-header-title">
             <h2>Game được thêm gần đây</h2>
           </div>
+          <div class="table-actions-group">
+            <div class="table-search-box">
+              <i class="bx bx-search"></i>
+              <input type="text" id="recent-game-search-input" placeholder="Tìm tên game..." autocomplete="off" />
+            </div>
+          </div>
+        </div>
+        <div class="table-scroll-container">
           <table class="data-table">
             <thead class="highlight-headers">
               <tr>
                 <th>Tên game</th>
                 <th>Thể loại</th>
-                <th>Ngày thêm</th>
+                <th width="150px">Ngày phát hành</th>
+                <th width="140px" style="text-align: center">Trạng thái</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="recent-games-table-body">
               <tr>
-                <td style="font-weight: 500">Genshin Impact</td>
-                <td>
-                  <div class="genre-tags">
-                    <span class="genre-badge">Action</span>
-                    <span class="genre-badge">RPG</span>
-                    <span class="genre-badge">Adventure</span>
-                  </div>
-                </td>
-                <td style="color: var(--text-primary)">20/09/2026</td>
-              </tr>
-              <tr>
-                <td style="font-weight: 500">Black Myth Wukong</td>
-                <td>
-                  <div class="genre-tags">
-                    <span class="genre-badge">Action</span>
-                    <span class="genre-badge">RPG</span>
-                  </div>
-                </td>
-                <td style="color: var(--text-primary)">19/09/2026</td>
-              </tr>
-              <tr>
-                <td style="font-weight: 500">Minecraft</td>
-                <td>
-                  <div class="genre-tags">
-                    <span class="genre-badge">Adventure</span>
-                    <span class="genre-badge">Simulation</span>
-                  </div>
-                </td>
-                <td style="color: var(--text-primary)">18/09/2026</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- TAB 2: BM_TKBC02 - Thống kê game theo thể loại -->
-      <div id="tab-2" class="tab-content">
-        <div class="genre-overview-grid">
-          <!-- Phân bổ theo thể loại -->
-          <div class="table-card">
-            <div class="table-header">
-              <h2>Phân bổ theo thể loại</h2>
-            </div>
-            <div class="distribution-list">
-              <div class="dist-item">
-                <span class="dist-label">Action</span>
-                <div class="dist-bar-wrapper">
-                  <div class="dist-bar-fill" style="width: 85%"></div>
-                </div>
-                <span class="dist-val">450</span>
-              </div>
-              <div class="dist-item">
-                <span class="dist-label">RPG</span>
-                <div class="dist-bar-wrapper">
-                  <div class="dist-bar-fill" style="width: 65%"></div>
-                </div>
-                <span class="dist-val">320</span>
-              </div>
-              <div class="dist-item">
-                <span class="dist-label">Adventure</span>
-                <div class="dist-bar-wrapper">
-                  <div class="dist-bar-fill" style="width: 45%"></div>
-                </div>
-                <span class="dist-val">210</span>
-              </div>
-              <div class="dist-item">
-                <span class="dist-label">Strategy</span>
-                <div class="dist-bar-wrapper">
-                  <div class="dist-bar-fill" style="width: 25%"></div>
-                </div>
-                <span class="dist-val">145</span>
-              </div>
-              <div class="dist-item">
-                <span class="dist-label">Simulation</span>
-                <div class="dist-bar-wrapper">
-                  <div class="dist-bar-fill" style="width: 15%"></div>
-                </div>
-                <span class="dist-val">120</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tổng quan -->
-          <div class="table-card">
-            <div class="table-header">
-              <h2>Tổng quan</h2>
-            </div>
-            <div class="genre-summary">
-              <div class="summary-row">
-                <span>Tổng game</span>
-                <strong>1,245</strong>
-              </div>
-              <div class="summary-row">
-                <span>Thể loại</span>
-                <strong>8</strong>
-              </div>
-              <div class="summary-row">
-                <span>Phổ biến</span>
-                <strong>Action</strong>
-              </div>
-              <div class="summary-row">
-                <span>Tỷ lệ</span>
-                <strong style="color: var(--primary)">36.1%</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Chi tiết phân bổ -->
-        <div class="table-card">
-          <div class="table-header">
-            <h2>Chi tiết phân bổ</h2>
-          </div>
-          <table class="data-table">
-            <thead class="highlight-headers">
-              <tr>
-                <th>STT</th>
-                <th>Thể loại</th>
-                <th>Số lượng</th>
-                <th style="text-align: right">Tỷ lệ</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td style="font-weight: 500">Action</td>
-                <td style="color: var(--text-primary)">450</td>
-                <td style="text-align: right; color: var(--text-primary)">
-                  36.1%
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td style="font-weight: 500">RPG</td>
-                <td style="color: var(--text-primary)">320</td>
-                <td style="text-align: right; color: var(--text-primary)">
-                  25.7%
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td style="font-weight: 500">Adventure</td>
-                <td style="color: var(--text-primary)">210</td>
-                <td style="text-align: right; color: var(--text-primary)">
-                  16.9%
-                </td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td style="font-weight: 500">Strategy</td>
-                <td style="color: var(--text-primary)">145</td>
-                <td style="text-align: right; color: var(--text-primary)">
-                  11.6%
-                </td>
-              </tr>
-              <tr>
-                <td>5</td>
-                <td style="font-weight: 500">Simulation</td>
-                <td style="color: var(--text-primary)">120</td>
-                <td style="text-align: right; color: var(--text-primary)">
-                  9.6%
+                <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                  Đang tải danh sách game mới nhất...
                 </td>
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
-
-      <!-- TAB 3: BM_TKBC03 - Game được đánh giá nhiều -->
-      <div id="tab-3" class="tab-content">
-        <div class="table-card">
-          <div class="table-header">
-            <h2>Được đánh giá nhiều nhất</h2>
-            <i
-              class="bx bx-star"
-              style="color: var(--text-muted); font-size: 24px"
-            ></i>
-          </div>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th width="80px">STT</th>
-                <th>Tên game</th>
-                <th width="200px" style="text-align: center">Số lượt ĐG</th>
-                <th width="150px" style="text-align: right">Điểm TB</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="rank-badge rank-1">1</div>
-                </td>
-                <td style="font-weight: 500">Black Myth: Wukong</td>
-                <td style="text-align: center; color: var(--text-primary)">
-                  12,450
-                </td>
-                <td style="text-align: right">
-                  <div class="rating-score" style="justify-content: flex-end">
-                    4.9 <i class="bx bxs-star"></i>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="rank-badge rank-2">2</div>
-                </td>
-                <td style="font-weight: 500">Cyberpunk 2077</td>
-                <td style="text-align: center; color: var(--text-primary)">
-                  9,820
-                </td>
-                <td style="text-align: right">
-                  <div class="rating-score" style="justify-content: flex-end">
-                    4.7 <i class="bx bxs-star"></i>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="rank-badge rank-3">3</div>
-                </td>
-                <td style="font-weight: 500">Elden Ring</td>
-                <td style="text-align: center; color: var(--text-primary)">
-                  8,540
-                </td>
-                <td style="text-align: right">
-                  <div class="rating-score" style="justify-content: flex-end">
-                    4.8 <i class="bx bxs-star"></i>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="rank-badge">4</div>
-                </td>
-                <td style="font-weight: 500">Red Dead Redemption 2</td>
-                <td style="text-align: center; color: var(--text-primary)">
-                  7,120
-                </td>
-                <td style="text-align: right">
-                  <div class="rating-score" style="justify-content: flex-end">
-                    4.9 <i class="bx bxs-star"></i>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="rank-badge">5</div>
-                </td>
-                <td style="font-weight: 500">GTA V</td>
-                <td style="text-align: center; color: var(--text-primary)">
-                  6,300
-                </td>
-                <td style="text-align: right">
-                  <div class="rating-score" style="justify-content: flex-end">
-                    4.6 <i class="bx bxs-star"></i>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="table-footer">
-            <button class="btn-outline">Xem thêm</button>
-          </div>
         </div>
       </div>
     </div>
 
-    <script src="../js/components/statistics.js"></script>
-  </body>
+    <!-- TAB 2: BM_TKBC02 - Thống kê game theo thể loại -->
+    <div id="tab-2" class="tab-content">
+      <div class="genre-overview-grid">
+        <!-- Phân bổ theo thể loại -->
+        <div class="table-card">
+          <div class="table-header">
+            <h2 id="genre-dist-title">Phân bổ theo số lượng game</h2>
+          </div>
+          <div class="distribution-list" id="genre-distribution-list">
+            <!-- Render động từ API /api/statistics/genres -->
+          </div>
+        </div>
+
+        <!-- Tổng quan -->
+        <div class="table-card">
+          <div class="table-header">
+            <h2>Tổng quan</h2>
+          </div>
+          <div class="genre-summary" id="genre-summary-box">
+            <!-- Render động từ API /api/statistics/genres -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Chi tiết phân bổ -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-header-title">
+            <h2>Chi tiết phân bổ</h2>
+          </div>
+          <div class="table-actions-group">
+            <div class="table-search-box">
+              <i class="bx bx-search"></i>
+              <input type="text" id="genre-search-input" placeholder="Tìm kiếm thể loại..." autocomplete="off" />
+            </div>
+          </div>
+        </div>
+        <div class="table-scroll-container">
+          <table class="data-table">
+            <thead class="highlight-headers">
+              <tr>
+                <th width="70px">STT</th>
+                <th>Thể loại</th>
+                <th id="genre-metric-header" width="160px">Số lượng</th>
+                <th width="120px" style="text-align: right">Tỷ lệ</th>
+              </tr>
+            </thead>
+            <tbody id="genre-table-body">
+              <!-- Render động từ API /api/statistics/genres -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: BM_TKBC03 - Game được đánh giá nhiều & Wishlist -->
+    <div id="tab-3" class="tab-content">
+      <!-- Thẻ thông số Wishlist -->
+      <div class="stats-grid" style="margin-bottom: 1.5rem">
+        <div class="stat-card">
+          <div class="stat-icon warning">
+            <i class="bx bx-bookmark-heart"></i>
+          </div>
+          <div class="stat-info">
+            <p>Tổng lượt Wishlist</p>
+            <h3 id="stat-total-wishlist">--</h3>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon primary">
+            <i class="bx bx-joystick"></i>
+          </div>
+          <div class="stat-info">
+            <p>Số game được Wishlist</p>
+            <h3 id="stat-games-in-wishlist">--</h3>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon success">
+            <i class="bx bx-user-check"></i>
+          </div>
+          <div class="stat-info">
+            <p>Người dùng đã Wishlist</p>
+            <h3 id="stat-users-with-wishlist">--</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bảng Top Game trong Wishlist -->
+      <div class="table-card section-margin-bottom">
+        <div class="table-header">
+          <div class="table-header-title">
+            <h2>Top Game được Wishlist</h2>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
+              Các tựa game được cộng đồng người dùng quan tâm nhiều nhất
+            </p>
+          </div>
+          <div class="table-actions-group">
+            <select id="wishlist-status-select" class="genre-sort-select">
+              <option value="all">Tất cả</option>
+              <option value="released">Đã phát hành</option>
+              <option value="upcoming">Sắp ra mắt</option>
+            </select>
+            <div class="table-search-box">
+              <i class="bx bx-search"></i>
+              <input type="text" id="wishlist-search-input" placeholder="Tìm tên game..." autocomplete="off" />
+            </div>
+          </div>
+        </div>
+        <div class="table-scroll-container">
+          <table class="data-table">
+            <thead class="highlight-headers">
+              <tr>
+                <th width="70px">Hạng</th>
+                <th>Tên game</th>
+                <th>Thể loại</th>
+                <th width="140px">Ngày phát hành</th>
+                <th width="160px" style="text-align: right">Lượt Wishlist</th>
+              </tr>
+            </thead>
+            <tbody id="wishlist-table-body">
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                  Đang tải dữ liệu Wishlist...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bảng Game được đánh giá nhiều -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-header-title">
+            <h2>Được đánh giá nhiều nhất</h2>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
+              Top game nhận được nhiều đánh giá từ cộng đồng
+            </p>
+          </div>
+          <div class="table-actions-group">
+            <select id="review-sort-select" class="genre-sort-select">
+              <option value="count-desc">Nhiều lượt ĐG nhất</option>
+              <option value="count-asc">Ít lượt ĐG nhất</option>
+              <option value="rating-desc">Điểm TB cao nhất</option>
+              <option value="rating-asc">Điểm TB thấp nhất</option>
+            </select>
+            <select id="review-tier-select" class="genre-sort-select">
+              <option value="all">Đánh giá: Tất cả</option>
+              <option value="high">Cực kỳ tích cực (≥ 4.5 ⭐)</option>
+              <option value="medium">Tích cực (4.0 - 4.4 ⭐)</option>
+              <option value="low">Trung bình / Kém (&lt; 4.0 ⭐)</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-scroll-container">
+          <table class="data-table">
+            <thead class="highlight-headers">
+              <tr>
+                <th width="70px">Hạng</th>
+                <th>Tên game</th>
+                <th>Thể loại</th>
+                <th width="140px" style="text-align: center">Số lượt ĐG</th>
+                <th width="160px" style="text-align: right">Điểm TB</th>
+              </tr>
+            </thead>
+            <tbody id="reviews-table-body">
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                  Đang tải dữ liệu đánh giá...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Thống kê Phần cứng (Hardware Insights) -->
+    <div id="tab-4" class="tab-content">
+      <!-- Thẻ thông số phần cứng -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon info">
+            <i class="bx bx-chip"></i>
+          </div>
+          <div class="stat-info">
+            <p>Tổng số CPU</p>
+            <h3 id="stat-total-cpus">--</h3>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon primary">
+            <i class="bx bx-layer"></i>
+          </div>
+          <div class="stat-info">
+            <p>Tổng số GPU</p>
+            <h3 id="stat-total-gpus">--</h3>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple">
+            <i class="bx bx-desktop"></i>
+          </div>
+          <div class="stat-info">
+            <p>Số lượng cấu hình PC</p>
+            <h3 id="stat-total-user-pcs">--</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Biểu đồ thị phần và cấu hình RAM -->
+      <div class="hardware-charts-grid">
+        <!-- Thị phần GPU -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Thị phần GPU</div>
+            <i class="bx bx-pie-chart-alt" style="color: var(--text-muted); font-size: 20px"></i>
+          </div>
+          <div id="gpu-market-donut" class="donut-chart-container">
+            <!-- Render động Donut & Legend -->
+          </div>
+        </div>
+
+        <!-- Thị phần CPU -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Thị phần CPU</div>
+            <i class="bx bx-pie-chart-alt-2" style="color: var(--text-muted); font-size: 20px"></i>
+          </div>
+          <div id="cpu-market-donut" class="donut-chart-container">
+            <!-- Render động Donut & Legend -->
+          </div>
+        </div>
+
+        <!-- Phân bổ RAM -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Phân bổ dung lượng RAM</div>
+            <i class="bx bx-bar-chart" style="color: var(--text-muted); font-size: 20px"></i>
+          </div>
+          <div id="ram-distribution-list" class="distribution-list" style="margin-top: 10px;">
+            <!-- Render động thanh RAM bar -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Bảng Top CPU phổ biến -->
+      <div class="table-card section-margin-bottom">
+        <div class="table-header">
+          <div class="table-header-title">
+            <h2>Top CPU máy người dùng</h2>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
+              Các mẫu vi xử lý được người dùng GameFit lưu trong cấu hình máy
+            </p>
+          </div>
+          <div class="table-actions-group">
+            <select id="cpu-brand-select" class="genre-sort-select">
+              <option value="all">Hãng: Tất cả</option>
+              <option value="Intel">Intel</option>
+              <option value="AMD">AMD</option>
+            </select>
+            <select id="cpu-sort-select" class="genre-sort-select">
+              <option value="pop-desc">Phổ biến nhất</option>
+              <option value="pop-asc">Ít phổ biến nhất</option>
+              <option value="bench-desc">Điểm Bench cao nhất</option>
+              <option value="bench-asc">Điểm Bench thấp nhất</option>
+            </select>
+            <div class="table-search-box">
+              <i class="bx bx-search"></i>
+              <input type="text" id="cpu-search-input" placeholder="Tìm tên CPU..." autocomplete="off" />
+            </div>
+          </div>
+        </div>
+        <div class="table-scroll-container">
+          <table class="data-table">
+            <thead class="highlight-headers">
+              <tr>
+                <th width="70px">Hạng</th>
+                <th>Tên CPU</th>
+                <th width="140px">Hãng</th>
+                <th width="160px" style="text-align: right">Điểm Bench</th>
+                <th width="140px" style="text-align: right">Số máy</th>
+              </tr>
+            </thead>
+            <tbody id="top-cpus-table-body">
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                  Đang tải dữ liệu CPU...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bảng Top GPU phổ biến -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-header-title">
+            <h2>Top GPU máy người dùng</h2>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
+              Các mẫu card đồ họa được người dùng GameFit lưu trong cấu hình máy
+            </p>
+          </div>
+          <div class="table-actions-group">
+            <select id="gpu-brand-select" class="genre-sort-select">
+              <option value="all">Hãng: Tất cả</option>
+              <option value="NVIDIA">NVIDIA</option>
+              <option value="AMD">AMD</option>
+              <option value="Intel">Intel</option>
+            </select>
+            <select id="gpu-sort-select" class="genre-sort-select">
+              <option value="pop-desc">Phổ biến nhất</option>
+              <option value="pop-asc">Ít phổ biến nhất</option>
+              <option value="bench-desc">Điểm Bench cao nhất</option>
+              <option value="bench-asc">Điểm Bench thấp nhất</option>
+            </select>
+            <div class="table-search-box">
+              <i class="bx bx-search"></i>
+              <input type="text" id="gpu-search-input" placeholder="Tìm tên GPU..." autocomplete="off" />
+            </div>
+          </div>
+        </div>
+        <div class="table-scroll-container">
+          <table class="data-table">
+            <thead class="highlight-headers">
+              <tr>
+                <th width="70px">Hạng</th>
+                <th>Tên GPU</th>
+                <th width="140px">Hãng</th>
+                <th width="160px" style="text-align: right">Điểm Bench</th>
+                <th width="140px" style="text-align: right">Số máy</th>
+              </tr>
+            </thead>
+            <tbody id="top-gpus-table-body">
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                  Đang tải dữ liệu GPU...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini Modal: Chọn định dạng xuất dữ liệu thống kê -->
+  <div id="export-stats-modal" class="export-modal-backdrop hidden">
+    <div class="export-modal-box">
+      <div class="export-modal-header">
+        <div class="export-modal-title">
+          <i class="bx bx-export"></i>
+          <h3>Xuất báo cáo thống kê</h3>
+        </div>
+        <button type="button" class="export-modal-close" id="btn-close-export-modal" title="Đóng">
+          <i class="bx bx-x"></i>
+        </button>
+      </div>
+
+      <div class="export-modal-body">
+        <div class="export-target-info">
+          <span class="info-label">Phạm vi xuất:</span>
+          <span class="info-badge" id="export-target-badge">Tab 1: Thống kê chung</span>
+        </div>
+
+        <p class="export-desc">Vui lòng chọn định dạng:</p>
+
+        <div class="export-options-grid">
+          <!-- Option XLSX -->
+          <div class="export-option-card selected" data-format="xlsx">
+            <div class="export-icon-box xlsx">
+              <i class="bx bxs-file-doc"></i>
+            </div>
+            <div class="export-option-info">
+              <h4>Excel (.xlsx)</h4>
+              <p>Bảng tính đầy đủ dữ liệu, hỗ trợ nhiều Sheet khi chọn "Tất cả các tab"</p>
+            </div>
+            <div class="export-radio">
+              <i class="bx bxs-check-circle"></i>
+            </div>
+          </div>
+
+          <!-- Option CSV -->
+          <div class="export-option-card" data-format="csv">
+            <div class="export-icon-box csv">
+              <i class="bx bx-file"></i>
+            </div>
+            <div class="export-option-info">
+              <h4>CSV (.csv)</h4>
+              <p>Tệp văn bản chuẩn UTF-8 (tự động xuất từng tệp riêng biệt cho từng bảng)</p>
+            </div>
+            <div class="export-radio">
+              <i class="bx bx-circle"></i>
+            </div>
+          </div>
+
+          <!-- Option PDF -->
+          <div class="export-option-card" data-format="pdf">
+            <div class="export-icon-box pdf">
+              <i class="bx bxs-file-pdf"></i>
+            </div>
+            <div class="export-option-info">
+              <h4>PDF (.pdf)</h4>
+              <p>Báo cáo trình bày trực quan sẵn sàng in ấn hoặc lưu trữ tài liệu</p>
+            </div>
+            <div class="export-radio">
+              <i class="bx bx-circle"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="export-modal-footer">
+        <button type="button" class="btn-cancel-export" id="btn-cancel-export">Đóng</button>
+        <button type="button" class="btn-confirm-export" id="btn-confirm-export">
+          <i class="bx bx-download"></i> Bắt đầu xuất file
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thư viện hỗ trợ xuất Excel SheetJS -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="../../js/components/statistics.js"></script>
+</body>
+
 </html>

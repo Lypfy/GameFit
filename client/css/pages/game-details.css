@@ -132,9 +132,14 @@
   white-space: pre-line;
 }
 
-/* Tags Section */
+/* Description & Tags Section */
 .gd-tags-box {
-  margin-top: 2rem;
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.gd-description {
+  margin-bottom: 2rem;
 }
 
 .gd-tags-wrapper {

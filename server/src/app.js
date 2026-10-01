@@ -1,6 +1,6 @@
 const express = require("express");
 require("dotenv").config();
-const { connectDB, sql } = require("./config/db");
+const { connectDB } = require("./config/db");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,25 +17,6 @@ app.get("/", (req, res) => {
   res.redirect("/html/home.html");
 });
 
-// API route thử nghiệm kết nối DB
-app.get("/api/test-db", async (req, res) => {
-  try {
-    const result =
-      await sql.query`SELECT @@VERSION AS azure_version, CURRENT_TIMESTAMP AS current_time`;
-    res.json({
-      success: true,
-      message: "Kết nối Azure SQL Database thành công!",
-      data: result.recordset[0],
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: "Lỗi truy vấn Database",
-      error: err.message,
-    });
-  }
-});
-
 const computerConfigRoutes = require("./routes/computerConfig.routes");
 const authRoutes = require("./routes/auth.routes");
 const gamesRoutes = require("./routes/games.routes");
@@ -44,6 +25,7 @@ const gpusRoutes = require("./routes/gpus.routes");
 const tagsRoutes = require("./routes/tags.routes");
 const wishlistRoutes = require("./routes/wishlist.routes");
 const reviewRoutes = require("./routes/review.routes");
+const statisticsRoutes = require("./routes/statistics.routes");
 
 // Đăng ký các router
 app.use("/api/computer-config", computerConfigRoutes);
@@ -54,6 +36,7 @@ app.use("/api/gpus", gpusRoutes);
 app.use("/api/tags", tagsRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/statistics", statisticsRoutes);
 
 // Khởi tạo kết nối DB trước khi lắng nghe port
 connectDB().then(() => {

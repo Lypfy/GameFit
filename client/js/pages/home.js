@@ -355,7 +355,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             btn.classList.remove("active");
             btn.title = "Thêm vào Wishlist";
             if (typeof showToast === "function")
-              showToast("Đã xóa khỏi Wishlist", "success");
+              showToast("Đã xóa khỏi Wishlist", "delete");
           } else {
             savedWishlistGameIds.add(gameId);
             btn.classList.add("active");

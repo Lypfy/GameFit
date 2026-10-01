@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           const result = await response.json();
 
           if (result.success) {
-            showToast("Đã xóa khỏi Wishlist", "success");
+            showToast("Đã xóa khỏi Wishlist", "delete");
             // Xóa khỏi danh sách local và render lại
             wishlistGames = wishlistGames.filter(
               (g) => (g.game_id || g.id).toString() !== gameId.toString(),

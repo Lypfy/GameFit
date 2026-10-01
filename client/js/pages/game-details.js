@@ -174,8 +174,13 @@ document.addEventListener("click", (e) => {
 document.addEventListener("click", async (e) => {
   const btn = e.target.closest(".wishlist-btn");
   if (btn) {
+    currentUser = currentUser || (typeof getCurrentUser === "function" ? getCurrentUser() : null);
     if (!currentUser) {
-      alert("Vui lòng đăng nhập để sử dụng tính năng Wishlist!");
+      if (typeof showToast === "function") {
+        showToast("Vui lòng đăng nhập để lưu game vào Wishlist!", "error");
+      } else {
+        alert("Vui lòng đăng nhập để sử dụng tính năng Wishlist!");
+      }
       return;
     }
     const targetGameId = btn.getAttribute("data-game-id");
@@ -197,17 +202,31 @@ document.addEventListener("click", async (e) => {
           savedWishlistGameIds.delete(targetGameId);
           btn.classList.remove("active");
           btn.title = "Thêm vào Wishlist";
+          if (typeof showToast === "function") {
+            showToast("Đã xóa khỏi Wishlist", "delete");
+          }
         } else {
           savedWishlistGameIds.add(targetGameId);
           btn.classList.add("active");
           btn.title = "Xóa khỏi Wishlist";
+          if (typeof showToast === "function") {
+            showToast("Đã thêm vào Wishlist", "success");
+          }
         }
       } else {
-        alert(result.message || "Không thể cập nhật Wishlist!");
+        if (typeof showToast === "function") {
+          showToast(result.message || "Không thể cập nhật Wishlist!", "error");
+        } else {
+          alert(result.message || "Không thể cập nhật Wishlist!");
+        }
       }
     } catch (error) {
       console.error("Lỗi cập nhật wishlist:", error);
-      alert("Có lỗi xảy ra khi cập nhật Wishlist!");
+      if (typeof showToast === "function") {
+        showToast("Có lỗi xảy ra khi cập nhật Wishlist!", "error");
+      } else {
+        alert("Có lỗi xảy ra khi cập nhật Wishlist!");
+      }
     }
   }
 });

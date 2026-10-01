@@ -264,39 +264,75 @@
   color: #ffffff;
   font-weight: 600;
 }
-.tab-content:not(#tab-dashboard) .table-card {
+#tab-games .table-card,
+#tab-users .table-card,
+#tab-genres .table-card,
+#tab-cpus .table-card,
+#tab-gpus .table-card {
   max-height: 480px;
   overflow-y: auto;
   position: relative;
   padding-top: 0;
 }
 /* Scroll */
-.tab-content:not(#tab-dashboard) .table-card::-webkit-scrollbar {
+#tab-games .table-card::-webkit-scrollbar,
+#tab-users .table-card::-webkit-scrollbar,
+#tab-genres .table-card::-webkit-scrollbar,
+#tab-cpus .table-card::-webkit-scrollbar,
+#tab-gpus .table-card::-webkit-scrollbar {
   width: 8px;
 }
-.tab-content:not(#tab-dashboard) .table-card::-webkit-scrollbar-track {
+#tab-games .table-card::-webkit-scrollbar-track,
+#tab-users .table-card::-webkit-scrollbar-track,
+#tab-genres .table-card::-webkit-scrollbar-track,
+#tab-cpus .table-card::-webkit-scrollbar-track,
+#tab-gpus .table-card::-webkit-scrollbar-track {
   background: rgba(18, 16, 30, 0.6);
   border-radius: 10px;
 }
-.tab-content:not(#tab-dashboard) .table-card::-webkit-scrollbar-thumb {
+#tab-games .table-card::-webkit-scrollbar-thumb,
+#tab-users .table-card::-webkit-scrollbar-thumb,
+#tab-genres .table-card::-webkit-scrollbar-thumb,
+#tab-cpus .table-card::-webkit-scrollbar-thumb,
+#tab-gpus .table-card::-webkit-scrollbar-thumb {
   background: #3c375c;
   border-radius: 10px;
 }
 /* Hỗ trợ trình duyệt Firefox */
-.tab-content:not(#tab-dashboard) .table-card {
+#tab-games .table-card,
+#tab-users .table-card,
+#tab-genres .table-card,
+#tab-cpus .table-card,
+#tab-gpus .table-card {
   scrollbar-width: thin;
   scrollbar-color: #3c375c #211f34;
 }
-.tab-content:not(#tab-dashboard) .table-header {
+#tab-games .table-header,
+#tab-users .table-header,
+#tab-genres .table-header,
+#tab-cpus .table-header,
+#tab-gpus .table-header {
   padding-top: 1.5rem;
 }
 
-/* Tiêu đề bảng cố định khi cuộn */
-.tab-content:not(#tab-dashboard) .data-table thead th {
+/* Tiêu đề bảng cố định khi cuộn cho các tab Quản lý */
+#tab-games .data-table thead th,
+#tab-users .data-table thead th,
+#tab-genres .data-table thead th,
+#tab-cpus .data-table thead th,
+#tab-gpus .data-table thead th {
   position: sticky;
   top: 0;
   background-color: #211f34;
   z-index: 2;
+}
+
+/* Khử hoàn toàn cuộn thừa trên tab Thống kê Dashboard */
+#tab-dashboard .table-card {
+  max-height: none !important;
+  overflow: visible !important;
+  overflow-y: visible !important;
+  padding-top: 1.5rem !important;
 }
 
 /* Table Header Actions & Search Box */

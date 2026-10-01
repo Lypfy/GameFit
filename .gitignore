@@ -1,3 +1,5 @@
 # bỏ qua 2 thư mục/ file này
 node_modules/
 .env
+
+/ignores
