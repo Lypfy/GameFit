@@ -268,6 +268,7 @@ const getAllPublishers = async () => {
   return result.recordset.map(row => row.publisher);
 };
 
+
 module.exports = {
   getGames,
   getFullGameDetail,
