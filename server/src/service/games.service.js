@@ -268,6 +268,7 @@ const getAllPublishers = async () => {
   return result.recordset.map(row => row.publisher);
 };
 
+<<<<<<< Updated upstream
 module.exports = {
   getGames,
   getFullGameDetail,
@@ -281,3 +282,39 @@ module.exports = {
   getAllCategories,
   getAllPublishers
 };
+=======
+const getCompatibilityPercent = async (game_id, cpu_name, gpu_name, ram, storage, os) => {
+    try {
+        const pool = await sql.connect();
+        const request = pool.request();
+        request.input('game_id', sql.Int, parseInt(game_id));
+        request.input('cpu_name', sql.VarChar(100), cpu_name || '');
+        request.input('gpu_name', sql.VarChar(100), gpu_name || '');
+        request.input('ram', sql.Int, parseInt(ram) || 0);
+        request.input('storage', sql.Int, parseInt(storage) || 0);
+        request.input('os', sql.VarChar(100), os || '');
+
+        const result = await request.query(
+            'SELECT dbo.fn_GetCompatibilityPercent(@game_id, @cpu_name, @gpu_name, @ram, @storage, @os) AS percent'
+        );
+        return result.recordset?.[0]?.percent;
+    } catch (error) {
+        console.error('Error in getCompatibilityPercent Service:', error.message);
+        return null;
+    }
+};
+
+module.exports = { 
+    getGames, 
+    getFullGameDetail, 
+    getGameRequirement, 
+    checkGameCompatibility, 
+    getCompatibilityPercent,
+    getGameByTag, 
+    addGame, 
+    updateGame, 
+    deleteGame 
+};
+
+
+>>>>>>> Stashed changes
