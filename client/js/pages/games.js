@@ -4,6 +4,12 @@ const requirements =
 let savedWishlistGameIds = new Set(); // Lưu ID các game đã lưu vào Wishlist
 let currentUser = null;
 
+const bookmarkSvgIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path fill="currentColor" d="m12 12.298l1.102.679q.217.137.441-.025t.169-.429l-.306-1.257l.985-.835q.211-.187.124-.439q-.088-.251-.361-.282l-1.277-.106l-.504-1.202Q12.267 8.16 12 8.16t-.373.242l-.504 1.202l-1.277.106q-.273.03-.36.282q-.088.252.124.439l.984.835l-.305 1.257q-.056.268.168.429t.441.025zm0 4.625l-3.738 1.608q-.808.348-1.535-.134Q6 17.916 6 17.052V5.616q0-.691.463-1.153T7.616 4h8.769q.69 0 1.153.463T18 5.616v11.436q0 .864-.727 1.345q-.727.482-1.535.134z"/></svg>`;
+
+function getBookmarkHtml(gameIdStr, isSaved) {
+  return `<button type="button" class="wishlist-btn ${isSaved ? "active" : ""}" data-game-id="${gameIdStr}" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}">${bookmarkSvgIcon}</button>`;
+}
+
 function renderGames(gamesList) {
   const gamesContent = document.querySelector(".games-content");
   if (!gamesContent) return;
@@ -22,10 +28,7 @@ function renderGames(gamesList) {
     .map((game) => {
       const gameIdStr = (game.game_id || game.id || "").toString();
       const isSaved = savedWishlistGameIds.has(gameIdStr);
-      const bookmarkIcon = isSaved
-        ? "../assets/yellow_bookmarks.png"
-        : "../assets/white_bookmarks.png";
-      const bookmarkHtml = `<img src="${bookmarkIcon}" class="wishlist-btn" data-game-id="${gameIdStr}" loading="lazy" style="position: absolute; bottom: 15px; right: 15px; width: 32px; height: 32px; z-index: 10; cursor: pointer;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}" />`;
+      const bookmarkHtml = getBookmarkHtml(gameIdStr, isSaved);
       // Xử lý Tags (Giữ độ cao cố định 1 dòng)
       const tagString = game.tags || "";
       const tagArray = tagString
@@ -206,8 +209,11 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".wishlist-btn").forEach((btn) => {
       const gameId = btn.getAttribute("data-game-id");
       if (gameId && savedWishlistGameIds.has(gameId)) {
-        btn.src = "../assets/yellow_bookmarks.png";
+        btn.classList.add("active");
         btn.title = "Xóa khỏi Wishlist";
+      } else {
+        btn.classList.remove("active");
+        btn.title = "Thêm vào Wishlist";
       }
     });
   }
@@ -247,7 +253,9 @@ document.addEventListener("DOMContentLoaded", function () {
     .querySelector(".games-content")
     ?.addEventListener("click", async (e) => {
       // Nếu click vào nút Wishlist
-      if (e.target.classList.contains("wishlist-btn")) {
+      const btn = e.target.closest(".wishlist-btn");
+      if (btn) {
+        e.preventDefault();
         e.stopPropagation(); // Ngăn sự kiện nổi bọt
         if (!currentUser) {
           if (typeof showToast === "function") {
@@ -257,7 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
           return;
         }
-        const gameId = e.target.getAttribute("data-game-id");
+        const gameId = btn.getAttribute("data-game-id");
         if (!gameId) return;
 
         const userId = currentUser.id || currentUser.user_id;
@@ -278,14 +286,14 @@ document.addEventListener("DOMContentLoaded", function () {
           if (result.success) {
             if (isSaved) {
               savedWishlistGameIds.delete(gameId);
-              e.target.src = "../assets/white_bookmarks.png";
-              e.target.title = "Thêm vào Wishlist";
+              btn.classList.remove("active");
+              btn.title = "Thêm vào Wishlist";
               if (typeof showToast === "function")
                 showToast("Đã xóa khỏi Wishlist", "success");
             } else {
               savedWishlistGameIds.add(gameId);
-              e.target.src = "../assets/yellow_bookmarks.png";
-              e.target.title = "Xóa khỏi Wishlist";
+              btn.classList.add("active");
+              btn.title = "Xóa khỏi Wishlist";
               if (typeof showToast === "function")
                 showToast("Đã thêm vào Wishlist", "success");
             }

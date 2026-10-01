@@ -3,7 +3,11 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  background: var(--dark-color);
+  background: rgba(27, 24, 43, 0.85);
+  /* Chính là #1b182b với 85% opacity */
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 3px solid rgba(1, 1, 1, 0.1);
   z-index: 100;
 }
 

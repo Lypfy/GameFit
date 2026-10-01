@@ -1,6 +1,8 @@
 let currentUser = null;
 let savedWishlistGameIds = new Set();
 
+const bookmarkSvgIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path fill="currentColor" d="m12 12.298l1.102.679q.217.137.441-.025t.169-.429l-.306-1.257l.985-.835q.211-.187.124-.439q-.088-.251-.361-.282l-1.277-.106l-.504-1.202Q12.267 8.16 12 8.16t-.373.242l-.504 1.202l-1.277.106q-.273.03-.36.282q-.088.252.124.439l.984.835l-.305 1.257q-.056.268.168.429t.441.025zm0 4.625l-3.738 1.608q-.808.348-1.535-.134Q6 17.916 6 17.052V5.616q0-.691.463-1.153T7.616 4h8.769q.69 0 1.153.463T18 5.616v11.436q0 .864-.727 1.345q-.727.482-1.535.134z"/></svg>`;
+
 async function fetchUserWishlist() {
   if (!currentUser) return;
   try {
@@ -104,11 +106,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Hiển thị nút Wishlist
     const gameIdStr = gameId.toString();
     const isSaved = savedWishlistGameIds.has(gameIdStr);
-    const bookmarkIcon = isSaved
-      ? "../assets/yellow_bookmarks.png"
-      : "../assets/white_bookmarks.png";
     document.getElementById("gd-wishlist-container").innerHTML = `
-      <img src="${bookmarkIcon}" class="wishlist-btn" loading="lazy" id="gd-wishlist-btn" data-game-id="${gameIdStr}" style="width: 32px; height: 32px; cursor: pointer; vertical-align: middle; margin-left: 10px;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}" />
+      <button type="button" class="wishlist-btn ${isSaved ? "active" : ""}" id="gd-wishlist-btn" data-game-id="${gameIdStr}" style="position: static; display: inline-flex; vertical-align: middle; margin-left: 14px; width: 36px; height: 36px;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}">${bookmarkSvgIcon}</button>
     `;
 
     // Cập nhật Mô tả
@@ -173,18 +172,20 @@ document.addEventListener("click", (e) => {
 });
 
 document.addEventListener("click", async (e) => {
-  if (e.target.classList.contains("wishlist-btn")) {
+  const btn = e.target.closest(".wishlist-btn");
+  if (btn) {
     if (!currentUser) {
       alert("Vui lòng đăng nhập để sử dụng tính năng Wishlist!");
       return;
     }
-    const targetGameId = e.target.getAttribute("data-game-id");
+    const targetGameId = btn.getAttribute("data-game-id");
     if (!targetGameId) return;
 
     try {
       const isCurrentlySaved = savedWishlistGameIds.has(targetGameId);
       const method = isCurrentlySaved ? "DELETE" : "POST";
-      const url = `http://localhost:5000/api/wishlist/${currentUser.user_id}`;
+      const userId = currentUser.id || currentUser.user_id;
+      const url = `http://localhost:5000/api/wishlist/${userId}`;
       const response = await fetch(url, {
         method: method,
         headers: { "Content-Type": "application/json" },
@@ -194,12 +195,12 @@ document.addEventListener("click", async (e) => {
       if (result.success) {
         if (isCurrentlySaved) {
           savedWishlistGameIds.delete(targetGameId);
-          e.target.src = "../assets/white_bookmarks.png";
-          e.target.title = "Thêm vào Wishlist";
+          btn.classList.remove("active");
+          btn.title = "Thêm vào Wishlist";
         } else {
           savedWishlistGameIds.add(targetGameId);
-          e.target.src = "../assets/yellow_bookmarks.png";
-          e.target.title = "Xóa khỏi Wishlist";
+          btn.classList.add("active");
+          btn.title = "Xóa khỏi Wishlist";
         }
       } else {
         alert(result.message || "Không thể cập nhật Wishlist!");

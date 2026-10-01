@@ -1,28 +1,20 @@
-/* GameFit Futuristic Glowing Search Bar (Uiverse inspired) */
+/* GameFit Clean & Modern Gaming Search Bar */
 
 .search-poda {
   position: relative;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  isolation: isolate;
   margin: 0;
 }
 
+/* Ẩn các layer xoay và glow nền cũ đã chuyển sang Logo */
 .search-poda .search-glow,
 .search-poda .search-dark-border-bg,
 .search-poda .search-white,
-.search-poda .search-border {
-  max-height: 44px;
-  max-width: 100%;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  overflow: hidden;
-  z-index: -1;
-  border-radius: 10px;
-  filter: blur(3px);
-  pointer-events: none;
+.search-poda .search-border,
+.search-poda .search-pink-mask,
+.search-poda .search-input-mask {
+  display: none !important;
 }
 
 .search-poda .search-main {
@@ -33,193 +25,36 @@
 }
 
 .search-poda .search-input {
-  background-color: #0a0a0c;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  width: 240px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  width: 220px;
   height: 38px;
-  border-radius: 10px;
+  border-radius: 20px;
   color: #ffffff;
-  padding-left: 42px;
+  padding-left: 40px;
   padding-right: 16px;
   font-size: 0.88rem;
   font-family: inherit;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
 }
 
 .search-poda .search-input::placeholder {
   color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+}
+
+.search-poda .search-input:hover {
+  background-color: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .search-poda .search-input:focus {
   outline: none;
-  border-color: rgba(250, 83, 83, 0.6);
-  background-color: #070709;
-}
-
-.search-poda .search-input-mask {
-  pointer-events: none;
-  width: 80px;
-  height: 20px;
-  position: absolute;
-  background: linear-gradient(90deg, transparent, #0a0a0c);
-  top: 9px;
-  left: 60px;
-}
-
-.search-poda .search-main:focus-within > .search-input-mask {
-  display: none;
-}
-
-.search-poda .search-pink-mask {
-  pointer-events: none;
-  width: 30px;
-  height: 20px;
-  position: absolute;
-  background: #fa5353;
-  top: 8px;
-  left: 5px;
-  filter: blur(16px);
-  opacity: 0.7;
-  transition: all 1s ease;
-}
-
-.search-poda .search-main:hover > .search-pink-mask {
-  opacity: 0.2;
-}
-
-.search-poda .search-white {
-  max-height: 40px;
-  border-radius: 10px;
-  filter: blur(2px);
-}
-
-.search-poda .search-white::before {
-  content: "";
-  z-index: -2;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(83deg);
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  background-repeat: no-repeat;
-  filter: brightness(1.4);
-  background-image: conic-gradient(
-    rgba(0, 0, 0, 0) 0%,
-    #fa5353,
-    rgba(0, 0, 0, 0) 8%,
-    rgba(0, 0, 0, 0) 50%,
-    #dfa2da,
-    rgba(0, 0, 0, 0) 58%
-  );
-  transition: all 1.5s ease;
-}
-
-.search-poda .search-border {
-  max-height: 38px;
-  border-radius: 10px;
-  filter: blur(0.5px);
-}
-
-.search-poda .search-border::before {
-  content: "";
-  z-index: -2;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(70deg);
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  filter: brightness(1.3);
-  background-repeat: no-repeat;
-  background-image: conic-gradient(
-    #1c191c,
-    #fa5353 5%,
-    #1c191c 14%,
-    #1c191c 50%,
-    #cf30aa 60%,
-    #1c191c 64%
-  );
-  transition: all 1.5s ease;
-}
-
-.search-poda .search-dark-border-bg::before {
-  content: "";
-  z-index: -2;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(82deg);
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  background-repeat: no-repeat;
-  background-image: conic-gradient(
-    rgba(0, 0, 0, 0),
-    #fa5353,
-    rgba(0, 0, 0, 0) 10%,
-    rgba(0, 0, 0, 0) 50%,
-    #6e1b60,
-    rgba(0, 0, 0, 0) 60%
-  );
-  transition: all 1.5s ease;
-}
-
-.search-poda:hover > .search-dark-border-bg::before {
-  transform: translate(-50%, -50%) rotate(262deg);
-}
-.search-poda:hover > .search-glow::before {
-  transform: translate(-50%, -50%) rotate(240deg);
-}
-.search-poda:hover > .search-white::before {
-  transform: translate(-50%, -50%) rotate(263deg);
-}
-.search-poda:hover > .search-border::before {
-  transform: translate(-50%, -50%) rotate(250deg);
-}
-
-.search-poda:focus-within > .search-dark-border-bg::before {
-  transform: translate(-50%, -50%) rotate(442deg);
-  transition: all 3s ease;
-}
-.search-poda:focus-within > .search-glow::before {
-  transform: translate(-50%, -50%) rotate(420deg);
-  transition: all 3s ease;
-}
-.search-poda:focus-within > .search-white::before {
-  transform: translate(-50%, -50%) rotate(443deg);
-  transition: all 3s ease;
-}
-.search-poda:focus-within > .search-border::before {
-  transform: translate(-50%, -50%) rotate(430deg);
-  transition: all 3s ease;
-}
-
-.search-poda .search-glow {
-  overflow: hidden;
-  filter: blur(25px);
-  opacity: 0.4;
-  max-height: 55px;
-}
-.search-poda .search-glow::before {
-  content: "";
-  z-index: -2;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(60deg);
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  background-repeat: no-repeat;
-  background-image: conic-gradient(
-    #000,
-    #fa5353 5%,
-    #000 38%,
-    #000 50%,
-    #cf30aa 60%,
-    #000 87%
-  );
-  transition: all 1.5s ease;
+  width: 260px;
+  background-color: rgba(10, 13, 20, 0.95);
+  border-color: var(--main-color);
+  box-shadow: 0 0 12px rgba(250, 83, 83, 0.25);
 }
 
 .search-poda .search-icon {
@@ -232,6 +67,13 @@
   justify-content: center;
   pointer-events: none;
   z-index: 2;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s ease;
+}
+
+.search-poda .search-main:focus-within .search-icon svg circle,
+.search-poda .search-main:focus-within .search-icon svg line {
+  stroke: var(--main-color);
 }
 
 .search-poda .search-icon svg {
