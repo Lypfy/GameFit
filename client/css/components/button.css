@@ -1,0 +1,94 @@
+/* GameFit Custom Animated Button Component - Red Tones */
+.button,
+.btn-add {
+  position: relative;
+  min-width: 150px;
+  height: 40px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid #d32f2f;
+  background-color: #fa5353;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 0 48px 0 18px;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.button,
+.btn-add,
+.button__icon,
+.btn-add .button__icon,
+.button__text,
+.btn-add .button__text {
+  transition: all 0.3s ease;
+}
+
+.button .button__text,
+.btn-add .button__text {
+  transform: translateX(0);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.button .button__icon,
+.btn-add .button__icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 39px;
+  background-color: #d32f2f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.button .svg,
+.btn-add .svg,
+.button .button__icon i,
+.btn-add .button__icon i {
+  width: 22px;
+  height: 22px;
+  stroke: #ffffff;
+  color: #ffffff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:hover,
+.btn-add:hover {
+  background-color: #d32f2f;
+}
+
+.button:hover .button__text,
+.btn-add:hover .button__text {
+  color: transparent;
+  opacity: 0;
+}
+
+.button:hover .button__icon,
+.btn-add:hover .button__icon {
+  width: 100%;
+  background-color: #d32f2f;
+}
+
+.button:active .button__icon,
+.btn-add:active .button__icon {
+  background-color: #b71c1c;
+}
+
+.button:active,
+.btn-add:active {
+  border: 1px solid #b71c1c;
+  background-color: #b71c1c;
+}

@@ -899,4 +899,134 @@ function initHardwareActions() {
       }
     });
   }
+
+  // --- MODAL THÊM CPU MỚI ---
+  const btnAddCpu = document.getElementById("btn-add-cpu");
+  const cpuModal = document.getElementById("cpu-add-modal");
+  const cpuForm = document.getElementById("cpu-add-form");
+  const closeCpuModal = document.getElementById("close-cpu-add-modal");
+  const cancelCpuBtn = document.getElementById("cancel-cpu-add-btn");
+  const cpuOverlay = document.getElementById("cpu-add-modal");
+
+  function hideCpuModal() {
+    if (cpuModal) cpuModal.classList.remove("active");
+    if (cpuForm) cpuForm.reset();
+  }
+
+  if (btnAddCpu) {
+    btnAddCpu.addEventListener("click", () => {
+      if (cpuModal) cpuModal.classList.add("active");
+    });
+  }
+  if (closeCpuModal) closeCpuModal.addEventListener("click", hideCpuModal);
+  if (cancelCpuBtn) cancelCpuBtn.addEventListener("click", hideCpuModal);
+  if (cpuOverlay) {
+    cpuOverlay.addEventListener("click", function (e) {
+      if (e.target === cpuOverlay) hideCpuModal();
+    });
+  }
+
+  if (cpuForm) {
+    cpuForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const name = document.getElementById("add-cpu-name").value.trim();
+      const brand = document.getElementById("add-cpu-brand").value;
+      const score =
+        parseInt(document.getElementById("add-cpu-score").value, 10) || 0;
+
+      if (!name) {
+        showToast("Vui lòng nhập tên CPU!", true);
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/cpus", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cpu_name: name,
+            name,
+            brand,
+            benchmark_score: score,
+          }),
+        });
+        const result = await res.json();
+        if (result.success || res.ok) {
+          showToast("Thêm CPU mới thành công!");
+          hideCpuModal();
+          loadCpuData(1);
+        } else {
+          showToast(result.message || "Thêm CPU thất bại!", true);
+        }
+      } catch (err) {
+        console.error("Lỗi khi thêm CPU:", err);
+        showToast("Lỗi kết nối khi thêm CPU!", true);
+      }
+    });
+  }
+
+  // --- MODAL THÊM GPU MỚI ---
+  const btnAddGpu = document.getElementById("btn-add-gpu");
+  const gpuModal = document.getElementById("gpu-add-modal");
+  const gpuForm = document.getElementById("gpu-add-form");
+  const closeGpuModal = document.getElementById("close-gpu-add-modal");
+  const cancelGpuBtn = document.getElementById("cancel-gpu-add-btn");
+  const gpuOverlay = document.getElementById("gpu-add-modal");
+
+  function hideGpuModal() {
+    if (gpuModal) gpuModal.classList.remove("active");
+    if (gpuForm) gpuForm.reset();
+  }
+
+  if (btnAddGpu) {
+    btnAddGpu.addEventListener("click", () => {
+      if (gpuModal) gpuModal.classList.add("active");
+    });
+  }
+  if (closeGpuModal) closeGpuModal.addEventListener("click", hideGpuModal);
+  if (cancelGpuBtn) cancelGpuBtn.addEventListener("click", hideGpuModal);
+  if (gpuOverlay) {
+    gpuOverlay.addEventListener("click", function (e) {
+      if (e.target === gpuOverlay) hideGpuModal();
+    });
+  }
+
+  if (gpuForm) {
+    gpuForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const name = document.getElementById("add-gpu-name").value.trim();
+      const brand = document.getElementById("add-gpu-brand").value;
+      const score =
+        parseInt(document.getElementById("add-gpu-score").value, 10) || 0;
+
+      if (!name) {
+        showToast("Vui lòng nhập tên GPU!", true);
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/gpus", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            gpu_name: name,
+            name,
+            brand,
+            benchmark_score: score,
+          }),
+        });
+        const result = await res.json();
+        if (result.success || res.ok) {
+          showToast("Thêm GPU mới thành công!");
+          hideGpuModal();
+          loadGpuData(1);
+        } else {
+          showToast(result.message || "Thêm GPU thất bại!", true);
+        }
+      } catch (err) {
+        console.error("Lỗi khi thêm GPU:", err);
+        showToast("Lỗi kết nối khi thêm GPU!", true);
+      }
+    });
+  }
 }
