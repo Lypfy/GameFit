@@ -8,6 +8,16 @@ function renderGames(gamesList) {
   const gamesContent = document.querySelector(".games-content");
   if (!gamesContent) return;
 
+  if (!gamesList || gamesList.length === 0) {
+    gamesContent.innerHTML = `
+      <div class="no-games-found" style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: #ccc;">
+        <h3 style="font-size: 20px; margin-bottom: 8px; color: #fff;">Không tìm thấy game phù hợp</h3>
+        <p style="font-size: 14px; color: #aaa;">Vui lòng thử thay đổi hoặc bỏ bớt các tiêu chí lọc.</p>
+      </div>
+    `;
+    return;
+  }
+
   gamesContent.innerHTML = gamesList
     .map((game) => {
       const gameIdStr = (game.game_id || game.id || "").toString();
@@ -64,9 +74,11 @@ document.addEventListener("DOMContentLoaded", function () {
       let url = `http://localhost:5000/api/games?page=${page}&limit=${limit}`;
 
       // Gắn tham số lọc vào URL
-      if (filters.categories?.length) url += `&categories=${filters.categories.join(',')}`;
-      if (filters.publishers?.length) url += `&publishers=${filters.publishers.join(',')}`;
-      if (filters.rams?.length) url += `&rams=${filters.rams.join(',')}`;
+      if (filters.categories?.length)
+        url += `&categories=${filters.categories.join(",")}`;
+      if (filters.publishers?.length)
+        url += `&publishers=${filters.publishers.join(",")}`;
+      if (filters.rams?.length) url += `&rams=${filters.rams.join(",")}`;
 
       const response = await fetch(url);
       const result = await response.json();
@@ -156,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
     await fetchUserWishlist();
 
     const urlParams = new URLSearchParams(window.location.search);
-    const categoryFromUrl = urlParams.get('category');
+    const categoryFromUrl = urlParams.get("category");
 
     const filters = {};
     if (categoryFromUrl) {
@@ -164,8 +176,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Đợi danh sách tag được render xong rồi đánh dấu active
       setTimeout(() => {
-        const btn = document.querySelector(`.filter-chip[data-value="${categoryFromUrl}"]`);
-        if (btn) btn.classList.add('active');
+        const btn = document.querySelector(
+          `.filter-chip[data-value="${categoryFromUrl}"]`,
+        );
+        if (btn) btn.classList.add("active");
       }, 500);
     }
 
@@ -195,7 +209,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchGames(1, {
       categories: selectedCategories,
       publishers: selectedPublishers,
-      rams: selectedRams
+      rams: selectedRams,
     });
 
     if (typeof window.closeFilterModal === "function") {
