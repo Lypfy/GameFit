@@ -1,194 +1,278 @@
 <!doctype html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Fit - Games</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/components/cpu-gpu-combobox.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game Fit - Games</title>
-  <link rel="stylesheet" href="../../css/style.css" />
-  <link rel="stylesheet" href="../../css/components/cpu-gpu-combobox.css" />
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-</head>
+  <body>
+    <header>
+      <!-- Navbar -->
+      <div class="nav container">
+        <a href="../home.html" class="logo">Game<span>Fit</span></a>
 
-<body>
-  <header>
-    <!-- Navbar -->
-    <div class="nav container">
-      <a href="../home.html" class="logo">Game<span>Fit</span></a>
-
-      <!-- Navigation Links hiển thị trên Header -->
-      <ul class="nav-links">
-        <li><a href="../home.html">Home</a></li>
-        <li><a href="../games.html" class="active">Games</a></li>
-        <li><a href="../pc_config.html">PC Check</a></li>
-        <li class="admin-only" style="display: none;"><a href="../admin/dashboard.html">Dashboard</a></li>
-      </ul>
-
-      <!-- Nav icon -->
-      <div class="nav-icon">
-        <div class="search">
-          <input type="text" placeholder="Search" />
-          <i class="bx bx-search"></i>
-        </div>
-        <div class="user-box">
-          <span id="user-display-name" class="user-display-name"></span>
-          <i class="bx bx-user" id="user-icon"></i>
-          <!-- Dropdown Menu -->
-          <div class="user-dropdown" id="user-dropdown">
-            <div class="dropdown-header">
-              <div class="user-avatar">
-                <i class="bx bxs-user-circle"></i>
-              </div>
-              <div class="user-info">
-                <h4 id="dropdown-username">Nicole Reeyn</h4>
-                <span id="dropdown-role" class="role-badge user">User</span>
-              </div>
-            </div>
-            <ul class="dropdown-menu-list">
-              <li class="menu-item">
-                <a href="#" id="btn-my-pc-config">
-                  <i class="bx bx-desktop"></i>
-                  <span>Cấu hình máy tính</span>
-                </a>
-              </li>
-              <li class="menu-item">
-                <a href="wishlist.html">
-                  <i class="bx bx-bookmark-heart"></i>
-                  <span>My Wishlist</span>
-                </a>
-              </li>
-              <li class="menu-item">
-                <a href="#" id="btn-update-profile">
-                  <i class="bx bx-user-pin"></i>
-                  <span>Cập nhật thông tin cá nhân</span>
-                </a>
-              </li>
-              <li class="dropdown-divider"></li>
-              <li class="menu-item logout-item">
-                <a href="#" id="btn-logout">
-                  <i class="bx bx-log-out"></i>
-                  <span>Đăng xuất</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <!-- Menu icon (tạm thời ẩn) -->
-        <div class="menu-icon">
-          <div class="line1"></div>
-          <div class="line2"></div>
-          <div class="line3"></div>
-        </div>
-      </div>
-
-      <!-- Full Overlay Menu -->
-      <div class="menu">
-        <img src="../../assets/menu.png" alt="Menu Banner" loading="lazy" />
-        <div class="navbar">
+        <!-- Navigation Links hiển thị trên Header -->
+        <ul class="nav-links">
           <li><a href="../home.html">Home</a></li>
-          <li><a href="../games.html">Games</a></li>
+          <li><a href="../games.html" class="active">Games</a></li>
           <li><a href="../pc_config.html">PC Check</a></li>
-          <li class="admin-only" style="display: none;"><a href="../admin/dashboard.html">Dashboard</a></li>
-        </div>
-      </div>
-    </div>
-  </header>
-  <!-- Search Bar -->
-  <section class="wishlist-search-container container"
-    style="display: flex; justify-content: center; margin-top: 2rem;">
-    <div class="search-box" style="position: relative; width: 100%; max-width: 600px;">
-      <input type="text" id="wishlist-search-input" placeholder="Tìm kiếm..."
-        style="width: 100%; padding: 12px 20px; padding-left: 45px; border-radius: 25px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-primary); font-size: 1rem; outline: none;" />
-      <i class="bx bx-search"
-        style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 1.5rem; color: var(--text-secondary);"></i>
-    </div>
-  </section>
-  <section class="games container">
-    <div class="heading">
-      <div class="left-heading">
-        <i class="bx bx-bookmark-heart"></i>
-        <h2>My Wishlist</h2>
-      </div>
-    </div>
-    <div class="games-content">
-      <!-- New game boxes dynamically rendered by JS -->
-    </div>
-    <!-- Pagination -->
-    <div class="pagination-container" id="pagination-container">
-    </div>
-  </section>
+          <li class="admin-only" style="display: none">
+            <a href="../admin/dashboard.html">Dashboard</a>
+          </li>
+        </ul>
 
-  <!-- Modal My PC Config -->
-  <div class="modal" id="my_pc_config">
-    <div class="modal-overlay" id="pc-config-overlay"></div>
-    <div class="modal-card modal-compact modal-scrollable-form">
-      <div class="modal-header">
-        <h3><i class="bx bx-desktop"></i> Cấu hình máy tính của tôi</h3>
-        <button type="button" class="close-btn" id="close-pc-config-modal">
-          &times;
-        </button>
+        <!-- Nav icon -->
+        <div class="nav-icon">
+          <div class="search search-poda">
+            <div class="search-glow"></div>
+            <div class="search-dark-border-bg"></div>
+            <div class="search-dark-border-bg"></div>
+            <div class="search-dark-border-bg"></div>
+            <div class="search-white"></div>
+            <div class="search-border"></div>
+            <div class="search-main">
+              <input
+                type="text"
+                placeholder="Tìm kiếm..."
+                class="search-input"
+              />
+              <div class="search-input-mask"></div>
+              <div class="search-pink-mask"></div>
+              <div class="search-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  fill="none"
+                >
+                  <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
+                  <line
+                    stroke="#d6d6e6"
+                    y2="16.65"
+                    y1="22"
+                    x2="16.65"
+                    x1="22"
+                  ></line>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="user-box">
+            <span id="user-display-name" class="user-display-name"></span>
+            <i class="bx bx-user" id="user-icon"></i>
+            <!-- Dropdown Menu -->
+            <div class="user-dropdown" id="user-dropdown">
+              <div class="dropdown-header">
+                <div class="user-avatar">
+                  <i class="bx bxs-user-circle"></i>
+                </div>
+                <div class="user-info">
+                  <h4 id="dropdown-username">Nicole Reeyn</h4>
+                  <span id="dropdown-role" class="role-badge user">User</span>
+                </div>
+              </div>
+              <ul class="dropdown-menu-list">
+                <li class="menu-item">
+                  <a href="#" id="btn-my-pc-config">
+                    <i class="bx bx-desktop"></i>
+                    <span>Cấu hình máy tính</span>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="wishlist.html">
+                    <i class="bx bx-bookmark-heart"></i>
+                    <span>My Wishlist</span>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" id="btn-update-profile">
+                    <i class="bx bx-user-pin"></i>
+                    <span>Cập nhật thông tin cá nhân</span>
+                  </a>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li class="menu-item logout-item">
+                  <a href="#" id="btn-logout">
+                    <i class="bx bx-log-out"></i>
+                    <span>Đăng xuất</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- Menu icon (tạm thời ẩn) -->
+          <div class="menu-icon">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+          </div>
+        </div>
       </div>
-      <form id="pc-config-form">
-        <input type="hidden" id="pc-id" />
-        <div class="form-group">
-          <label for="pc-name">Tên máy tính</label>
-          <input type="text" id="pc-name" required placeholder="Nhập tên máy tính..." />
+    </header>
+    <!-- Search Bar -->
+    <section
+      class="wishlist-search-container container"
+      style="display: flex; justify-content: center; margin-top: 2rem"
+    >
+      <div
+        class="search-box"
+        style="position: relative; width: 100%; max-width: 600px"
+      >
+        <input
+          type="text"
+          id="wishlist-search-input"
+          placeholder="Tìm kiếm..."
+          style="
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 45px;
+            border-radius: 25px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+          "
+        />
+        <i
+          class="bx bx-search"
+          style="
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+          "
+        ></i>
+      </div>
+    </section>
+    <section class="games container">
+      <div class="heading">
+        <div class="left-heading">
+          <i class="bx bx-bookmark-heart"></i>
+          <h2>My Wishlist</h2>
         </div>
-        <div class="form-group">
-          <label for="pc-os">Hệ điều hành</label>
-          <input type="text" id="pc-os" placeholder="Ví dụ: Windows 10, Windows 11..." />
-        </div>
-        <div class="form-group">
-          <label>CPU <span style="color:red">*</span></label>
-          <div class="hw-combobox" data-hw-type="cpu">
-            <div class="hw-combobox-input-wrap">
-              <input type="text" class="hw-combobox-text" data-hw-search placeholder="Nhập CPU..." autocomplete="off" />
-              <i class="bx bx-chevron-down hw-combobox-icon"></i>
-            </div>
-            <input type="hidden" id="pc-cpu" data-hw-id />
-            <div class="hw-combobox-dropdown"></div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>GPU <span style="color:red">*</span></label>
-          <div class="hw-combobox" data-hw-type="gpu">
-            <div class="hw-combobox-input-wrap">
-              <input type="text" class="hw-combobox-text" data-hw-search placeholder="Nhập GPU..." autocomplete="off" />
-              <i class="bx bx-chevron-down hw-combobox-icon"></i>
-            </div>
-            <input type="hidden" id="pc-gpu" data-hw-id />
-            <div class="hw-combobox-dropdown"></div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="pc-ram">RAM (GB)</label>
-          <input type="number" id="pc-ram" required placeholder="Nhập dung lượng RAM..." />
-        </div>
-        <div class="form-group">
-          <label for="pc-storage">Lưu trữ (GB)</label>
-          <input type="number" id="pc-storage" required placeholder="Nhập dung lượng lưu trữ..." />
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-cancel" id="cancel-pc-config-btn">
-            Hủy
+      </div>
+      <div class="games-content">
+        <!-- New game boxes dynamically rendered by JS -->
+      </div>
+      <!-- Pagination -->
+      <div class="pagination-container" id="pagination-container"></div>
+    </section>
+
+    <!-- Modal My PC Config -->
+    <div class="modal" id="my_pc_config">
+      <div class="modal-overlay" id="pc-config-overlay"></div>
+      <div class="modal-card modal-compact modal-scrollable-form">
+        <div class="modal-header">
+          <h3><i class="bx bx-desktop"></i> Cấu hình máy tính của tôi</h3>
+          <button type="button" class="close-btn" id="close-pc-config-modal">
+            &times;
           </button>
-          <button type="submit" class="btn-save">Lưu cấu hình</button>
         </div>
-      </form>
+        <form id="pc-config-form">
+          <input type="hidden" id="pc-id" />
+          <div class="form-group">
+            <label for="pc-name">Tên máy tính</label>
+            <input
+              type="text"
+              id="pc-name"
+              required
+              placeholder="Nhập tên máy tính..."
+            />
+          </div>
+          <div class="form-group">
+            <label for="pc-os">Hệ điều hành</label>
+            <input
+              type="text"
+              id="pc-os"
+              placeholder="Ví dụ: Windows 10, Windows 11..."
+            />
+          </div>
+          <div class="form-group">
+            <label>CPU <span style="color: red">*</span></label>
+            <div class="hw-combobox" data-hw-type="cpu">
+              <div class="hw-combobox-input-wrap">
+                <input
+                  type="text"
+                  class="hw-combobox-text"
+                  data-hw-search
+                  placeholder="Nhập CPU..."
+                  autocomplete="off"
+                />
+                <i class="bx bx-chevron-down hw-combobox-icon"></i>
+              </div>
+              <input type="hidden" id="pc-cpu" data-hw-id />
+              <div class="hw-combobox-dropdown"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>GPU <span style="color: red">*</span></label>
+            <div class="hw-combobox" data-hw-type="gpu">
+              <div class="hw-combobox-input-wrap">
+                <input
+                  type="text"
+                  class="hw-combobox-text"
+                  data-hw-search
+                  placeholder="Nhập GPU..."
+                  autocomplete="off"
+                />
+                <i class="bx bx-chevron-down hw-combobox-icon"></i>
+              </div>
+              <input type="hidden" id="pc-gpu" data-hw-id />
+              <div class="hw-combobox-dropdown"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="pc-ram">RAM (GB)</label>
+            <input
+              type="number"
+              id="pc-ram"
+              required
+              placeholder="Nhập dung lượng RAM..."
+            />
+          </div>
+          <div class="form-group">
+            <label for="pc-storage">Lưu trữ (GB)</label>
+            <input
+              type="number"
+              id="pc-storage"
+              required
+              placeholder="Nhập dung lượng lưu trữ..."
+            />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" id="cancel-pc-config-btn">
+              Hủy
+            </button>
+            <button type="submit" class="btn-save">Lưu cấu hình</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
-  <!-- Toast Notification -->
-  <div id="home-toast" class="home-toast"></div>
+    <!-- Toast Notification -->
+    <div id="home-toast" class="home-toast"></div>
 
-  <script src="../../js/utils/toast.js" defer></script>
-  <script src="../../js/utils/auth-storage.js" defer></script>
-  <script src="../../js/data/games-data.js" defer></script>
-  <script src="../../js/components/navbar.js" defer></script>
-  <script src="../../js/components/user-dropdown.js" defer></script>
-  <script src="../../js/components/profile-modal.js" defer></script>
-  <script src="../../js/pages/user/wishlist.js" defer></script>
-  <script src="../../js/components/cpu-gpu-combobox.js" defer></script>
-  <script src="../../js/components/pc-config-modal.js" defer></script>
-</body>
-
+    <script src="../../js/utils/toast.js" defer></script>
+    <script src="../../js/utils/auth-storage.js" defer></script>
+    <script src="../../js/data/games-data.js" defer></script>
+    <script src="../../js/components/navbar.js" defer></script>
+    <script src="../../js/components/user-dropdown.js" defer></script>
+    <script src="../../js/components/profile-modal.js" defer></script>
+    <script src="../../js/pages/user/wishlist.js" defer></script>
+    <script src="../../js/components/cpu-gpu-combobox.js" defer></script>
+    <script src="../../js/components/pc-config-modal.js" defer></script>
+  </body>
 </html>

@@ -102,7 +102,7 @@
 
 .gd-cover-box img {
   width: 100%;
-  height: auto;
+  height: 300px;
   display: block;
   object-fit: cover;
 }
@@ -530,7 +530,6 @@
   color: #ff4757;
 }
 
-
 /* --- CSS CHO MODAL KIỂM TRA CẤU HÌNH (GIAO DIỆN MỚI) --- */
 .cc-modal-card {
   max-width: 950px !important;
@@ -550,7 +549,11 @@
   align-items: flex-start;
   padding: 20px 25px;
   border-bottom: 1px solid #ff4757;
-  background: linear-gradient(90deg, rgba(255, 71, 87, 0.1) 0%, rgba(15, 23, 42, 0) 50%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 71, 87, 0.1) 0%,
+    rgba(15, 23, 42, 0) 50%
+  );
 }
 
 .cc-header-title {
@@ -641,7 +644,7 @@
   margin-bottom: 12px;
 }
 
-.cc-req-item>i {
+.cc-req-item > i {
   font-size: 24px;
   color: #94a3b8;
 }

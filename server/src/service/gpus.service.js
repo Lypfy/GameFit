@@ -8,7 +8,7 @@ const getGpus = async (params = {}) => {
       const request = new sql.Request();
       request.input("gpu_id", gpu_id);
       const result = await request.query(
-        "SELECT gpu_id, name, name AS gpu_name, brand, benchmark_score FROM GPUs WHERE gpu_id = @gpu_id"
+        "SELECT gpu_id, name, name AS gpu_name, brand, benchmark_score FROM GPUs WHERE gpu_id = @gpu_id",
       );
       return result.recordset;
     }

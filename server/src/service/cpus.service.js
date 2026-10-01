@@ -66,7 +66,7 @@ const addCPU = async ({ cpu_name, brand, benchmark_score }) => {
     request.input("benchmark_score", benchmark_score || 0);
 
     const result = await request.query(`
-            INSERT INTO CPUs (cpu_name, brand, benchmark_score)
+            INSERT INTO CPUs (name, brand, benchmark_score)
             OUTPUT INSERTED.*
             VALUES (@cpu_name, @brand, @benchmark_score);
         `);

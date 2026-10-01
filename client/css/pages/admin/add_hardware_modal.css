@@ -11,6 +11,14 @@
 } */
 
 /* Modal Overlay & Content */
+.hw-modal {
+  display: none !important;
+}
+
+.hw-modal.active {
+  display: flex !important;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
