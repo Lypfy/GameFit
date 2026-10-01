@@ -50,6 +50,8 @@ document.addEventListener("DOMContentLoaded", function () {
         
         if (currentPath.includes("/admin/")) {
           targetPath = "../../html/user/my_pc_config.html";
+        } else if (currentPath.includes("/user/")) {
+          targetPath = "my_pc_config.html";
         } else if (currentPath.includes("/html/")) {
           targetPath = "user/my_pc_config.html";
         }

@@ -170,35 +170,47 @@
 
 .req-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .req-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
 }
 
 .req-card {
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 2rem;
+  height: 100%;
 }
 
 .req-card h4 {
   color: var(--main-color);
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  text-transform: capitalize;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
 .req-card ul li {
   color: #cbd5e1;
-  font-size: 0.95rem;
-  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
   display: flex;
+  align-items: flex-start;
+  line-height: 1.5;
 }
 
 .req-card ul li strong {
   color: #fff;
-  width: 100px;
+  width: 120px;
   flex-shrink: 0;
+  font-weight: 600;
 }
 
 .btn-back {

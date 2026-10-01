@@ -168,7 +168,24 @@ async function initGameSelector() {
     }
   }
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetGameId = urlParams.get("game_id");
+
+  if (targetGameId) {
+    const targetGame = allGamesList.find(g => (g.game_id || g.id).toString() === targetGameId);
+    if (targetGame) {
+      allGamesList = [targetGame, ...allGamesList.filter(g => g !== targetGame)];
+    }
+  }
+
   renderGameCards(allGamesList, false);
+
+  if (targetGameId) {
+    const targetCard = frame.querySelector(`.game-select-card[data-game-id="${targetGameId}"]`);
+    if (targetCard) {
+      targetCard.click();
+    }
+  }
 
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
@@ -259,7 +276,7 @@ async function loadSavedUserConfigs() {
       result.data.forEach((pc) => {
         const opt = document.createElement("option");
         opt.value = pc.id || pc.pc_id;
-        opt.textContent = `${pc.name || "PC"} (CPU: ${pc.cpu_name || pc.cpu || "N/A"}, GPU: ${pc.gpu_name || pc.gpu || "N/A"}, RAM: ${pc.ram}GB)`;
+        opt.textContent = `${pc.pc_name || "PC"} (CPU: ${pc.cpu_name || pc.cpu || "N/A"}, GPU: ${pc.gpu_name || pc.gpu || "N/A"}, RAM: ${pc.ram}GB)`;
         opt.dataset.cpuName = pc.cpu_name || pc.cpu || "";
         opt.dataset.cpuId = pc.cpu_id || "";
         opt.dataset.gpuName = pc.gpu_name || pc.gpu || "";
@@ -628,10 +645,10 @@ function calculateCompatibilityPercentJS(userSpec, minReq, recReq) {
 
   // Tổng điểm có trọng số: CPU*0.25 + GPU*0.35 + RAM*0.20 + Storage*0.10 + OS*0.10
   let totalPercent = (cpuPercent * 0.25) +
-                     (gpuPercent * 0.35) +
-                     (ramPercent * 0.20) +
-                     (storagePercent * 0.10) +
-                     (osPercent * 0.10);
+    (gpuPercent * 0.35) +
+    (ramPercent * 0.20) +
+    (storagePercent * 0.10) +
+    (osPercent * 0.10);
 
   if (totalPercent > 100) totalPercent = 100;
   if (totalPercent < 0) totalPercent = 0;

@@ -54,6 +54,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const currentPath = window.location.pathname;
       if (currentPath.includes("/admin/")) {
         window.location.href = "../auth/login_register.html";
+      } else if (currentPath.includes("/user/")) {
+        window.location.href = "../auth/login_register.html";
       } else {
         window.location.href = "auth/login_register.html";
       }

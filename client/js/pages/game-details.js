@@ -134,12 +134,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         <div class="req-card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
             <h4 style="margin: 0;">${req.type}</h4>
-            <button class="btn-check-config" 
-                    style="padding: 8px 16px; background-color: transparent; color: #ff4757; border: 1px solid #ff4757; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;" 
-                    onmouseover="this.style.backgroundColor='#ff4757'; this.style.color='#ffffff'" 
-                    onmouseout="this.style.backgroundColor='transparent'; this.style.color='#ff4757'">
-              <i class='bx bx-laptop' style="font-size: 18px;"></i> Kiểm tra cấu hình
-            </button>
           </div>
           <ul>
             <li><strong>OS:</strong> <span>${req.os || "N/A"}</span></li>
@@ -151,9 +145,29 @@ document.addEventListener("DOMContentLoaded", async function () {
         </div>
       `,
         )
-        .join("");
+        .join("") + `
+        <div style="grid-column: 1 / -1; display: flex; justify-content: center; margin-top: 20px; width: 100%;">
+          <button id="btn-check-config-main" 
+                  style="width: 100%; padding: 15px; background-color: transparent; color: #ff4757; border: 1px solid #ff4757; border-radius: 0; cursor: pointer; font-size: 16px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;" 
+                  onmouseover="this.style.backgroundColor='#ff4757'; this.style.color='#ffffff'" 
+                  onmouseout="this.style.backgroundColor='transparent'; this.style.color='#ff4757'">
+            <i class='bx bx-laptop' style="font-size: 20px;"></i> Kiểm tra cấu hình
+          </button>
+        </div>
+      `;
     } else {
       reqListEl.innerHTML = `<p style="color: #94a3b8; font-style: italic;">Chưa có thông tin cấu hình cho trò chơi này.</p>`;
+    }
+  }
+});
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("#btn-check-config-main");
+  if (btn) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const gameId = urlParams.get("id");
+    if (gameId) {
+      window.location.href = `pc_config.html?game_id=${gameId}`;
     }
   }
 });

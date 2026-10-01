@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const currentUser =
     typeof getCurrentUser === "function" ? getCurrentUser() : null;
   if (!currentUser) {
-    window.location.href = "../auth.html";
+    window.location.href = "../auth/login_register.html";
     return;
   }
 
