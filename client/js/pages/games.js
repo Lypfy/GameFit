@@ -187,7 +187,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const urlParams = new URLSearchParams(window.location.search);
     const categoryFromUrl = urlParams.get("category");
-
+    if (typeof loadCategoriesFilter === "function") {
+      await loadCategoriesFilter();
+    }
+    if (categoryFromUrl) {
+      const chips = document.querySelectorAll(
+        "#category-filter-list .filter-chip",
+      );
+      chips.forEach((chip) => {
+        if (chip.dataset.value === categoryFromUrl) {
+          chip.classList.add("active");
+        }
+      });
+    }
     const filters = {};
     if (categoryFromUrl) {
       filters.categories = [categoryFromUrl];

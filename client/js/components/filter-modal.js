@@ -13,9 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
     filterOverlay?.classList.add("active");
 
     // Chỉ gọi API 1 lần duy nhất khi người dùng click mở Filter
-    if (!isFilterDataLoaded) {
+    if (!window.isFilterDataLoaded) {
       await Promise.all([loadCategoriesFilter(), loadPublishersFilter()]);
-      isFilterDataLoaded = true;
+      window.isFilterDataLoaded = true;
     }
   }
   window.closeFilterModal = function () {
@@ -73,6 +73,7 @@ async function loadCategoriesFilter() {
   } catch (error) {
     console.error("Lỗi khi load danh sách tags:", error);
   }
+  window.isFilterDataLoaded = true;
 }
 
 async function loadPublishersFilter() {
