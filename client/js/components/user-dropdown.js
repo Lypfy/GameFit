@@ -146,6 +146,10 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
           window.location.href = "../home.html";
         }, 500);
+      } else if (window.location.pathname.includes("game-details")) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       }
     });
   }

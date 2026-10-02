@@ -114,9 +114,39 @@ const getAvgRating = async (req, res) => {
     }
 }
 
+const deleteReview = async (req, res) => {
+    try {
+        const user_id = req.user.user_id;
+        const { game_id } = req.params;
+
+        if (!user_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu user_id hợp lệ' });
+        }
+
+        if (!game_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu game_id hợp lệ' });
+        }
+
+        const result = await reviewService.deleteReview(user_id, game_id);
+        if (!result.success) {
+            return res.status(400).json({ success: false, message: 'Xóa review thất bại' });
+        }
+
+        return res.status(200).json({ success: true, message: 'Xóa review thành công' });
+    }
+    catch (error) {
+        console.log('Error in deleteReview Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi xóa review'
+        });
+    }
+}
+
 module.exports = {
     writeReview,
     updateReview,
+    deleteReview,
     getReviews,
     getAvgRating
 }

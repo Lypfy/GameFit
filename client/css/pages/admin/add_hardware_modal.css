@@ -19,7 +19,7 @@
   display: flex !important;
 }
 
-.modal-overlay {
+.hw-modal.modal-overlay {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.7);
@@ -30,7 +30,7 @@
   z-index: 1000;
 }
 
-.modal-content {
+.hw-modal .modal-content {
   background-color: var(--bg-modal);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
@@ -42,7 +42,7 @@
 }
 
 /* Header */
-.modal-header {
+.hw-modal .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -89,7 +89,7 @@
 }
 
 /* Body & Form Controls */
-.modal-body {
+.hw-modal .modal-body {
   padding: 24px;
 }
 
@@ -218,7 +218,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 /* Footer & Buttons */
-.modal-footer {
+.hw-modal .modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 12px;

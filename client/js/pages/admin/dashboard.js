@@ -60,9 +60,9 @@ function renderGamesTable(games) {
       const tagsHtml =
         tagArray.length > 0
           ? tagArray
-              .slice(0, 3)
-              .map((tag) => `<span class="genre-badge">${tag}</span>`)
-              .join(" ")
+            .slice(0, 3)
+            .map((tag) => `<span class="genre-badge">${tag}</span>`)
+            .join(" ")
           : `<span style="color: rgba(255,255,255,0.4);">-</span>`;
 
       const isActive = game.is_active !== false && game.is_active !== 0;
@@ -232,6 +232,8 @@ function initGameActions() {
   if (confirmDeleteBtn) {
     confirmDeleteBtn.addEventListener("click", async function () {
       if (!pendingDeleteGameId) return;
+      confirmDeleteBtn.disabled = true;
+      confirmDeleteBtn.textContent = "Đang xóa...";
       try {
         const res = await fetch("/api/games/delete", {
           method: "POST",
@@ -249,6 +251,9 @@ function initGameActions() {
       } catch (err) {
         console.error("Lỗi khi xóa game:", err);
         showToast("Lỗi kết nối khi xóa game!", true);
+      } finally {
+        confirmDeleteBtn.disabled = false;
+        confirmDeleteBtn.textContent = "Xóa ngay";
       }
     });
   }
@@ -508,6 +513,8 @@ function initTagActions() {
   if (confirmDeleteBtn) {
     confirmDeleteBtn.addEventListener("click", async function () {
       if (!pendingDeleteTagId) return;
+      confirmDeleteBtn.disabled = true;
+      confirmDeleteBtn.textContent = "Đang xóa...";
       try {
         const res = await fetch(`/api/tags/${pendingDeleteTagId}`, {
           method: "DELETE",
@@ -523,6 +530,9 @@ function initTagActions() {
       } catch (err) {
         console.error("Lỗi khi xóa tag:", err);
         showToast("Lỗi kết nối khi xóa thể loại!", true);
+      } finally {
+        confirmDeleteBtn.disabled = false;
+        confirmDeleteBtn.textContent = "Xóa ngay";
       }
     });
   }
@@ -1029,4 +1039,81 @@ function initHardwareActions() {
       }
     });
   }
+}
+
+// ==========================================
+// 6. XỬ LÝ MODAL CHI TIẾT BÁO CÁO VI PHẠM
+// ==========================================
+const violationModal = document.getElementById("violation-detail-modal");
+const closeViolationModal = document.getElementById("close-violation-modal");
+const violationOverlay = document.getElementById("violation-modal-overlay");
+
+const footerDefault = document.getElementById("violation-footer-default");
+const footerConfirm = document.getElementById("violation-footer-confirm");
+
+const btnTriggerDelete = document.getElementById("btn-trigger-delete");
+const btnCancelDelete = document.getElementById("btn-cancel-delete");
+const btnConfirmDelete = document.getElementById("btn-confirm-delete");
+const btnDismissViolation = document.getElementById("btn-dismiss-violation");
+
+// Hàm đóng modal
+function hideViolationModal() {
+  if (violationModal) violationModal.classList.remove("active");
+  // Reset trạng thái footer về ban đầu
+  if (footerDefault) footerDefault.style.display = "flex";
+  if (footerConfirm) footerConfirm.style.display = "none";
+}
+
+if (closeViolationModal) {
+  closeViolationModal.addEventListener("click", hideViolationModal);
+}
+
+if (violationOverlay) {
+  violationOverlay.addEventListener("click", hideViolationModal);
+}
+
+// Bắt sự kiện click nút xem chi tiết trên bảng Báo cáo vi phạm
+document.addEventListener("click", function (e) {
+  const btnView = e.target.closest(".btn-view-violation, #tab-violations .btn-edit");
+  if (btnView) {
+    if (footerDefault) footerDefault.style.display = "flex";
+    if (footerConfirm) footerConfirm.style.display = "none";
+    if (violationModal) violationModal.classList.add("active");
+  }
+});
+
+// Chuyển sang xác nhận Inline khi bấm "Ẩn bình luận"
+if (btnTriggerDelete) {
+  btnTriggerDelete.addEventListener("click", function () {
+    if (footerDefault) footerDefault.style.display = "none";
+    if (footerConfirm) footerConfirm.style.display = "flex";
+  });
+}
+
+// Bấm Hủy xác nhận -> quay lại footer mặc định
+if (btnCancelDelete) {
+  btnCancelDelete.addEventListener("click", function () {
+    if (footerDefault) footerDefault.style.display = "flex";
+    if (footerConfirm) footerConfirm.style.display = "none";
+  });
+}
+
+// Bấm Đồng ý ẩn (Demo giao diện)
+if (btnConfirmDelete) {
+  btnConfirmDelete.addEventListener("click", function () {
+    hideViolationModal();
+    if (typeof showToast === "function") {
+      showToast("Đã ẩn bình luận vi phạm thành công!");
+    }
+  });
+}
+
+// Bấm Bỏ qua (Hợp lệ)
+if (btnDismissViolation) {
+  btnDismissViolation.addEventListener("click", function () {
+    hideViolationModal();
+    if (typeof showToast === "function") {
+      showToast("Đã từ chối báo cáo vi phạm.");
+    }
+  });
 }

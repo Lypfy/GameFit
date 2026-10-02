@@ -1,459 +1,386 @@
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Game Fit - Kiểm Tra Cấu Hình PC</title>
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/components/cpu-gpu-combobox.css" />
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
-  </head>
 
-  <body>
-    <header>
-      <!-- Navbar -->
-      <div class="nav container">
-        <a href="home.html" class="logo">Game<span>Fit</span></a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Fit - Kiểm Tra Cấu Hình PC</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components/cpu-gpu-combobox.css" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+</head>
 
-        <!-- Navigation Links -->
-        <ul class="nav-links">
-          <li><a href="home.html">Home</a></li>
-          <li><a href="games.html">Games</a></li>
-          <li><a href="pc_config.html" class="active">PC Check</a></li>
-          <li class="admin-only" style="display: none">
-            <a href="admin/dashboard.html">Dashboard</a>
-          </li>
-        </ul>
+<body>
+  <header>
+    <!-- Navbar -->
+    <div class="nav container">
+      <a href="home.html" class="logo">Game<span>Fit</span></a>
 
-        <!-- Nav icon & User box -->
-        <div class="nav-icon">
-          <div class="search search-poda">
-            <div class="search-glow"></div>
-            <div class="search-dark-border-bg"></div>
-            <div class="search-dark-border-bg"></div>
-            <div class="search-dark-border-bg"></div>
-            <div class="search-white"></div>
-            <div class="search-border"></div>
-            <div class="search-main">
-              <input type="text" placeholder="Tìm kiếm..." class="search-input" />
-              <div class="search-input-mask"></div>
-              <div class="search-pink-mask"></div>
-              <div class="search-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="none">
-                  <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
-                  <line stroke="#d6d6e6" y2="16.65" y1="22" x2="16.65" x1="22"></line>
-                </svg>
-              </div>
+      <!-- Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="games.html">Games</a></li>
+        <li><a href="pc_config.html" class="active">PC Check</a></li>
+        <li class="admin-only" style="display: none">
+          <a href="admin/dashboard.html">Dashboard</a>
+        </li>
+      </ul>
+
+      <!-- Nav icon & User box -->
+      <div class="nav-icon">
+        <div class="search search-poda">
+          <div class="search-glow"></div>
+          <div class="search-dark-border-bg"></div>
+          <div class="search-dark-border-bg"></div>
+          <div class="search-dark-border-bg"></div>
+          <div class="search-white"></div>
+          <div class="search-border"></div>
+          <div class="search-main">
+            <input type="text" placeholder="Tìm kiếm..." class="search-input" />
+            <div class="search-input-mask"></div>
+            <div class="search-pink-mask"></div>
+            <div class="search-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2"
+                stroke-linejoin="round" stroke-linecap="round" fill="none">
+                <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
+                <line stroke="#d6d6e6" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+              </svg>
             </div>
           </div>
-          <div class="user-box">
-            <span id="user-display-name" class="user-display-name"></span>
-            <i class="bx bx-user" id="user-icon"></i>
-            <!-- Dropdown Menu -->
-            <div class="user-dropdown" id="user-dropdown">
-              <div class="dropdown-header">
-                <div class="user-avatar">
-                  <i class="bx bxs-user-circle"></i>
-                </div>
-                <div class="user-info">
-                  <h4 id="dropdown-username">Nicole Reeyn</h4>
-                  <span id="dropdown-role" class="role-badge user">User</span>
-                </div>
+        </div>
+        <div class="user-box">
+          <span id="user-display-name" class="user-display-name"></span>
+          <i class="bx bx-user" id="user-icon"></i>
+          <!-- Dropdown Menu -->
+          <div class="user-dropdown" id="user-dropdown">
+            <div class="dropdown-header">
+              <div class="user-avatar">
+                <i class="bx bxs-user-circle"></i>
               </div>
-              <ul class="dropdown-menu-list">
-                <li class="menu-item">
-                  <a href="#" id="btn-my-pc-config">
-                    <i class="bx bx-desktop"></i>
-                    <span>Cấu hình máy tính</span>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="user/wishlist.html">
-                    <i class="bx bx-bookmark-heart"></i>
-                    <span>My Wishlist</span>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" id="btn-update-profile">
-                    <i class="bx bx-user-pin"></i>
-                    <span>Cập nhật thông tin cá nhân</span>
-                  </a>
-                </li>
-                <li class="dropdown-divider"></li>
-                <li class="menu-item logout-item">
-                  <a href="#" id="btn-logout">
-                    <i class="bx bx-log-out"></i>
-                    <span>Đăng xuất</span>
-                  </a>
-                </li>
-              </ul>
+              <div class="user-info">
+                <h4 id="dropdown-username">Nicole Reeyn</h4>
+                <span id="dropdown-role" class="role-badge user">User</span>
+              </div>
             </div>
+            <ul class="dropdown-menu-list">
+              <li class="menu-item">
+                <a href="#" id="btn-my-pc-config">
+                  <i class="bx bx-desktop"></i>
+                  <span>Cấu hình máy tính</span>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="user/wishlist.html">
+                  <i class="bx bx-bookmark-heart"></i>
+                  <span>My Wishlist</span>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="#" id="btn-update-profile">
+                  <i class="bx bx-user-pin"></i>
+                  <span>Cập nhật thông tin cá nhân</span>
+                </a>
+              </li>
+              <li class="dropdown-divider"></li>
+              <li class="menu-item logout-item">
+                <a href="#" id="btn-logout">
+                  <i class="bx bx-log-out"></i>
+                  <span>Đăng xuất</span>
+                </a>
+              </li>
+            </ul>
           </div>
-          <div class="menu-icon">
-            <div class="line1"></div>
-            <div class="line2"></div>
-            <div class="line3"></div>
-          </div>
+        </div>
+        <div class="menu-icon">
+          <div class="line1"></div>
+          <div class="line2"></div>
+          <div class="line3"></div>
         </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <!-- Main Content Page -->
-    <main class="pc-config-container container">
-      <!-- Header Đề Mục -->
-      <div class="pc-page-header">
-        <div class="pc-header-left">
-          <div class="pc-header-icon">
-            <i class="bx bx-laptop"></i>
-          </div>
-          <div class="pc-header-title">
-            <h1>Kiểm Tra Cấu Hình PC</h1>
-            <p>
-              Nhập thông số máy tính của bạn và chọn game bên dưới để tính toán
-              mức độ tương thích & hiệu năng trải nghiệm.
-            </p>
-          </div>
+  <!-- Main Content Page -->
+  <main class="pc-config-container container">
+    <!-- Header Đề Mục -->
+    <div class="pc-page-header">
+      <div class="pc-header-left">
+        <div class="pc-header-icon">
+          <i class="bx bx-cog"></i>
         </div>
-      </div>
-
-      <form id="pc-check-form">
-        <!-- 1. PHẦN NHẬP CẤU HÌNH MÁY TÍNH -->
-        <div class="pc-dashboard-card">
-          <div class="pc-card-header">
-            <div class="pc-card-title">
-              <i class="bx bx-desktop"></i>
-              <span>Nhập Cấu Hình Máy Tính</span>
-            </div>
-            <div class="pc-actions-bar">
-              <button
-                type="button"
-                class="btn-pc-action"
-                id="btn-toggle-saved-pc"
-              >
-                <i class="bx bx-bookmark-alt"></i> Sử dụng bộ cấu hình đã lưu
-              </button>
-            </div>
-          </div>
-
-          <!-- Khung chọn cấu hình đã lưu (Mặc định ẩn) -->
-          <div
-            class="pc-saved-group"
-            id="saved-pc-wrapper"
-            style="display: none"
-          >
-            <div class="pc-form-group pc-form-group-nomargin">
-              <label for="select-saved-pc"
-                >Chọn máy tính trong danh sách của bạn:</label
-              >
-              <select id="select-saved-pc" class="pc-input">
-                <option value="">-- Chọn cấu hình máy tính của bạn --</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Gom tất cả các ô nhập (CPU, GPU, RAM, OS, Storage) vào chung 1 Grid (repeat 3) -->
-          <div class="pc-form-grid">
-            <div class="pc-form-group">
-              <label>CPU <span class="required-star">*</span></label>
-              <div class="hw-combobox" data-hw-type="cpu">
-                <div class="hw-combobox-input-wrap">
-                  <input
-                    type="text"
-                    class="hw-combobox-text"
-                    data-hw-search
-                    placeholder="Nhập tên CPU (VD: Core i5-12400F)..."
-                    autocomplete="off"
-                  />
-                  <i class="bx bx-chevron-down hw-combobox-icon"></i>
-                </div>
-                <input type="hidden" id="check-pc-cpu" data-hw-id required />
-                <div class="hw-combobox-dropdown"></div>
-              </div>
-            </div>
-
-            <div class="pc-form-group">
-              <label>GPU <span class="required-star">*</span></label>
-              <div class="hw-combobox" data-hw-type="gpu">
-                <div class="hw-combobox-input-wrap">
-                  <input
-                    type="text"
-                    class="hw-combobox-text"
-                    data-hw-search
-                    placeholder="Nhập tên GPU (VD: RTX 3060)..."
-                    autocomplete="off"
-                  />
-                  <i class="bx bx-chevron-down hw-combobox-icon"></i>
-                </div>
-                <input type="hidden" id="check-pc-gpu" data-hw-id required />
-                <div class="hw-combobox-dropdown"></div>
-              </div>
-            </div>
-
-            <div class="pc-form-group">
-              <label for="check-pc-ram"
-                >RAM (GB) <span class="required-star">*</span></label
-              >
-              <input
-                type="number"
-                id="check-pc-ram"
-                class="pc-input"
-                required
-                min="1"
-                max="128"
-                placeholder="Nhập RAM (VD: 16)..."
-              />
-            </div>
-
-            <div class="pc-form-group">
-              <label for="check-pc-os">Hệ điều hành (OS)</label>
-              <input
-                type="text"
-                id="check-pc-os"
-                class="pc-input"
-                placeholder="VD: Windows 11..."
-              />
-            </div>
-
-            <div class="pc-form-group">
-              <label for="check-pc-storage">Lưu trữ (GB)</label>
-              <input
-                type="number"
-                id="check-pc-storage"
-                class="pc-input"
-                min="10"
-                placeholder="VD: 512..."
-              />
-            </div>
-          </div>
-
-          <!-- Nút Lưu Bộ Cấu Hình ở góc dưới bên phải -->
-          <div class="pc-card-footer">
-            <button
-              type="button"
-              class="btn-pc-action btn-accent"
-              id="btn-save-pc-config"
-            >
-              <i class="bx bx-save"></i> Lưu bộ cấu hình
-            </button>
-          </div>
+        <div class="pc-header-title">
+          <h1>Kiểm Tra Cấu Hình PC</h1>
+          <p>
+            Nhập thông số máy tính của bạn và chọn game bên dưới để tính toán
+            mức độ tương thích & hiệu năng trải nghiệm.
+          </p>
         </div>
-
-        <!-- 2. PHẦN CHỌN GAME CẦN KIỂM TRA -->
-        <div class="pc-dashboard-card">
-          <div class="pc-card-header">
-            <div class="pc-card-title">
-              <i class="bx bx-joystick"></i>
-              <span>Chọn Game Cần Kiểm Tra</span>
-            </div>
-            <span id="selected-game-label" class="selected-game-label"
-              >Chưa chọn game</span
-            >
-          </div>
-
-          <!-- Ô Tìm Kiếm Game -->
-          <div class="game-search-box">
-            <i class="bx bx-search"></i>
-            <input
-              type="text"
-              id="game-search-input"
-              class="pc-input"
-              placeholder="Nhập tên game để tìm kiếm..."
-              autocomplete="off"
-            />
-          </div>
-
-          <!-- Khung Chọn Game -->
-          <div class="game-selector-frame" id="game-selector-frame">
-            <!-- JS sẽ bơm danh sách Game Cards vào đây -->
-          </div>
-
-          <input type="hidden" id="selected-game-id" required />
-        </div>
-
-        <!-- Nút Kiểm Tra Cấu Hình -->
-        <div class="pc-action-section">
-          <button type="submit" class="btn-check-compatibility">
-            <i class="bx bx-play-circle"></i> Kiểm Tra Cấu Hình Ngay
-          </button>
-        </div>
-      </form>
-
-      <!-- 3. KẾT QUẢ KIỂM TRA CẤU HÌNH -->
-      <div
-        class="result-section pc-dashboard-card"
-        id="check-result-section"
-        style="display: none"
-      >
-        <!-- BÊN TRÁI: Thông tin Game + Bảng 4 Cột -->
-        <div class="res-left-side">
-          <!-- Thông tin Game (Flex Row) -->
-          <div class="res-game-info-row">
-            <img
-              id="res-game-poster"
-              src="../assets/default-game.png"
-              alt="Game Poster"
-              class="res-game-poster"
-            />
-            <div class="res-game-details">
-              <h3 id="res-game-title">Tên Game</h3>
-              <p>
-                <strong>Nhà phát triển:</strong>
-                <span id="res-game-dev">N/A</span>
-              </p>
-              <p>
-                <strong>Nhà phát hành:</strong>
-                <span id="res-game-pub">N/A</span>
-              </p>
-              <p>
-                <strong>Thể loại / Platform:</strong>
-                <span id="res-game-cat">N/A</span>
-              </p>
-            </div>
-          </div>
-
-          <!-- BẢNG CẤU HÌNH GAME (4 CỘT) -->
-          <div class="table-responsive">
-            <table class="data-table pc-table-dashboard">
-              <thead>
-                <tr>
-                  <th>Tiêu chí</th>
-                  <th>Cấu hình tối thiểu</th>
-                  <th>Cấu hình khuyến nghị</th>
-                  <th>Cấu hình của bạn</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="text-highlight">
-                    <strong>Hệ điều hành (OS)</strong>
-                  </td>
-                  <td id="req-min-os">Windows 10 64-bit</td>
-                  <td id="req-rec-os">Windows 11 64-bit</td>
-                  <td id="my-os-val" class="score-val">--</td>
-                </tr>
-                <tr>
-                  <td class="text-highlight"><strong>CPU</strong></td>
-                  <td id="req-min-cpu">Core i5-8400</td>
-                  <td id="req-rec-cpu">Core i7-10700K</td>
-                  <td id="my-cpu-val" class="score-val">--</td>
-                </tr>
-                <tr>
-                  <td class="text-highlight"><strong>GPU</strong></td>
-                  <td id="req-min-gpu">GTX 1060 6GB</td>
-                  <td id="req-rec-gpu">RTX 3060 12GB</td>
-                  <td id="my-gpu-val" class="score-val">--</td>
-                </tr>
-                <tr>
-                  <td class="text-highlight"><strong>RAM</strong></td>
-                  <td id="req-min-ram">8 GB</td>
-                  <td id="req-rec-ram">16 GB</td>
-                  <td id="my-ram-val" class="score-val">--</td>
-                </tr>
-                <tr>
-                  <td class="text-highlight">
-                    <strong>Lưu trữ (Storage)</strong>
-                  </td>
-                  <td id="req-min-storage">70 GB SSD</td>
-                  <td id="req-rec-storage">70 GB NVMe SSD</td>
-                  <td id="my-storage-val" class="score-val">--</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- BÊN PHẢI: Biểu đồ tròn (% Tương thích & Đánh giá) -->
-        <div class="res-right-side">
-          <div class="res-status-badge" id="res-status-badge">
-            TƯƠNG THÍCH TỐT
-          </div>
-
-          <!-- Biểu đồ tròn -->
-          <div class="circle-chart-wrapper">
-            <div class="circle-chart-donut" id="res-circle-chart">
-              <div class="circle-chart-inner">
-                <span class="circle-chart-number" id="res-percent-number"
-                  >88%</span
-                >
-                <span class="circle-chart-label">Match Score</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Dòng nhận xét phần cứng -->
-          <div class="res-comments-list" id="res-comments-list">
-            <div class="res-comment-item pass">
-              <i class="bx bx-check-circle"></i>
-              <span>CPU của bạn hoạt động tốt với tựa game này.</span>
-            </div>
-            <div class="res-comment-item pass">
-              <i class="bx bx-check-circle"></i>
-              <span>Card đồ họa (GPU) đảm bảo tốc độ khung hình mượt mà.</span>
-            </div>
-            <div class="res-comment-item pass">
-              <i class="bx bx-check-circle"></i>
-              <span>Dung lượng RAM đáp ứng tốt nhu cầu chạy đa nhiệm.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Modal Lưu Bộ Cấu Hình -->
-    <div class="modal" id="save-pc-modal">
-      <div class="modal-overlay" id="save-pc-modal-overlay"></div>
-      <div class="modal-card modal-card-save-pc">
-        <div class="modal-header modal-header-save-pc">
-          <h3><i class="bx bx-save"></i> Lưu Bộ Cấu Hình</h3>
-          <button
-            type="button"
-            class="close-btn close-btn-clean"
-            id="close-save-pc-modal"
-          >
-            &times;
-          </button>
-        </div>
-        <form id="save-pc-name-form">
-          <div class="pc-form-group">
-            <label for="save-pc-name-input"
-              >Tên bộ cấu hình máy tính
-              <span class="required-star">*</span></label
-            >
-            <input
-              type="text"
-              id="save-pc-name-input"
-              class="pc-input"
-              required
-              placeholder="VD: PC Gaming 2026, Laptop cá nhân..."
-            />
-          </div>
-          <div class="modal-footer-save-pc">
-            <button type="button" class="btn-pc-action" id="cancel-save-pc-btn">
-              Hủy
-            </button>
-            <button type="submit" class="btn-pc-action btn-accent">
-              <i class="bx bx-check"></i> Lưu vào tài khoản
-            </button>
-          </div>
-        </form>
       </div>
     </div>
 
+    <form id="pc-check-form">
+      <!-- 1. PHẦN NHẬP CẤU HÌNH MÁY TÍNH -->
+      <div class="pc-dashboard-card">
+        <div class="pc-card-header">
+          <div class="pc-card-title">
+            <i class="bx bx-desktop"></i>
+            <span>Nhập Cấu Hình Máy Tính</span>
+          </div>
+          <div class="pc-actions-bar">
+            <button type="button" class="btn-pc-action" id="btn-toggle-saved-pc">
+              <i class="bx bx-bookmark-alt"></i> Sử dụng bộ cấu hình đã lưu
+            </button>
+          </div>
+        </div>
 
-    <div id="home-toast" class="home-toast"></div>
+        <!-- Khung chọn cấu hình đã lưu (Mặc định ẩn) -->
+        <div class="pc-saved-group" id="saved-pc-wrapper" style="display: none">
+          <div class="pc-form-group pc-form-group-nomargin">
+            <label for="select-saved-pc">Chọn máy tính trong danh sách của bạn:</label>
+            <select id="select-saved-pc" class="pc-input">
+              <option value="">-- Chọn cấu hình máy tính của bạn --</option>
+            </select>
+          </div>
+        </div>
 
-    <!-- JavaScript Modules -->
-    <script src="../js/utils/toast.js" defer></script>
-    <script src="../js/utils/auth-storage.js" defer></script>
-    <script src="../js/data/games-data.js" defer></script>
-    <script src="../js/components/navbar.js" defer></script>
-    <script src="../js/components/user-dropdown.js" defer></script>
-    <script src="../js/components/profile-modal.js" defer></script>
-    <script src="../js/components/cpu-gpu-combobox.js" defer></script>
-    <script src="../js/components/pc-config-modal.js" defer></script>
-    <script src="../js/pages/pc_config.js" defer></script>
-  </body>
+        <!-- Gom tất cả các ô nhập (CPU, GPU, RAM, OS, Storage) vào chung 1 Grid (repeat 3) -->
+        <div class="pc-form-grid">
+          <div class="pc-form-group">
+            <label>CPU <span class="required-star">*</span></label>
+            <div class="hw-combobox" data-hw-type="cpu">
+              <div class="hw-combobox-input-wrap">
+                <input type="text" class="hw-combobox-text" data-hw-search
+                  placeholder="Nhập tên CPU (VD: Core i5-12400F)..." autocomplete="off" />
+                <i class="bx bx-chevron-down hw-combobox-icon"></i>
+              </div>
+              <input type="hidden" id="check-pc-cpu" data-hw-id required />
+              <div class="hw-combobox-dropdown"></div>
+            </div>
+          </div>
+
+          <div class="pc-form-group">
+            <label>GPU <span class="required-star">*</span></label>
+            <div class="hw-combobox" data-hw-type="gpu">
+              <div class="hw-combobox-input-wrap">
+                <input type="text" class="hw-combobox-text" data-hw-search placeholder="Nhập tên GPU (VD: RTX 3060)..."
+                  autocomplete="off" />
+                <i class="bx bx-chevron-down hw-combobox-icon"></i>
+              </div>
+              <input type="hidden" id="check-pc-gpu" data-hw-id required />
+              <div class="hw-combobox-dropdown"></div>
+            </div>
+          </div>
+
+          <div class="pc-form-group">
+            <label for="check-pc-ram">RAM (GB) <span class="required-star">*</span></label>
+            <input type="number" id="check-pc-ram" class="pc-input" required min="1" max="128"
+              placeholder="Nhập RAM (VD: 16)..." />
+          </div>
+
+          <div class="pc-form-group">
+            <label for="check-pc-os">Hệ điều hành (OS)</label>
+            <input type="text" id="check-pc-os" class="pc-input" placeholder="VD: Windows 11..." />
+          </div>
+
+          <div class="pc-form-group">
+            <label for="check-pc-storage">Lưu trữ (GB)</label>
+            <input type="number" id="check-pc-storage" class="pc-input" min="10" placeholder="VD: 512..." />
+          </div>
+        </div>
+
+        <!-- Nút Lưu Bộ Cấu Hình ở góc dưới bên phải -->
+        <div class="pc-card-footer">
+          <button type="button" class="btn-pc-action btn-accent" id="btn-save-pc-config">
+            <i class="bx bx-save"></i> Lưu bộ cấu hình
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. PHẦN CHỌN GAME CẦN KIỂM TRA -->
+      <div class="pc-dashboard-card">
+        <div class="pc-card-header">
+          <div class="pc-card-title">
+            <i class="bx bx-joystick"></i>
+            <span>Chọn Game Cần Kiểm Tra</span>
+          </div>
+          <span id="selected-game-label" class="selected-game-label">Chưa chọn game</span>
+        </div>
+
+        <!-- Ô Tìm Kiếm Game -->
+        <div class="game-search-box">
+          <i class="bx bx-search"></i>
+          <input type="text" id="game-search-input" class="pc-input" placeholder="Nhập tên game để tìm kiếm..."
+            autocomplete="off" />
+        </div>
+
+        <!-- Khung Chọn Game -->
+        <div class="game-selector-frame" id="game-selector-frame">
+          <!-- JS sẽ bơm danh sách Game Cards vào đây -->
+        </div>
+
+        <input type="hidden" id="selected-game-id" required />
+      </div>
+
+      <!-- Nút Kiểm Tra Cấu Hình -->
+      <div class="pc-action-section">
+        <button type="submit" class="btn-check-compatibility">
+          <i class="bx bx-play-circle"></i> Kiểm Tra Cấu Hình Ngay
+        </button>
+      </div>
+    </form>
+
+    <!-- 3. KẾT QUẢ KIỂM TRA CẤU HÌNH -->
+    <div class="result-section pc-dashboard-card" id="check-result-section" style="display: none">
+      <!-- BÊN TRÁI: Thông tin Game + Bảng 4 Cột -->
+      <div class="res-left-side">
+        <!-- Thông tin Game (Flex Row) -->
+        <div class="res-game-info-row">
+          <img id="res-game-poster" src="../assets/default-game.png" alt="Game Poster" class="res-game-poster" />
+          <div class="res-game-details">
+            <h3 id="res-game-title">Tên Game</h3>
+            <p>
+              <strong>Nhà phát triển:</strong>
+              <span id="res-game-dev">N/A</span>
+            </p>
+            <p>
+              <strong>Nhà phát hành:</strong>
+              <span id="res-game-pub">N/A</span>
+            </p>
+            <p>
+              <strong>Thể loại / Platform:</strong>
+              <span id="res-game-cat">N/A</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- BẢNG CẤU HÌNH GAME (4 CỘT) -->
+        <div class="table-responsive">
+          <table class="data-table pc-table-dashboard">
+            <thead>
+              <tr>
+                <th>Tiêu chí</th>
+                <th>Cấu hình tối thiểu</th>
+                <th>Cấu hình khuyến nghị</th>
+                <th>Cấu hình của bạn</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-highlight">
+                  <strong>Hệ điều hành (OS)</strong>
+                </td>
+                <td id="req-min-os">Windows 10 64-bit</td>
+                <td id="req-rec-os">Windows 11 64-bit</td>
+                <td id="my-os-val" class="score-val">--</td>
+              </tr>
+              <tr>
+                <td class="text-highlight"><strong>CPU</strong></td>
+                <td id="req-min-cpu">Core i5-8400</td>
+                <td id="req-rec-cpu">Core i7-10700K</td>
+                <td id="my-cpu-val" class="score-val">--</td>
+              </tr>
+              <tr>
+                <td class="text-highlight"><strong>GPU</strong></td>
+                <td id="req-min-gpu">GTX 1060 6GB</td>
+                <td id="req-rec-gpu">RTX 3060 12GB</td>
+                <td id="my-gpu-val" class="score-val">--</td>
+              </tr>
+              <tr>
+                <td class="text-highlight"><strong>RAM</strong></td>
+                <td id="req-min-ram">8 GB</td>
+                <td id="req-rec-ram">16 GB</td>
+                <td id="my-ram-val" class="score-val">--</td>
+              </tr>
+              <tr>
+                <td class="text-highlight">
+                  <strong>Lưu trữ (Storage)</strong>
+                </td>
+                <td id="req-min-storage">70 GB SSD</td>
+                <td id="req-rec-storage">70 GB NVMe SSD</td>
+                <td id="my-storage-val" class="score-val">--</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BÊN PHẢI: Biểu đồ tròn (% Tương thích & Đánh giá) -->
+      <div class="res-right-side">
+        <div class="res-status-badge" id="res-status-badge">
+          TƯƠNG THÍCH TỐT
+        </div>
+
+        <!-- Biểu đồ tròn -->
+        <div class="circle-chart-wrapper">
+          <div class="circle-chart-donut" id="res-circle-chart">
+            <div class="circle-chart-inner">
+              <span class="circle-chart-number" id="res-percent-number">88%</span>
+              <span class="circle-chart-label">Match Score</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dòng nhận xét phần cứng -->
+        <div class="res-comments-list" id="res-comments-list">
+          <div class="res-comment-item pass">
+            <i class="bx bx-check-circle"></i>
+            <span>CPU của bạn hoạt động tốt với tựa game này.</span>
+          </div>
+          <div class="res-comment-item pass">
+            <i class="bx bx-check-circle"></i>
+            <span>Card đồ họa (GPU) đảm bảo tốc độ khung hình mượt mà.</span>
+          </div>
+          <div class="res-comment-item pass">
+            <i class="bx bx-check-circle"></i>
+            <span>Dung lượng RAM đáp ứng tốt nhu cầu chạy đa nhiệm.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal Lưu Bộ Cấu Hình -->
+  <div class="modal" id="save-pc-modal">
+    <div class="modal-overlay" id="save-pc-modal-overlay"></div>
+    <div class="modal-card modal-card-save-pc">
+      <div class="modal-header modal-header-save-pc">
+        <h3><i class="bx bx-save"></i> Lưu Bộ Cấu Hình</h3>
+        <button type="button" class="close-btn close-btn-clean" id="close-save-pc-modal">
+          &times;
+        </button>
+      </div>
+      <form id="save-pc-name-form">
+        <div class="pc-form-group">
+          <label for="save-pc-name-input">Tên bộ cấu hình máy tính
+            <span class="required-star">*</span></label>
+          <input type="text" id="save-pc-name-input" class="pc-input" required
+            placeholder="VD: PC Gaming 2026, Laptop cá nhân..." />
+        </div>
+        <div class="modal-footer-save-pc">
+          <button type="button" class="btn-pc-action" id="cancel-save-pc-btn">
+            Hủy
+          </button>
+          <button type="submit" class="btn-pc-action btn-accent">
+            <i class="bx bx-check"></i> Lưu vào tài khoản
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div id="home-toast" class="home-toast"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="../js/utils/toast.js" defer></script>
+  <script src="../js/utils/auth-storage.js" defer></script>
+  <script src="../js/data/games-data.js" defer></script>
+  <script src="../js/components/navbar.js" defer></script>
+  <script src="../js/components/user-dropdown.js" defer></script>
+  <script src="../js/components/profile-modal.js" defer></script>
+  <script src="../js/components/cpu-gpu-combobox.js" defer></script>
+  <script src="../js/components/pc-config-modal.js" defer></script>
+  <script src="../js/pages/pc_config.js" defer></script>
+</body>
+
 </html>

@@ -174,9 +174,6 @@
             <button class="btn-write-review" id="btn-open-review-modal">
               Viết đánh giá
             </button>
-            <button class="btn-edit-review" id="btn-edit-review">
-              <i class="bx bx-edit-alt"></i> Chỉnh sửa
-            </button>
           </div>
         </div>
 
@@ -238,6 +235,88 @@
     </div>
   </div>
 
+  <!-- Modal Báo cáo bình luận vi phạm -->
+  <div class="modal" id="report-modal">
+    <div class="modal-overlay" id="report-modal-overlay"></div>
+    <div class="modal-card modal-compact">
+      <div class="modal-header">
+        <h3>
+          <i class="bx bx-shield-quarter"></i>
+          <span>Báo cáo bình luận</span>
+        </h3>
+        <button type="button" class="close-btn" id="close-report-modal">&times;</button>
+      </div>
+      <form id="report-form">
+        <div class="modal-body" style="padding: 0 0 16px 0;">
+          <input type="hidden" id="report-review-id" value="" />
+          <p class="report-guide-text">
+            Báo cáo bình luận của <strong id="report-target-user" class="report-target-user">Người dùng</strong>:
+          </p>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label" style="margin-bottom: 8px;">Chọn lý do vi phạm <span class="required">*</span></label>
+            <div class="report-reasons-list">
+              <label class="report-reason-item">
+                <input type="radio" name="report-reason" value="Ngôn từ xúc phạm, thù hận" checked />
+                <span class="reason-custom-radio"></span>
+                <span class="reason-text">Ngôn từ xúc phạm, thù hận</span>
+              </label>
+              <label class="report-reason-item">
+                <input type="radio" name="report-reason" value="Spam hoặc quảng cáo" />
+                <span class="reason-custom-radio"></span>
+                <span class="reason-text">Spam hoặc quảng cáo</span>
+              </label>
+              <label class="report-reason-item">
+                <input type="radio" name="report-reason" value="Tiết lộ cốt truyện (Spoiler)" />
+                <span class="reason-custom-radio"></span>
+                <span class="reason-text">Tiết lộ cốt truyện (Spoiler)</span>
+              </label>
+              <label class="report-reason-item">
+                <input type="radio" name="report-reason" value="Lý do khác" />
+                <span class="reason-custom-radio"></span>
+                <span class="reason-text">Lý do khác</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="report-detail" class="form-label" style="margin-bottom: 6px;">Chi tiết bổ sung (tùy chọn)</label>
+            <textarea id="report-detail" rows="3" placeholder="Nhập thêm chi tiết nếu cần giải thích rõ hơn..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding-top: 14px;">
+          <button type="button" class="btn-cancel" id="cancel-report-btn">Hủy</button>
+          <button type="submit" class="btn-save btn-danger" id="submit-report-btn">
+            <i class="bx bx-paper-plane"></i> Gửi báo cáo
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Xác nhận Xóa dùng chung (Confirm Delete Modal) -->
+  <div class="modal" id="confirm-delete-modal">
+    <div class="modal-overlay" id="confirm-delete-overlay"></div>
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <button type="button" class="close-btn" id="close-confirm-delete-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <i class="bx bx-error-circle confirm-icon"></i>
+        <h3 id="confirm-delete-title" class="confirm-title">
+          Xác nhận xóa đánh giá
+        </h3>
+        <p id="confirm-delete-message" class="confirm-message">
+          Bạn có chắc chắn muốn xóa đánh giá của mình không? Thao tác này không thể hoàn tác.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" id="cancel-confirm-delete-btn">Hủy</button>
+        <button type="button" class="btn-save btn-danger" id="submit-confirm-delete-btn">Xóa ngay</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal My PC Config -->
   <div class="modal" id="my_pc_config">

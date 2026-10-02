@@ -60,9 +60,25 @@ const getAvgRating = async (game_id) => {
         throw new Error(error.message);
     }
 }
+const deleteReview = async (user_id, game_id) => {
+    try {
+        const request = new sql.Request();
+        request.input('user_id', sql.Int, user_id);
+        request.input('game_id', sql.Int, game_id);
+
+        const result = await request.execute('sp_DeleteReview');
+        return { success: true, data: result.recordset };
+    }
+    catch (error) {
+        console.log('Error in deleteReview Service: ', error.message);
+        throw new Error(error.message);
+    }
+}
+
 module.exports = {
     writeReview,
     updateReview,
+    deleteReview,
     getReview,
     getAvgRating
 }

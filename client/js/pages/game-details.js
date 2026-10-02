@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const gameIdStr = gameId.toString();
     const isSaved = savedWishlistGameIds.has(gameIdStr);
     document.getElementById("gd-wishlist-container").innerHTML = `
-      <button type="button" class="wishlist-btn ${isSaved ? "active" : ""}" id="gd-wishlist-btn" data-game-id="${gameIdStr}" style="position: static; display: inline-flex; vertical-align: middle; margin-left: 14px; width: 36px; height: 36px;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}">${bookmarkSvgIcon}</button>
+      <button type="button" class="wishlist-btn ${isSaved ? "active" : ""}" id="gd-wishlist-btn" data-game-id="${gameIdStr}" style="position: static; display: inline-flex; vertical-align: middle; margin-left: 0px; width: 68px; height: 68px;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}">${bookmarkSvgIcon}</button>
     `;
 
     // Cập nhật Mô tả

@@ -1,1627 +1,1161 @@
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Game Fit - Admin Dashboard</title>
-    <link rel="stylesheet" href="../../css/style.css" />
-    <link rel="stylesheet" href="../../css/components/cpu-gpu-combobox.css" />
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../../css/pages/admin/dashboard.css" />
-    <link
-      rel="stylesheet"
-      href="../../css/pages/admin/add_hardware_modal.css"
-    />
-    <!-- Nhúng CSS của trang thống kê -->
-    <link rel="stylesheet" href="../../css/pages/admin/statistics.css" />
-  </head>
 
-  <body>
-    <!-- Header Navbar dùng chung -->
-    <header>
-      <div class="nav container">
-        <a href="../home.html" class="logo">Game<span>Fit</span></a>
-        <!-- Navigation Links hiển thị trên Header -->
-        <ul class="nav-links">
-          <li><a href="../home.html">Home</a></li>
-          <li><a href="../games.html">Games</a></li>
-          <li><a href="../pc_config.html">PC Check</a></li>
-          <li class="admin-only" style="display: none">
-            <a href="dashboard.html" class="active">Dashboard</a>
-          </li>
-        </ul>
-        <!-- Nav icon -->
-        <div class="nav-icon">
-          <div class="search search-poda">
-            <div class="search-glow"></div>
-            <div class="search-dark-border-bg"></div>
-            <div class="search-dark-border-bg"></div>
-            <div class="search-dark-border-bg"></div>
-            <div class="search-white"></div>
-            <div class="search-border"></div>
-            <div class="search-main">
-              <input
-                type="text"
-                placeholder="Tìm kiếm..."
-                class="search-input"
-              />
-              <div class="search-input-mask"></div>
-              <div class="search-pink-mask"></div>
-              <div class="search-icon">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                  fill="none"
-                >
-                  <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
-                  <line
-                    stroke="#d6d6e6"
-                    y2="16.65"
-                    y1="22"
-                    x2="16.65"
-                    x1="22"
-                  ></line>
-                </svg>
-              </div>
-            </div>
-          </div>
-          <div class="user-box">
-            <span id="user-display-name" class="user-display-name"></span>
-            <i class="bx bx-user" id="user-icon"></i>
-            <!-- Dropdown Menu -->
-            <div class="user-dropdown" id="user-dropdown">
-              <div class="dropdown-header">
-                <div class="user-avatar">
-                  <i class="bx bxs-user-circle"></i>
-                </div>
-                <div class="user-info">
-                  <h4 id="dropdown-username">Admin</h4>
-                  <span id="dropdown-role" class="role-badge admin">Admin</span>
-                </div>
-              </div>
-              <ul class="dropdown-menu-list">
-                <li class="menu-item">
-                  <a href="#" id="btn-my-pc-config">
-                    <i class="bx bx-desktop"></i>
-                    <span>Cấu hình máy tính</span>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="../user/wishlist.html">
-                    <i class="bx bx-bookmark-heart"></i>
-                    <span>My Wishlist</span>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" id="btn-update-profile">
-                    <i class="bx bx-user-pin"></i>
-                    <span>Cập nhật thông tin cá nhân</span>
-                  </a>
-                </li>
-                <li class="dropdown-divider"></li>
-                <li class="menu-item logout-item">
-                  <a href="#" id="btn-logout">
-                    <i class="bx bx-log-out"></i>
-                    <span>Đăng xuất</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <!-- Menu Icon Responsive -->
-          <div class="menu-icon">
-            <div class="line1"></div>
-            <div class="line2"></div>
-            <div class="line3"></div>
-          </div>
-        </div>
-      </div>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Fit - Admin Dashboard</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/components/cpu-gpu-combobox.css" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/pages/admin/dashboard.css" />
+  <!-- Nhúng CSS của trang thống kê -->
+  <link rel="stylesheet" href="../../css/pages/admin/statistics.css" />
+</head>
 
-    <!-- Section Main Dashboard Container -->
-    <section class="dashboard container">
-      <!-- Hero Section Header -->
-      <div class="dashboard-hero">
-        <div class="heading">
-          <div class="left-heading">
-            <i class="bx bx-grid-alt"></i>
-            <h2>Admin Dashboard</h2>
-          </div>
-        </div>
-        <p>
-          Trung tâm quản trị hệ thống GameFit - Quản lý dữ liệu game, cấu hình
-          phần cứng, tài khoản và duyệt báo cáo vi phạm.
-        </p>
-      </div>
-      <!-- Admin Tabbed Management Module -->
-      <div class="admin-management-container">
-        <div class="heading" style="margin-bottom: 1rem">
-          <div class="left-heading">
-            <i class="bx bx-cog"></i>
-            <h2>Chức năng quản lý</h2>
-          </div>
-        </div>
-        <!-- Navigation Tabs -->
-        <div class="admin-tabs-nav">
-          <button class="tab-pill active" data-tab="tab-dashboard">
-            Thống kê
-          </button>
-          <button class="tab-pill" data-tab="tab-games">Quản lý Game</button>
-          <button class="tab-pill" data-tab="tab-users">Người dùng</button>
-          <button class="tab-pill" data-tab="tab-hardware">Hardware</button>
-          <button class="tab-pill" data-tab="tab-genres">Tag</button>
-          <button class="tab-pill" data-tab="tab-violations">
-            Báo cáo vi phạm
-          </button>
-        </div>
-        <!-- TAB 1: Thống kê (Nạp từ statistics.html) -->
-        <div id="tab-dashboard" class="tab-content active"></div>
-
-        <!-- TAB 2: Quản lý Game -->
-        <div id="tab-games" class="tab-content" style="display: none">
-          <div class="table-card">
-            <div class="table-header">
-              <h2>Quản lý Danh sách Game</h2>
-              <div class="table-actions">
-                <div class="table-search search-poda">
-                  <div class="search-glow"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-white"></div>
-                  <div class="search-border"></div>
-                  <div class="search-main">
-                    <input
-                      type="text"
-                      id="game-search-input"
-                      placeholder="Tìm kiếm..."
-                      class="search-input"
-                    />
-                    <div class="search-input-mask"></div>
-                    <div class="search-pink-mask"></div>
-                    <div class="search-icon">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        fill="none"
-                      >
-                        <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
-                        <line
-                          stroke="#d6d6e6"
-                          y2="16.65"
-                          y1="22"
-                          x2="16.65"
-                          x1="22"
-                        ></line>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <button type="button" class="button btn-add" id="btn-add-game">
-                  <span class="button__text">Thêm Game mới</span>
-                  <span class="button__icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      stroke-width="2"
-                      stroke-linejoin="round"
-                      stroke-linecap="round"
-                      stroke="currentColor"
-                      fill="none"
-                      class="svg"
-                    >
-                      <line y2="19" y1="5" x2="12" x1="12"></line>
-                      <line y2="12" y1="12" x2="19" x1="5"></line>
-                    </svg>
-                  </span>
-                </button>
-              </div>
-            </div>
-            <table class="data-table">
-              <thead class="highlight-headers">
-                <tr>
-                  <th>ID</th>
-                  <th>Tên Game</th>
-                  <th>Thể loại</th>
-                  <th>Nhà phát triển</th>
-                  <th>Trạng thái</th>
-                  <th class="text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody id="games-table-body">
-                <!-- Data rendered dynamically from JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- TAB 3: Quản lý Người dùng -->
-        <div id="tab-users" class="tab-content" style="display: none">
-          <div class="table-card">
-            <div class="table-header">
-              <h2>Quản lý Người dùng</h2>
-              <div class="table-actions">
-                <div class="table-search search-poda">
-                  <div class="search-glow"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-white"></div>
-                  <div class="search-border"></div>
-                  <div class="search-main">
-                    <input
-                      type="text"
-                      placeholder="Tìm kiếm..."
-                      class="search-input"
-                    />
-                    <div class="search-input-mask"></div>
-                    <div class="search-pink-mask"></div>
-                    <div class="search-icon">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        fill="none"
-                      >
-                        <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
-                        <line
-                          stroke="#d6d6e6"
-                          y2="16.65"
-                          y1="22"
-                          x2="16.65"
-                          x1="22"
-                        ></line>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <button type="button" class="button btn-add" id="btn-add-user">
-                  <span class="button__text">Thêm Người dùng</span>
-                  <span class="button__icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      stroke-width="2"
-                      stroke-linejoin="round"
-                      stroke-linecap="round"
-                      stroke="currentColor"
-                      fill="none"
-                      class="svg"
-                    >
-                      <line y2="19" y1="5" x2="12" x1="12"></line>
-                      <line y2="12" y1="12" x2="19" x1="5"></line>
-                    </svg>
-                  </span>
-                </button>
-              </div>
-            </div>
-            <table class="data-table">
-              <thead class="highlight-headers">
-                <tr>
-                  <th>ID</th>
-                  <th>Tên người dùng</th>
-                  <th>Email</th>
-                  <th>Vai trò</th>
-                  <th>Trạng thái</th>
-                  <th>Ngày tham gia</th>
-                  <th class="text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>#U-101</td>
-                  <td class="text-highlight">admin_gamefit</td>
-                  <td>admin@gamefit.vn</td>
-                  <td><span class="role-tag admin">Admin</span></td>
-                  <td><span class="status-badge active">Hoạt động</span></td>
-                  <td>15/01/2026</td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Khóa/Mở" class="btn-action btn-lock">
-                      <i class="bx bx-lock-alt"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#U-102</td>
-                  <td class="text-highlight">nguyenvana</td>
-                  <td>vana.nguyen@gmail.com</td>
-                  <td><span class="role-tag user">User</span></td>
-                  <td><span class="status-badge active">Hoạt động</span></td>
-                  <td>20/02/2026</td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Khóa/Mở" class="btn-action btn-lock">
-                      <i class="bx bx-lock-alt"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#U-103</td>
-                  <td class="text-highlight">tranthib</td>
-                  <td>thib.tran@yahoo.com</td>
-                  <td><span class="role-tag user">User</span></td>
-                  <td><span class="status-badge danger">Bị khóa</span></td>
-                  <td>10/03/2026</td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Khóa/Mở" class="btn-action btn-unlock">
-                      <i class="bx bx-lock-open-alt"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- TAB 4: Quản lý Hardware -->
-        <div id="tab-hardware" class="tab-content" style="display: none">
-          <!-- Hardware Sub-tabs Navigation -->
-          <div class="hardware-sub-nav">
-            <button class="sub-tab-pill active" data-hw-tab="hw-cpu">
-              CPU (Vi xử lý)
-            </button>
-            <button class="sub-tab-pill" data-hw-tab="hw-gpu">
-              GPU (Card đồ họa)
-            </button>
-          </div>
-
-          <!-- Sub-tab 1: CPU -->
-          <div id="hw-cpu" class="hw-tab-content">
-            <div class="table-card">
-              <div class="table-header">
-                <h2>Quản lý CPU (Vi xử lý)</h2>
-                <div class="table-actions">
-                  <div class="table-search search-poda">
-                    <div class="search-glow"></div>
-                    <div class="search-dark-border-bg"></div>
-                    <div class="search-dark-border-bg"></div>
-                    <div class="search-dark-border-bg"></div>
-                    <div class="search-white"></div>
-                    <div class="search-border"></div>
-                    <div class="search-main">
-                      <input
-                        type="text"
-                        placeholder="Tìm kiếm..."
-                        class="search-input"
-                      />
-                      <div class="search-input-mask"></div>
-                      <div class="search-pink-mask"></div>
-                      <div class="search-icon">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          stroke-width="2"
-                          stroke-linejoin="round"
-                          stroke-linecap="round"
-                          fill="none"
-                        >
-                          <circle
-                            stroke="#d6d6e6"
-                            r="8"
-                            cy="11"
-                            cx="11"
-                          ></circle>
-                          <line
-                            stroke="#d6d6e6"
-                            y2="16.65"
-                            y1="22"
-                            x2="16.65"
-                            x1="22"
-                          ></line>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <button type="button" class="button btn-add" id="btn-add-cpu">
-                    <span class="button__text">Thêm CPU</span>
-                    <span class="button__icon">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        stroke="currentColor"
-                        fill="none"
-                        class="svg"
-                      >
-                        <line y2="19" y1="5" x2="12" x1="12"></line>
-                        <line y2="12" y1="12" x2="19" x1="5"></line>
-                      </svg>
-                    </span>
-                  </button>
-                </div>
-              </div>
-              <table class="data-table">
-                <thead class="highlight-headers">
-                  <tr>
-                    <th>Mã</th>
-                    <th>Tên CPU</th>
-                    <th>Hãng</th>
-                    <th>Điểm Benchmark</th>
-                    <th class="text-right">Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>#CPU-001</td>
-                    <td class="text-highlight">Intel Core i7-13700K</td>
-                    <td>Intel</td>
-                    <td class="score-val">18,500</td>
-                    <td class="text-right">
-                      <button title="Sửa" class="btn-action btn-edit">
-                        <i class="bx bx-edit"></i>
-                      </button>
-                      <button title="Xóa" class="btn-action btn-delete">
-                        <i class="bx bx-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#CPU-002</td>
-                    <td class="text-highlight">AMD Ryzen 7 7800X3D</td>
-                    <td>AMD</td>
-                    <td class="score-val">19,200</td>
-                    <td class="text-right">
-                      <button title="Sửa" class="btn-action btn-edit">
-                        <i class="bx bx-edit"></i>
-                      </button>
-                      <button title="Xóa" class="btn-action btn-delete">
-                        <i class="bx bx-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#CPU-003</td>
-                    <td class="text-highlight">Intel Core i5-13600K</td>
-                    <td>Intel</td>
-                    <td class="score-val">15,800</td>
-                    <td class="text-right">
-                      <button title="Sửa" class="btn-action btn-edit">
-                        <i class="bx bx-edit"></i>
-                      </button>
-                      <button title="Xóa" class="btn-action btn-delete">
-                        <i class="bx bx-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div
-                class="table-pagination"
-                id="cpu-pagination"
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  padding: 1rem 1.5rem;
-                  border-top: 1px solid rgba(255, 255, 255, 0.08);
-                "
-              >
-                <div
-                  class="pagination-info"
-                  style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem"
-                >
-                  Trang <strong id="cpu-current-page">1</strong> /
-                  <span id="cpu-total-pages">1</span> (Tổng
-                  <span id="cpu-total-items">0</span> linh kiện)
-                </div>
-                <div class="pagination-buttons" style="display: flex; gap: 8px">
-                  <button
-                    class="btn-action"
-                    id="btn-cpu-prev"
-                    title="Trang trước"
-                    style="padding: 6px 12px; height: auto; width: auto"
-                  >
-                    <i class="bx bx-chevron-left"></i> Trước
-                  </button>
-                  <button
-                    class="btn-action"
-                    id="btn-cpu-next"
-                    title="Trang sau"
-                    style="padding: 6px 12px; height: auto; width: auto"
-                  >
-                    Sau <i class="bx bx-chevron-right"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Sub-tab 2: GPU -->
-          <div id="hw-gpu" class="hw-tab-content" style="display: none">
-            <div class="table-card">
-              <div class="table-header">
-                <h2>Quản lý GPU (Card đồ họa)</h2>
-                <div class="table-actions">
-                  <div class="table-search search-poda">
-                    <div class="search-glow"></div>
-                    <div class="search-dark-border-bg"></div>
-                    <div class="search-dark-border-bg"></div>
-                    <div class="search-dark-border-bg"></div>
-                    <div class="search-white"></div>
-                    <div class="search-border"></div>
-                    <div class="search-main">
-                      <input
-                        type="text"
-                        placeholder="Tìm kiếm..."
-                        class="search-input"
-                      />
-                      <div class="search-input-mask"></div>
-                      <div class="search-pink-mask"></div>
-                      <div class="search-icon">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          stroke-width="2"
-                          stroke-linejoin="round"
-                          stroke-linecap="round"
-                          fill="none"
-                        >
-                          <circle
-                            stroke="#d6d6e6"
-                            r="8"
-                            cy="11"
-                            cx="11"
-                          ></circle>
-                          <line
-                            stroke="#d6d6e6"
-                            y2="16.65"
-                            y1="22"
-                            x2="16.65"
-                            x1="22"
-                          ></line>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <button type="button" class="button btn-add" id="btn-add-gpu">
-                    <span class="button__text">Thêm GPU</span>
-                    <span class="button__icon">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        stroke="currentColor"
-                        fill="none"
-                        class="svg"
-                      >
-                        <line y2="19" y1="5" x2="12" x1="12"></line>
-                        <line y2="12" y1="12" x2="19" x1="5"></line>
-                      </svg>
-                    </span>
-                  </button>
-                </div>
-              </div>
-              <table class="data-table">
-                <thead class="highlight-headers">
-                  <tr>
-                    <th>Mã</th>
-                    <th>Tên GPU</th>
-                    <th>Hãng</th>
-                    <th>Điểm Benchmark</th>
-                    <th class="text-right">Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>#GPU-001</td>
-                    <td class="text-highlight">NVIDIA GeForce RTX 4070</td>
-                    <td>NVIDIA</td>
-                    <td class="score-val">21,200</td>
-                    <td class="text-right">
-                      <button title="Sửa" class="btn-action btn-edit">
-                        <i class="bx bx-edit"></i>
-                      </button>
-                      <button title="Xóa" class="btn-action btn-delete">
-                        <i class="bx bx-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div
-                class="table-pagination"
-                id="gpu-pagination"
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  padding: 1rem 1.5rem;
-                  border-top: 1px solid rgba(255, 255, 255, 0.08);
-                "
-              >
-                <div
-                  class="pagination-info"
-                  style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem"
-                >
-                  Trang <strong id="gpu-current-page">1</strong> /
-                  <span id="gpu-total-pages">1</span> (Tổng
-                  <span id="gpu-total-items">0</span> linh kiện)
-                </div>
-                <div class="pagination-buttons" style="display: flex; gap: 8px">
-                  <button
-                    class="btn-action"
-                    id="btn-gpu-prev"
-                    title="Trang trước"
-                    style="padding: 6px 12px; height: auto; width: auto"
-                  >
-                    <i class="bx bx-chevron-left"></i> Trước
-                  </button>
-                  <button
-                    class="btn-action"
-                    id="btn-gpu-next"
-                    title="Trang sau"
-                    style="padding: 6px 12px; height: auto; width: auto"
-                  >
-                    Sau <i class="bx bx-chevron-right"></i>
-                  </button>
-                </div>
-              </div>
+<body>
+  <!-- Header Navbar dùng chung -->
+  <header>
+    <div class="nav container">
+      <a href="../home.html" class="logo">Game<span>Fit</span></a>
+      <!-- Navigation Links hiển thị trên Header -->
+      <ul class="nav-links">
+        <li><a href="../home.html">Home</a></li>
+        <li><a href="../games.html">Games</a></li>
+        <li><a href="../pc_config.html">PC Check</a></li>
+        <li class="admin-only" style="display: none">
+          <a href="dashboard.html" class="active">Dashboard</a>
+        </li>
+      </ul>
+      <!-- Nav icon -->
+      <div class="nav-icon">
+        <div class="search search-poda">
+          <div class="search-glow"></div>
+          <div class="search-dark-border-bg"></div>
+          <div class="search-dark-border-bg"></div>
+          <div class="search-dark-border-bg"></div>
+          <div class="search-white"></div>
+          <div class="search-border"></div>
+          <div class="search-main">
+            <input type="text" placeholder="Tìm kiếm..." class="search-input" />
+            <div class="search-input-mask"></div>
+            <div class="search-pink-mask"></div>
+            <div class="search-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2"
+                stroke-linejoin="round" stroke-linecap="round" fill="none">
+                <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
+                <line stroke="#d6d6e6" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+              </svg>
             </div>
           </div>
         </div>
-
-        <!-- TAB 5: Quản lý Thể loại (Genre) -->
-        <div id="tab-genres" class="tab-content" style="display: none">
-          <div class="table-card">
-            <div class="table-header">
-              <h2>Quản lý Thể loại Game</h2>
-              <div class="table-actions">
-                <div class="table-search search-poda">
-                  <div class="search-glow"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-white"></div>
-                  <div class="search-border"></div>
-                  <div class="search-main">
-                    <input
-                      type="text"
-                      placeholder="Tìm kiếm..."
-                      class="search-input"
-                    />
-                    <div class="search-input-mask"></div>
-                    <div class="search-pink-mask"></div>
-                    <div class="search-icon">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        fill="none"
-                      >
-                        <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
-                        <line
-                          stroke="#d6d6e6"
-                          y2="16.65"
-                          y1="22"
-                          x2="16.65"
-                          x1="22"
-                        ></line>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  class="button btn-add"
-                  id="btn-show-add-tag"
-                >
-                  <span class="button__text">Thêm Thể loại</span>
-                  <span class="button__icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      stroke-width="2"
-                      stroke-linejoin="round"
-                      stroke-linecap="round"
-                      stroke="currentColor"
-                      fill="none"
-                      class="svg"
-                    >
-                      <line y2="19" y1="5" x2="12" x1="12"></line>
-                      <line y2="12" y1="12" x2="19" x1="5"></line>
-                    </svg>
-                  </span>
-                </button>
-                <div
-                  class="tag-add-container"
-                  id="tag-add-container"
-                  style="display: none"
-                >
-                  <input
-                    type="text"
-                    id="new-tag-name-input"
-                    class="tag-inline-input"
-                    placeholder="Nhập tên thể loại..."
-                  />
-                  <button
-                    type="button"
-                    class="btn-action btn-approve"
-                    id="btn-confirm-add-tag"
-                    title="Thêm thể loại"
-                  >
-                    <i class="bx bx-plus"></i>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn-action btn-delete"
-                    id="btn-cancel-add-tag"
-                    title="Hủy"
-                  >
-                    <i class="bx bx-x"></i>
-                  </button>
-                </div>
+        <div class="user-box">
+          <span id="user-display-name" class="user-display-name"></span>
+          <i class="bx bx-user" id="user-icon"></i>
+          <!-- Dropdown Menu -->
+          <div class="user-dropdown" id="user-dropdown">
+            <div class="dropdown-header">
+              <div class="user-avatar">
+                <i class="bx bxs-user-circle"></i>
+              </div>
+              <div class="user-info">
+                <h4 id="dropdown-username">Admin</h4>
+                <span id="dropdown-role" class="role-badge admin">Admin</span>
               </div>
             </div>
-            <table class="data-table">
-              <thead class="highlight-headers">
-                <tr>
-                  <th>ID</th>
-                  <th>Tên Thể loại</th>
-                  <th>Số lượng Game</th>
-                  <th class="text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>#CAT-01</td>
-                  <td class="text-highlight">Action (Hành động)</td>
-                  <td class="text-highlight">450</td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#CAT-02</td>
-                  <td class="text-highlight">RPG (Nhập vai)</td>
-                  <td class="text-highlight">320</td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#CAT-03</td>
-                  <td class="text-highlight">Adventure (Phiêu lưu)</td>
-                  <td class="text-highlight">210</td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#CAT-04</td>
-                  <td class="text-highlight">Strategy (Chiến thuật)</td>
-                  <td class="text-highlight">145</td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <ul class="dropdown-menu-list">
+              <li class="menu-item">
+                <a href="#" id="btn-my-pc-config">
+                  <i class="bx bx-desktop"></i>
+                  <span>Cấu hình máy tính</span>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="../user/wishlist.html">
+                  <i class="bx bx-bookmark-heart"></i>
+                  <span>My Wishlist</span>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="#" id="btn-update-profile">
+                  <i class="bx bx-user-pin"></i>
+                  <span>Cập nhật thông tin cá nhân</span>
+                </a>
+              </li>
+              <li class="dropdown-divider"></li>
+              <li class="menu-item logout-item">
+                <a href="#" id="btn-logout">
+                  <i class="bx bx-log-out"></i>
+                  <span>Đăng xuất</span>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-
-        <!-- TAB 6: Báo cáo Vi phạm -->
-        <div id="tab-violations" class="tab-content" style="display: none">
-          <div class="table-card">
-            <div class="table-header">
-              <h2>Danh sách Báo cáo Vi phạm</h2>
-              <div class="table-actions">
-                <div class="table-search search-poda">
-                  <div class="search-glow"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-dark-border-bg"></div>
-                  <div class="search-white"></div>
-                  <div class="search-border"></div>
-                  <div class="search-main">
-                    <input
-                      type="text"
-                      placeholder="Tìm kiếm..."
-                      class="search-input"
-                    />
-                    <div class="search-input-mask"></div>
-                    <div class="search-pink-mask"></div>
-                    <div class="search-icon">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        fill="none"
-                      >
-                        <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
-                        <line
-                          stroke="#d6d6e6"
-                          y2="16.65"
-                          y1="22"
-                          x2="16.65"
-                          x1="22"
-                        ></line>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <table class="data-table">
-              <thead class="highlight-headers">
-                <tr>
-                  <th>ID</th>
-                  <th>Người vi phạm</th>
-                  <th>Lý do</th>
-                  <th>Thời gian</th>
-                  <th>Trạng thái</th>
-                  <th class="text-right">Chỉnh sửa</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>#REP-001</td>
-                  <td class="text-highlight">user_x99</td>
-                  <td>Ngôn từ xúc phạm, thù hận</td>
-                  <td>25/09/2026 14:30</td>
-                  <td><span class="status-badge warning">Chờ xử lý</span></td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#REP-002</td>
-                  <td class="text-highlight">gamer_pro88</td>
-                  <td>Spam quảng cáo website độc hại</td>
-                  <td>24/09/2026 09:15</td>
-                  <td><span class="status-badge success">Đã xử lý</span></td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#REP-003</td>
-                  <td class="text-highlight">hoangnam_dev</td>
-                  <td>Thông tin sai lệch về thông số GPU</td>
-                  <td>22/09/2026 18:45</td>
-                  <td><span class="status-badge muted">Đã từ chối</span></td>
-                  <td class="text-right">
-                    <button title="Sửa" class="btn-action btn-edit">
-                      <i class="bx bx-edit"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <!-- Menu Icon Responsive -->
+        <div class="menu-icon">
+          <div class="line1"></div>
+          <div class="line2"></div>
+          <div class="line3"></div>
         </div>
-      </div>
-    </section>
-
-
-    <!-- Modal My PC Config -->
-    <div class="modal" id="my_pc_config">
-      <div class="modal-overlay" id="pc-config-overlay"></div>
-      <div class="modal-card modal-compact modal-scrollable-form">
-        <div class="modal-header">
-          <h3><i class="bx bx-desktop"></i> Cấu hình máy tính của tôi</h3>
-          <button type="button" class="close-btn" id="close-pc-config-modal">
-            &times;
-          </button>
-        </div>
-        <form id="pc-config-form">
-          <input type="hidden" id="pc-id" />
-          <div class="form-group">
-            <label for="pc-name">Tên máy tính</label>
-            <input
-              type="text"
-              id="pc-name"
-              required
-              placeholder="Nhập tên máy tính..."
-            />
-          </div>
-          <div class="form-group">
-            <label for="pc-os">Hệ điều hành</label>
-            <input
-              type="text"
-              id="pc-os"
-              placeholder="Ví dụ: Windows 10, Windows 11..."
-            />
-          </div>
-          <div class="form-group">
-            <label>CPU <span style="color: red">*</span></label>
-            <div class="hw-combobox" data-hw-type="cpu">
-              <div class="hw-combobox-input-wrap">
-                <input
-                  type="text"
-                  class="hw-combobox-text"
-                  data-hw-search
-                  placeholder="Nhập CPU..."
-                  autocomplete="off"
-                />
-                <i class="bx bx-chevron-down hw-combobox-icon"></i>
-              </div>
-              <input type="hidden" id="pc-cpu" data-hw-id />
-              <div class="hw-combobox-dropdown"></div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>GPU <span style="color: red">*</span></label>
-            <div class="hw-combobox" data-hw-type="gpu">
-              <div class="hw-combobox-input-wrap">
-                <input
-                  type="text"
-                  class="hw-combobox-text"
-                  data-hw-search
-                  placeholder="Nhập GPU..."
-                  autocomplete="off"
-                />
-                <i class="bx bx-chevron-down hw-combobox-icon"></i>
-              </div>
-              <input type="hidden" id="pc-gpu" data-hw-id />
-              <div class="hw-combobox-dropdown"></div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="pc-ram">RAM (GB)</label>
-            <input
-              type="number"
-              id="pc-ram"
-              required
-              placeholder="Nhập dung lượng RAM..."
-            />
-          </div>
-          <div class="form-group">
-            <label for="pc-storage">Lưu trữ (GB)</label>
-            <input
-              type="number"
-              id="pc-storage"
-              required
-              placeholder="Nhập dung lượng lưu trữ..."
-            />
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn-cancel" id="cancel-pc-config-btn">
-              Hủy
-            </button>
-            <button type="submit" class="btn-save">Lưu cấu hình</button>
-          </div>
-        </form>
       </div>
     </div>
+  </header>
 
-    <!-- Modal Xác nhận Xóa Tag -->
-    <div class="modal" id="delete-tag-modal">
-      <div class="modal-overlay" id="delete-tag-overlay"></div>
-      <div
-        class="modal-card modal-compact"
-        style="max-width: 400px; text-align: center"
-      >
-        <div
-          class="modal-header"
-          style="
-            border-bottom: none;
-            margin-bottom: 8px;
-            justify-content: flex-end;
-            padding-bottom: 0;
-          "
-        >
-          <button type="button" class="close-btn" id="close-delete-tag-modal">
-            &times;
+  <!-- Section Main Dashboard Container -->
+  <section class="dashboard container">
+    <!-- Hero Section Header -->
+    <div class="dashboard-hero">
+      <div class="heading">
+        <div class="left-heading">
+          <i class="bx bx-grid-alt"></i>
+          <h2>Admin Dashboard</h2>
+        </div>
+      </div>
+    </div>
+    <!-- Admin Tabbed Management Module -->
+    <div class="admin-management-container">
+      <div class="heading" style="margin-bottom: 1rem">
+        <div class="left-heading">
+          <i class="bx bx-cog"></i>
+          <h2>Chức năng quản lý</h2>
+        </div>
+      </div>
+      <!-- Navigation Tabs -->
+      <div class="admin-tabs-nav">
+        <button class="tab-pill active" data-tab="tab-dashboard">
+          Thống kê
+        </button>
+        <button class="tab-pill" data-tab="tab-games">Quản lý Game</button>
+        <button class="tab-pill" data-tab="tab-users">Người dùng</button>
+        <button class="tab-pill" data-tab="tab-hardware">Hardware</button>
+        <button class="tab-pill" data-tab="tab-genres">Tag</button>
+        <button class="tab-pill" data-tab="tab-violations">
+          Báo cáo vi phạm
+        </button>
+      </div>
+      <!-- TAB 1: Thống kê (Nạp từ statistics.html) -->
+      <div id="tab-dashboard" class="tab-content active"></div>
+
+      <!-- TAB 2: Quản lý Game -->
+      <div id="tab-games" class="tab-content" style="display: none">
+        <div class="table-card">
+          <div class="table-header">
+            <h2>Quản lý Danh sách Game</h2>
+            <div class="table-actions">
+              <div class="table-search search-poda">
+                <div class="search-glow"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-white"></div>
+                <div class="search-border"></div>
+                <div class="search-main">
+                  <input type="text" id="game-search-input" placeholder="Tìm kiếm..." class="search-input" />
+                  <div class="search-input-mask"></div>
+                  <div class="search-pink-mask"></div>
+                  <div class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2"
+                      stroke-linejoin="round" stroke-linecap="round" fill="none">
+                      <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
+                      <line stroke="#d6d6e6" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="button btn-add" id="btn-add-game">
+                <span class="button__text">Thêm Game mới</span>
+                <span class="button__icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                    stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="none" class="svg">
+                    <line y2="19" y1="5" x2="12" x1="12"></line>
+                    <line y2="12" y1="12" x2="19" x1="5"></line>
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead class="highlight-headers">
+              <tr>
+                <th>ID</th>
+                <th>Tên Game</th>
+                <th>Thể loại</th>
+                <th>Nhà phát triển</th>
+                <th>Trạng thái</th>
+                <th class="text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="games-table-body">
+              <!-- Data rendered dynamically from JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: Quản lý Người dùng -->
+      <div id="tab-users" class="tab-content" style="display: none">
+        <div class="table-card">
+          <div class="table-header">
+            <h2>Quản lý Người dùng</h2>
+            <div class="table-actions">
+              <div class="table-search search-poda">
+                <div class="search-glow"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-white"></div>
+                <div class="search-border"></div>
+                <div class="search-main">
+                  <input type="text" placeholder="Tìm kiếm..." class="search-input" />
+                  <div class="search-input-mask"></div>
+                  <div class="search-pink-mask"></div>
+                  <div class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2"
+                      stroke-linejoin="round" stroke-linecap="round" fill="none">
+                      <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
+                      <line stroke="#d6d6e6" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="button btn-add" id="btn-add-user">
+                <span class="button__text">Thêm Người dùng</span>
+                <span class="button__icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                    stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="none" class="svg">
+                    <line y2="19" y1="5" x2="12" x1="12"></line>
+                    <line y2="12" y1="12" x2="19" x1="5"></line>
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead class="highlight-headers">
+              <tr>
+                <th>ID</th>
+                <th>Tên người dùng</th>
+                <th>Email</th>
+                <th>Vai trò</th>
+                <th>Trạng thái</th>
+                <th>Ngày tham gia</th>
+                <th class="text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#U-101</td>
+                <td class="text-highlight">admin_gamefit</td>
+                <td>admin@gamefit.vn</td>
+                <td><span class="role-tag admin">Admin</span></td>
+                <td><span class="status-badge active">Hoạt động</span></td>
+                <td>15/01/2026</td>
+                <td class="text-right">
+                  <button title="Sửa" class="btn-action btn-edit">
+                    <i class="bx bx-edit"></i>
+                  </button>
+                  <button title="Khóa/Mở" class="btn-action btn-lock">
+                    <i class="bx bx-lock-alt"></i>
+                  </button>
+                  <button title="Xóa" class="btn-action btn-delete">
+                    <i class="bx bx-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>#U-102</td>
+                <td class="text-highlight">nguyenvana</td>
+                <td>vana.nguyen@gmail.com</td>
+                <td><span class="role-tag user">User</span></td>
+                <td><span class="status-badge active">Hoạt động</span></td>
+                <td>20/02/2026</td>
+                <td class="text-right">
+                  <button title="Sửa" class="btn-action btn-edit">
+                    <i class="bx bx-edit"></i>
+                  </button>
+                  <button title="Khóa/Mở" class="btn-action btn-lock">
+                    <i class="bx bx-lock-alt"></i>
+                  </button>
+                  <button title="Xóa" class="btn-action btn-delete">
+                    <i class="bx bx-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>#U-103</td>
+                <td class="text-highlight">tranthib</td>
+                <td>thib.tran@yahoo.com</td>
+                <td><span class="role-tag user">User</span></td>
+                <td><span class="status-badge danger">Bị khóa</span></td>
+                <td>10/03/2026</td>
+                <td class="text-right">
+                  <button title="Sửa" class="btn-action btn-edit">
+                    <i class="bx bx-edit"></i>
+                  </button>
+                  <button title="Khóa/Mở" class="btn-action btn-unlock">
+                    <i class="bx bx-lock-open-alt"></i>
+                  </button>
+                  <button title="Xóa" class="btn-action btn-delete">
+                    <i class="bx bx-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 4: Quản lý Hardware -->
+      <div id="tab-hardware" class="tab-content" style="display: none">
+        <!-- Hardware Sub-tabs Navigation -->
+        <div class="hardware-sub-nav">
+          <button class="sub-tab-pill active" data-hw-tab="hw-cpu">
+            CPU (Vi xử lý)
+          </button>
+          <button class="sub-tab-pill" data-hw-tab="hw-gpu">
+            GPU (Card đồ họa)
           </button>
         </div>
-        <div class="modal-body" style="padding: 0 16px 16px 16px">
-          <i
-            class="bx bx-error-circle"
-            style="
-              font-size: 3.5rem;
-              color: #ef4444;
-              margin-bottom: 12px;
-              display: block;
-            "
-          ></i>
-          <h3
-            style="
-              color: #ffffff;
-              font-size: 1.2rem;
-              font-weight: 600;
-              margin-bottom: 8px;
-            "
-          >
-            Xác nhận xóa thể loại
-          </h3>
-          <p
-            id="delete-tag-confirm-msg"
-            style="
-              color: rgba(255, 255, 255, 0.7);
-              font-size: 0.95rem;
-              line-height: 1.5;
-            "
-          >
-            Bạn có chắc chắn muốn xóa thể loại này không?
-          </p>
+
+        <!-- Sub-tab 1: CPU -->
+        <div id="hw-cpu" class="hw-tab-content">
+          <div class="table-card">
+            <div class="table-header">
+              <h2>Quản lý CPU (Vi xử lý)</h2>
+              <div class="table-actions">
+                <div class="table-search search-poda">
+                  <div class="search-glow"></div>
+                  <div class="search-dark-border-bg"></div>
+                  <div class="search-dark-border-bg"></div>
+                  <div class="search-dark-border-bg"></div>
+                  <div class="search-white"></div>
+                  <div class="search-border"></div>
+                  <div class="search-main">
+                    <input type="text" placeholder="Tìm kiếm..." class="search-input" />
+                    <div class="search-input-mask"></div>
+                    <div class="search-pink-mask"></div>
+                    <div class="search-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="none">
+                        <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
+                        <line stroke="#d6d6e6" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="button btn-add" id="btn-add-cpu">
+                  <span class="button__text">Thêm CPU</span>
+                  <span class="button__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                      stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="none" class="svg">
+                      <line y2="19" y1="5" x2="12" x1="12"></line>
+                      <line y2="12" y1="12" x2="19" x1="5"></line>
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead class="highlight-headers">
+                <tr>
+                  <th>Mã</th>
+                  <th>Tên CPU</th>
+                  <th>Hãng</th>
+                  <th>Điểm Benchmark</th>
+                  <th class="text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#CPU-001</td>
+                  <td class="text-highlight">Intel Core i7-13700K</td>
+                  <td>Intel</td>
+                  <td class="score-val">18,500</td>
+                  <td class="text-right">
+                    <button title="Sửa" class="btn-action btn-edit">
+                      <i class="bx bx-edit"></i>
+                    </button>
+                    <button title="Xóa" class="btn-action btn-delete">
+                      <i class="bx bx-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#CPU-002</td>
+                  <td class="text-highlight">AMD Ryzen 7 7800X3D</td>
+                  <td>AMD</td>
+                  <td class="score-val">19,200</td>
+                  <td class="text-right">
+                    <button title="Sửa" class="btn-action btn-edit">
+                      <i class="bx bx-edit"></i>
+                    </button>
+                    <button title="Xóa" class="btn-action btn-delete">
+                      <i class="bx bx-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#CPU-003</td>
+                  <td class="text-highlight">Intel Core i5-13600K</td>
+                  <td>Intel</td>
+                  <td class="score-val">15,800</td>
+                  <td class="text-right">
+                    <button title="Sửa" class="btn-action btn-edit">
+                      <i class="bx bx-edit"></i>
+                    </button>
+                    <button title="Xóa" class="btn-action btn-delete">
+                      <i class="bx bx-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="table-pagination" id="cpu-pagination" style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  padding: 1rem 1.5rem;
+                  border-top: 1px solid rgba(255, 255, 255, 0.08);
+                ">
+              <div class="pagination-info" style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem">
+                Trang <strong id="cpu-current-page">1</strong> /
+                <span id="cpu-total-pages">1</span> (Tổng
+                <span id="cpu-total-items">0</span> linh kiện)
+              </div>
+              <div class="pagination-buttons" style="display: flex; gap: 8px">
+                <button class="btn-action" id="btn-cpu-prev" title="Trang trước"
+                  style="padding: 6px 12px; height: auto; width: auto">
+                  <i class="bx bx-chevron-left"></i> Trước
+                </button>
+                <button class="btn-action" id="btn-cpu-next" title="Trang sau"
+                  style="padding: 6px 12px; height: auto; width: auto">
+                  Sau <i class="bx bx-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div
-          class="modal-footer"
-          style="
-            justify-content: center;
-            gap: 12px;
-            margin-top: 16px;
-            border-top: none;
-            padding-top: 0;
-          "
-        >
-          <button type="button" class="btn-cancel" id="cancel-delete-tag-btn">
+
+        <!-- Sub-tab 2: GPU -->
+        <div id="hw-gpu" class="hw-tab-content" style="display: none">
+          <div class="table-card">
+            <div class="table-header">
+              <h2>Quản lý GPU (Card đồ họa)</h2>
+              <div class="table-actions">
+                <div class="table-search search-poda">
+                  <div class="search-glow"></div>
+                  <div class="search-dark-border-bg"></div>
+                  <div class="search-dark-border-bg"></div>
+                  <div class="search-dark-border-bg"></div>
+                  <div class="search-white"></div>
+                  <div class="search-border"></div>
+                  <div class="search-main">
+                    <input type="text" placeholder="Tìm kiếm..." class="search-input" />
+                    <div class="search-input-mask"></div>
+                    <div class="search-pink-mask"></div>
+                    <div class="search-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="none">
+                        <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
+                        <line stroke="#d6d6e6" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="button btn-add" id="btn-add-gpu">
+                  <span class="button__text">Thêm GPU</span>
+                  <span class="button__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                      stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="none" class="svg">
+                      <line y2="19" y1="5" x2="12" x1="12"></line>
+                      <line y2="12" y1="12" x2="19" x1="5"></line>
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead class="highlight-headers">
+                <tr>
+                  <th>Mã</th>
+                  <th>Tên GPU</th>
+                  <th>Hãng</th>
+                  <th>Điểm Benchmark</th>
+                  <th class="text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#GPU-001</td>
+                  <td class="text-highlight">NVIDIA GeForce RTX 4070</td>
+                  <td>NVIDIA</td>
+                  <td class="score-val">21,200</td>
+                  <td class="text-right">
+                    <button title="Sửa" class="btn-action btn-edit">
+                      <i class="bx bx-edit"></i>
+                    </button>
+                    <button title="Xóa" class="btn-action btn-delete">
+                      <i class="bx bx-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="table-pagination" id="gpu-pagination" style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  padding: 1rem 1.5rem;
+                  border-top: 1px solid rgba(255, 255, 255, 0.08);
+                ">
+              <div class="pagination-info" style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem">
+                Trang <strong id="gpu-current-page">1</strong> /
+                <span id="gpu-total-pages">1</span> (Tổng
+                <span id="gpu-total-items">0</span> linh kiện)
+              </div>
+              <div class="pagination-buttons" style="display: flex; gap: 8px">
+                <button class="btn-action" id="btn-gpu-prev" title="Trang trước"
+                  style="padding: 6px 12px; height: auto; width: auto">
+                  <i class="bx bx-chevron-left"></i> Trước
+                </button>
+                <button class="btn-action" id="btn-gpu-next" title="Trang sau"
+                  style="padding: 6px 12px; height: auto; width: auto">
+                  Sau <i class="bx bx-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: Quản lý Thể loại (Genre) -->
+      <div id="tab-genres" class="tab-content" style="display: none">
+        <div class="table-card">
+          <div class="table-header">
+            <h2>Quản lý Thể loại Game</h2>
+            <div class="table-actions">
+              <div class="table-search search-poda">
+                <div class="search-glow"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-white"></div>
+                <div class="search-border"></div>
+                <div class="search-main">
+                  <input type="text" placeholder="Tìm kiếm..." class="search-input" />
+                  <div class="search-input-mask"></div>
+                  <div class="search-pink-mask"></div>
+                  <div class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2"
+                      stroke-linejoin="round" stroke-linecap="round" fill="none">
+                      <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
+                      <line stroke="#d6d6e6" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="button btn-add" id="btn-show-add-tag">
+                <span class="button__text">Thêm Thể loại</span>
+                <span class="button__icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                    stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="none" class="svg">
+                    <line y2="19" y1="5" x2="12" x1="12"></line>
+                    <line y2="12" y1="12" x2="19" x1="5"></line>
+                  </svg>
+                </span>
+              </button>
+              <div class="tag-add-container" id="tag-add-container" style="display: none">
+                <input type="text" id="new-tag-name-input" class="tag-inline-input"
+                  placeholder="Nhập tên thể loại..." />
+                <button type="button" class="btn-action btn-approve" id="btn-confirm-add-tag" title="Thêm thể loại">
+                  <i class="bx bx-plus"></i>
+                </button>
+                <button type="button" class="btn-action btn-delete" id="btn-cancel-add-tag" title="Hủy">
+                  <i class="bx bx-x"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead class="highlight-headers">
+              <tr>
+                <th>ID</th>
+                <th>Tên Thể loại</th>
+                <th>Số lượng Game</th>
+                <th class="text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#CAT-01</td>
+                <td class="text-highlight">Action (Hành động)</td>
+                <td class="text-highlight">450</td>
+                <td class="text-right">
+                  <button title="Sửa" class="btn-action btn-edit">
+                    <i class="bx bx-edit"></i>
+                  </button>
+                  <button title="Xóa" class="btn-action btn-delete">
+                    <i class="bx bx-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>#CAT-02</td>
+                <td class="text-highlight">RPG (Nhập vai)</td>
+                <td class="text-highlight">320</td>
+                <td class="text-right">
+                  <button title="Sửa" class="btn-action btn-edit">
+                    <i class="bx bx-edit"></i>
+                  </button>
+                  <button title="Xóa" class="btn-action btn-delete">
+                    <i class="bx bx-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>#CAT-03</td>
+                <td class="text-highlight">Adventure (Phiêu lưu)</td>
+                <td class="text-highlight">210</td>
+                <td class="text-right">
+                  <button title="Sửa" class="btn-action btn-edit">
+                    <i class="bx bx-edit"></i>
+                  </button>
+                  <button title="Xóa" class="btn-action btn-delete">
+                    <i class="bx bx-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>#CAT-04</td>
+                <td class="text-highlight">Strategy (Chiến thuật)</td>
+                <td class="text-highlight">145</td>
+                <td class="text-right">
+                  <button title="Sửa" class="btn-action btn-edit">
+                    <i class="bx bx-edit"></i>
+                  </button>
+                  <button title="Xóa" class="btn-action btn-delete">
+                    <i class="bx bx-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 6: Báo cáo Vi phạm -->
+      <div id="tab-violations" class="tab-content" style="display: none">
+        <div class="table-card">
+          <div class="table-header">
+            <h2>Danh sách Báo cáo Vi phạm</h2>
+            <div class="table-actions">
+              <div class="table-search search-poda">
+                <div class="search-glow"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-dark-border-bg"></div>
+                <div class="search-white"></div>
+                <div class="search-border"></div>
+                <div class="search-main">
+                  <input type="text" placeholder="Tìm kiếm..." class="search-input" />
+                  <div class="search-input-mask"></div>
+                  <div class="search-pink-mask"></div>
+                  <div class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2"
+                      stroke-linejoin="round" stroke-linecap="round" fill="none">
+                      <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
+                      <line stroke="#d6d6e6" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead class="highlight-headers">
+              <tr>
+                <th>ID</th>
+                <th>Người vi phạm</th>
+                <th>Lý do</th>
+                <th>Thời gian</th>
+                <th>Trạng thái</th>
+                <th class="text-center">Chỉnh sửa</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#REP-001</td>
+                <td class="text-highlight">user_x99</td>
+                <td>Ngôn từ xúc phạm, thù hận</td>
+                <td>25/09/2026 14:30</td>
+                <td><span class="status-badge warning">Chờ xử lý</span></td>
+                <td class="text-center">
+                  <button title="Xem chi tiết & Kiểm duyệt" class="btn-action btn-view-violation">
+                    <i class="bx bx-edit"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Modal My PC Config -->
+  <div class="modal" id="my_pc_config">
+    <div class="modal-overlay" id="pc-config-overlay"></div>
+    <div class="modal-card modal-compact modal-scrollable-form">
+      <div class="modal-header">
+        <h3><i class="bx bx-desktop"></i> Cấu hình máy tính của tôi</h3>
+        <button type="button" class="close-btn" id="close-pc-config-modal">
+          &times;
+        </button>
+      </div>
+      <form id="pc-config-form">
+        <input type="hidden" id="pc-id" />
+        <div class="form-group">
+          <label for="pc-name">Tên máy tính</label>
+          <input type="text" id="pc-name" required placeholder="Nhập tên máy tính..." />
+        </div>
+        <div class="form-group">
+          <label for="pc-os">Hệ điều hành</label>
+          <input type="text" id="pc-os" placeholder="Ví dụ: Windows 10, Windows 11..." />
+        </div>
+        <div class="form-group">
+          <label>CPU <span style="color: red">*</span></label>
+          <div class="hw-combobox" data-hw-type="cpu">
+            <div class="hw-combobox-input-wrap">
+              <input type="text" class="hw-combobox-text" data-hw-search placeholder="Nhập CPU..." autocomplete="off" />
+              <i class="bx bx-chevron-down hw-combobox-icon"></i>
+            </div>
+            <input type="hidden" id="pc-cpu" data-hw-id />
+            <div class="hw-combobox-dropdown"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>GPU <span style="color: red">*</span></label>
+          <div class="hw-combobox" data-hw-type="gpu">
+            <div class="hw-combobox-input-wrap">
+              <input type="text" class="hw-combobox-text" data-hw-search placeholder="Nhập GPU..." autocomplete="off" />
+              <i class="bx bx-chevron-down hw-combobox-icon"></i>
+            </div>
+            <input type="hidden" id="pc-gpu" data-hw-id />
+            <div class="hw-combobox-dropdown"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="pc-ram">RAM (GB)</label>
+          <input type="number" id="pc-ram" required placeholder="Nhập dung lượng RAM..." />
+        </div>
+        <div class="form-group">
+          <label for="pc-storage">Lưu trữ (GB)</label>
+          <input type="number" id="pc-storage" required placeholder="Nhập dung lượng lưu trữ..." />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="cancel-pc-config-btn">
             Hủy
           </button>
-          <button
-            type="button"
-            class="btn-save"
-            id="confirm-delete-tag-btn"
-            style="background: #ef4444"
-          >
-            Xóa ngay
-          </button>
+          <button type="submit" class="btn-save">Lưu cấu hình</button>
         </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Xác nhận Xóa Tag -->
+  <div class="modal" id="delete-tag-modal">
+    <div class="modal-overlay" id="delete-tag-overlay"></div>
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <button type="button" class="close-btn" id="close-delete-tag-modal">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <i class="bx bx-error-circle confirm-icon"></i>
+        <h3 class="confirm-title">
+          Xác nhận xóa thể loại
+        </h3>
+        <p id="delete-tag-confirm-msg" class="confirm-message">
+          Bạn có chắc chắn muốn xóa thể loại này không?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" id="cancel-delete-tag-btn">
+          Hủy
+        </button>
+        <button type="button" class="btn-save btn-danger" id="confirm-delete-tag-btn">
+          Xóa ngay
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- Modal Thêm Game Mới -->
-    <div class="modal" id="game-add-modal">
-      <div class="modal-overlay" id="game-add-overlay"></div>
-      <div class="modal-card modal-compact modal-scrollable-form">
-        <div class="modal-header">
-          <h3><i class="bx bx-joystick"></i> Thêm Game mới</h3>
-          <button type="button" class="close-btn" id="close-game-add-modal">
-            &times;
-          </button>
+  <!-- Modal Thêm Game Mới -->
+  <div class="modal" id="game-add-modal">
+    <div class="modal-overlay" id="game-add-overlay"></div>
+    <div class="modal-card modal-compact modal-scrollable-form">
+      <div class="modal-header">
+        <h3><i class="bx bx-joystick"></i> Thêm Game mới</h3>
+        <button type="button" class="close-btn" id="close-game-add-modal">
+          &times;
+        </button>
+      </div>
+      <form id="game-add-form">
+        <div class="form-group">
+          <label for="add-game-name">Tên Game <span style="color: red">*</span></label>
+          <input type="text" id="add-game-name" required placeholder="Nhập tên game..." />
         </div>
-        <form id="game-add-form">
-          <div class="form-group">
-            <label for="add-game-name"
-              >Tên Game <span style="color: red">*</span></label
-            >
-            <input
-              type="text"
-              id="add-game-name"
-              required
-              placeholder="Nhập tên game..."
-            />
-          </div>
-          <div class="form-group">
-            <label for="add-game-description"
-              >Mô tả <span style="color: red">*</span></label
-            >
-            <textarea
-              id="add-game-description"
-              required
-              rows="3"
-              placeholder="Nhập mô tả game..."
-              style="
+        <div class="form-group">
+          <label for="add-game-description">Mô tả <span style="color: red">*</span></label>
+          <textarea id="add-game-description" required rows="3" placeholder="Nhập mô tả game..." style="
                 width: 100%;
                 background: rgba(255, 255, 255, 0.05);
                 color: #fff;
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 border-radius: 8px;
                 padding: 10px;
-              "
-            ></textarea>
-          </div>
-          <div class="form-group">
-            <label for="add-game-publisher"
-              >Nhà phát hành <span style="color: red">*</span></label
-            >
-            <input
-              type="text"
-              id="add-game-publisher"
-              required
-              placeholder="Ví dụ: CD Projekt Red"
-            />
-          </div>
-          <div class="form-group">
-            <label for="add-game-developer"
-              >Nhà phát triển <span style="color: red">*</span></label
-            >
-            <input
-              type="text"
-              id="add-game-developer"
-              required
-              placeholder="Ví dụ: CD Projekt Red"
-            />
-          </div>
-          <div class="form-group">
-            <label for="add-game-tags"
-              >Thể loại / Tags <span style="color: red">*</span></label
-            >
-            <input
-              type="text"
-              id="add-game-tags"
-              required
-              placeholder="Ví dụ: Action, RPG, Open World (cách nhau bởi dấu phẩy)"
-            />
-          </div>
-          <div class="form-group">
-            <label for="add-game-release"
-              >Ngày phát hành <span style="color: red">*</span></label
-            >
-            <input
-              type="date"
-              id="add-game-release"
-              required
-              style="
+              "></textarea>
+        </div>
+        <div class="form-group">
+          <label for="add-game-publisher">Nhà phát hành <span style="color: red">*</span></label>
+          <input type="text" id="add-game-publisher" required placeholder="Ví dụ: CD Projekt Red" />
+        </div>
+        <div class="form-group">
+          <label for="add-game-developer">Nhà phát triển <span style="color: red">*</span></label>
+          <input type="text" id="add-game-developer" required placeholder="Ví dụ: CD Projekt Red" />
+        </div>
+        <div class="form-group">
+          <label for="add-game-tags">Thể loại / Tags <span style="color: red">*</span></label>
+          <input type="text" id="add-game-tags" required
+            placeholder="Ví dụ: Action, RPG, Open World (cách nhau bởi dấu phẩy)" />
+        </div>
+        <div class="form-group">
+          <label for="add-game-release">Ngày phát hành <span style="color: red">*</span></label>
+          <input type="date" id="add-game-release" required style="
                 width: 100%;
                 background: rgba(255, 255, 255, 0.05);
                 color: #fff;
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 border-radius: 8px;
                 padding: 10px;
-              "
-            />
-          </div>
-          <div class="form-group">
-            <label for="add-game-url"
-              >Đường dẫn tải / Steam <span style="color: red">*</span></label
-            >
-            <input
-              type="url"
-              id="add-game-url"
-              required
-              placeholder="https://store.steampowered.com/app/..."
-            />
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn-cancel" id="cancel-game-add-btn">
-              Hủy
-            </button>
-            <button type="submit" class="btn-save">Thêm Game</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Modal Cập Nhật Game -->
-    <div class="modal" id="game-edit-modal">
-      <div class="modal-overlay" id="game-edit-overlay"></div>
-      <div class="modal-card modal-compact modal-scrollable-form">
-        <div class="modal-header">
-          <h3><i class="bx bx-edit"></i> Cập nhật thông tin Game</h3>
-          <button type="button" class="close-btn" id="close-game-edit-modal">
-            &times;
-          </button>
+              " />
         </div>
-        <form id="game-edit-form">
-          <input type="hidden" id="edit-game-id" />
-          <div class="form-group">
-            <label for="edit-game-name"
-              >Tên Game <span style="color: red">*</span></label
-            >
-            <input
-              type="text"
-              id="edit-game-name"
-              required
-              placeholder="Nhập tên game..."
-            />
-          </div>
-          <div class="form-group">
-            <label for="edit-game-developer"
-              >Nhà phát triển <span style="color: red">*</span></label
-            >
-            <input
-              type="text"
-              id="edit-game-developer"
-              required
-              placeholder="Ví dụ: Game Science"
-            />
-          </div>
-          <div class="form-group">
-            <label for="edit-game-tags"
-              >Thể loại / Tags <span style="color: red">*</span></label
-            >
-            <input
-              type="text"
-              id="edit-game-tags"
-              required
-              placeholder="Ví dụ: Action, RPG"
-            />
-          </div>
-          <div class="form-group">
-            <label for="edit-game-status"
-              >Trạng thái <span style="color: red">*</span></label
-            >
-            <select
-              id="edit-game-status"
-              required
-              style="
+        <div class="form-group">
+          <label for="add-game-url">Đường dẫn tải / Steam <span style="color: red">*</span></label>
+          <input type="url" id="add-game-url" required placeholder="https://store.steampowered.com/app/..." />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="cancel-game-add-btn">
+            Hủy
+          </button>
+          <button type="submit" class="btn-save">Thêm Game</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Cập Nhật Game -->
+  <div class="modal" id="game-edit-modal">
+    <div class="modal-overlay" id="game-edit-overlay"></div>
+    <div class="modal-card modal-compact modal-scrollable-form">
+      <div class="modal-header">
+        <h3><i class="bx bx-edit"></i> Cập nhật thông tin Game</h3>
+        <button type="button" class="close-btn" id="close-game-edit-modal">
+          &times;
+        </button>
+      </div>
+      <form id="game-edit-form">
+        <input type="hidden" id="edit-game-id" />
+        <div class="form-group">
+          <label for="edit-game-name">Tên Game <span style="color: red">*</span></label>
+          <input type="text" id="edit-game-name" required placeholder="Nhập tên game..." />
+        </div>
+        <div class="form-group">
+          <label for="edit-game-developer">Nhà phát triển <span style="color: red">*</span></label>
+          <input type="text" id="edit-game-developer" required placeholder="Ví dụ: Game Science" />
+        </div>
+        <div class="form-group">
+          <label for="edit-game-tags">Thể loại / Tags <span style="color: red">*</span></label>
+          <input type="text" id="edit-game-tags" required placeholder="Ví dụ: Action, RPG" />
+        </div>
+        <div class="form-group">
+          <label for="edit-game-status">Trạng thái <span style="color: red">*</span></label>
+          <select id="edit-game-status" required style="
                 width: 100%;
                 background: #1e1e2d;
                 color: #fff;
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 border-radius: 8px;
                 padding: 10px;
-              "
-            >
-              <option value="1">Hoạt động</option>
-              <option value="0">Ngừng hỗ trợ</option>
-            </select>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn-cancel" id="cancel-game-edit-btn">
-              Hủy
-            </button>
-            <button type="submit" class="btn-save">Lưu thay đổi</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Modal Xác nhận Xóa Game -->
-    <div class="modal" id="delete-game-modal">
-      <div class="modal-overlay" id="delete-game-overlay"></div>
-      <div
-        class="modal-card modal-compact"
-        style="max-width: 400px; text-align: center"
-      >
-        <div
-          class="modal-header"
-          style="
-            border-bottom: none;
-            margin-bottom: 8px;
-            justify-content: flex-end;
-            padding-bottom: 0;
-          "
-        >
-          <button type="button" class="close-btn" id="close-delete-game-modal">
-            &times;
-          </button>
+              ">
+            <option value="1">Hoạt động</option>
+            <option value="0">Ngừng hỗ trợ</option>
+          </select>
         </div>
-        <div class="modal-body" style="padding: 0 16px 16px 16px">
-          <i
-            class="bx bx-error-circle"
-            style="
-              font-size: 3.5rem;
-              color: #ef4444;
-              margin-bottom: 12px;
-              display: block;
-            "
-          ></i>
-          <h3
-            style="
-              color: #ffffff;
-              font-size: 1.2rem;
-              font-weight: 600;
-              margin-bottom: 8px;
-            "
-          >
-            Xác nhận xóa game
-          </h3>
-          <p
-            id="delete-game-confirm-msg"
-            style="
-              color: rgba(255, 255, 255, 0.7);
-              font-size: 0.95rem;
-              line-height: 1.5;
-            "
-          >
-            Bạn có chắc chắn muốn xóa game này không?
-          </p>
-        </div>
-        <div
-          class="modal-footer"
-          style="
-            justify-content: center;
-            gap: 12px;
-            margin-top: 16px;
-            border-top: none;
-            padding-top: 0;
-          "
-        >
-          <button type="button" class="btn-cancel" id="cancel-delete-game-btn">
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="cancel-game-edit-btn">
             Hủy
           </button>
-          <button
-            type="button"
-            class="btn-save"
-            id="confirm-delete-game-btn"
-            style="background: #ef4444"
-          >
-            Xóa ngay
+          <button type="submit" class="btn-save">Lưu thay đổi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Xác nhận Xóa Game -->
+  <div class="modal" id="delete-game-modal">
+    <div class="modal-overlay" id="delete-game-overlay"></div>
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <button type="button" class="close-btn" id="close-delete-game-modal">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <i class="bx bx-error-circle confirm-icon"></i>
+        <h3 class="confirm-title">
+          Xác nhận xóa game
+        </h3>
+        <p id="delete-game-confirm-msg" class="confirm-message">
+          Bạn có chắc chắn muốn xóa game này không?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" id="cancel-delete-game-btn">
+          Hủy
+        </button>
+        <button type="button" class="btn-save btn-danger" id="confirm-delete-game-btn">
+          Xóa ngay
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Thêm CPU Mới -->
+  <div class="modal-overlay hw-modal" id="cpu-add-modal">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="header-left">
+          <div class="modal-header-icon">
+            <i class="bx bx-microchip"></i>
+          </div>
+          <div class="header-text">
+            <h2>Thêm CPU (Vi xử lý) Mới</h2>
+          </div>
+        </div>
+        <button type="button" class="btn-close" id="close-cpu-add-modal">
+          <i class="bx bx-x"></i>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <form id="cpu-add-form">
+        <div class="modal-body">
+          <!-- Tên CPU -->
+          <div class="form-group">
+            <label class="form-label">Tên CPU <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="bx bx-microchip prefix"></i>
+              <input type="text" id="add-cpu-name" class="form-control with-prefix"
+                placeholder="Ví dụ: Intel Core i7-13700K..." required />
+            </div>
+          </div>
+
+          <!-- Hãng sản xuất -->
+          <div class="form-group">
+            <label class="form-label">Hãng sản xuất <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="bx bx-buildings prefix"></i>
+              <select id="add-cpu-brand" class="form-control with-prefix" required>
+                <option value="" disabled selected>
+                  Chọn hãng sản xuất...
+                </option>
+                <option value="Intel">Intel</option>
+                <option value="AMD">AMD</option>
+                <option value="Khác">Khác</option>
+              </select>
+              <i class="bx bx-chevron-down suffix"></i>
+            </div>
+          </div>
+
+          <!-- Điểm Benchmark -->
+          <div class="form-group">
+            <label class="form-label">Điểm Benchmark <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="bx bx-bar-chart-alt-2 prefix"></i>
+              <input type="number" id="add-cpu-score" class="form-control with-prefix" placeholder="Ví dụ: 18500"
+                required />
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px">
+          <button type="button" class="btn-secondary" id="cancel-cpu-add-btn">
+            Hủy
           </button>
+          <button type="submit" class="btn-primary">
+            <i class="bx bx-save"></i> Lưu CPU
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Thêm GPU Mới -->
+  <div class="modal-overlay hw-modal" id="gpu-add-modal">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="header-left">
+          <div class="modal-header-icon">
+            <i class="bx bxs-microchip"></i>
+          </div>
+          <div class="header-text">
+            <h2>Thêm GPU (Card đồ họa) Mới</h2>
+          </div>
+        </div>
+        <button type="button" class="btn-close" id="close-gpu-add-modal">
+          <i class="bx bx-x"></i>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <form id="gpu-add-form">
+        <div class="modal-body">
+          <!-- Tên GPU -->
+          <div class="form-group">
+            <label class="form-label">Tên GPU <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="bx bxs-microchip prefix"></i>
+              <input type="text" id="add-gpu-name" class="form-control with-prefix"
+                placeholder="Ví dụ: NVIDIA GeForce RTX 4070..." required />
+            </div>
+          </div>
+
+          <!-- Hãng sản xuất -->
+          <div class="form-group">
+            <label class="form-label">Hãng sản xuất <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="bx bx-buildings prefix"></i>
+              <select id="add-gpu-brand" class="form-control with-prefix" required>
+                <option value="" disabled selected>
+                  Chọn hãng sản xuất...
+                </option>
+                <option value="NVIDIA">NVIDIA</option>
+                <option value="AMD">AMD</option>
+                <option value="Intel">Intel</option>
+                <option value="Khác">Khác</option>
+              </select>
+              <i class="bx bx-chevron-down suffix"></i>
+            </div>
+          </div>
+
+          <!-- Điểm Benchmark -->
+          <div class="form-group">
+            <label class="form-label">Điểm Benchmark <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="bx bx-bar-chart-alt-2 prefix"></i>
+              <input type="number" id="add-gpu-score" class="form-control with-prefix" placeholder="Ví dụ: 21200"
+                required />
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px">
+          <button type="button" class="btn-secondary" id="cancel-gpu-add-btn">
+            Hủy
+          </button>
+          <button type="submit" class="btn-primary">
+            <i class="bx bx-save"></i> Lưu GPU
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Chi Tiết & Kiểm Duyệt Bình Luận Vi Phạm -->
+  <div class="modal" id="violation-detail-modal">
+    <div class="modal-overlay" id="violation-modal-overlay"></div>
+    <div class="modal-card modal-compact">
+      <!-- Header -->
+      <div class="modal-header">
+        <h3><i class="bx bx-shield-quarter"></i> Chi tiết báo cáo</h3>
+        <button type="button" class="close-btn" id="close-violation-modal">&times;</button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body violation-modal-body">
+        <!-- Khung thông tin tóm tắt -->
+        <div class="violation-info-card">
+          <div class="violation-info-item">
+            <strong>Người vi phạm:</strong>
+            <span id="violation-user" class="violation-user">user_x99</span>
+          </div>
+          <div class="violation-info-item">
+            <strong>Tựa game:</strong>
+            <span id="violation-game" class="violation-game">Counter-Strike 2</span>
+          </div>
+          <div class="violation-info-item">
+            <strong>Lý do báo cáo:</strong>
+            <span id="violation-reason" class="violation-reason">Ngôn từ xúc phạm, thù hận</span>
+          </div>
+          <div class="violation-info-item">
+            <strong>Thời gian gửi:</strong>
+            <span id="violation-time" class="violation-time">25/09/2026 14:30</span>
+          </div>
+        </div>
+
+        <!-- Trích dẫn nội dung bình luận -->
+        <label class="violation-label">
+          Nội dung bình luận bị báo cáo:
+        </label>
+        <div id="violation-comment-text" class="violation-comment-box">
+          "Game này tối ưu như rác rưởi, hút máu người chơi không khác gì lừa đảo..."
+        </div>
+      </div>
+
+      <!-- Footer: Các nút hành động mặc định -->
+      <div class="modal-footer" id="violation-footer-default">
+        <button type="button" class="btn-cancel" id="btn-dismiss-violation">
+          <i class="bx bx-check"></i> Bỏ qua
+        </button>
+        <button type="button" class="btn-save btn-danger" id="btn-trigger-delete">
+          <i class="bx bx-trash"></i> Ẩn bình luận
+        </button>
+      </div>
+
+      <!-- Footer xác nhận ẩn (Mặc định ẩn, chỉ hiện khi click "Ẩn bình luận") -->
+      <div class="modal-footer violation-footer-confirm" id="violation-footer-confirm">
+        <span class="violation-confirm-text">Xác nhận ẩn bình luận này?</span>
+        <div class="violation-confirm-actions">
+          <button type="button" class="btn-cancel btn-cancel-sm" id="btn-cancel-delete">Hủy</button>
+          <button type="button" class="btn-save btn-danger-sm" id="btn-confirm-delete">Đồng ý ẩn</button>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Modal Thêm CPU Mới -->
-    <div class="modal-overlay hw-modal" id="cpu-add-modal">
-      <div class="modal-content" onclick="event.stopPropagation()">
-        <!-- Header -->
-        <div class="modal-header">
-          <div class="header-left">
-            <div class="modal-header-icon">
-              <i class="bx bx-microchip"></i>
-            </div>
-            <div class="header-text">
-              <h2>Thêm CPU (Vi xử lý) Mới</h2>
-            </div>
-          </div>
-          <button type="button" class="btn-close" id="close-cpu-add-modal">
-            <i class="bx bx-x"></i>
-          </button>
-        </div>
+  <!-- Toast Notification -->
+  <div id="home-toast" class="home-toast"></div>
 
-        <!-- Body -->
-        <form id="cpu-add-form">
-          <div class="modal-body">
-            <!-- Tên CPU -->
-            <div class="form-group">
-              <label class="form-label"
-                >Tên CPU <span class="required">*</span></label
-              >
-              <div class="input-wrapper">
-                <i class="bx bx-microchip prefix"></i>
-                <input
-                  type="text"
-                  id="add-cpu-name"
-                  class="form-control with-prefix"
-                  placeholder="Ví dụ: Intel Core i7-13700K..."
-                  required
-                />
-              </div>
-            </div>
+  <!-- JavaScript Modules -->
+  <script src="../../js/utils/toast.js" defer></script>
+  <script src="../../js/utils/auth-storage.js" defer></script>
+  <script src="../../js/data/games-data.js" defer></script>
+  <script src="../../js/components/navbar.js" defer></script>
+  <script src="../../js/components/user-dropdown.js" defer></script>
+  <script src="../../js/components/profile-modal.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="../../js/components/statistics.js" defer></script>
+  <script src="../../js/pages/admin/dashboard.js" defer></script>
+  <script src="../../js/components/cpu-gpu-combobox.js" defer></script>
+  <script src="../js/components/pc-config-modal.js" defer></script>
+</body>
 
-            <!-- Hãng sản xuất -->
-            <div class="form-group">
-              <label class="form-label"
-                >Hãng sản xuất <span class="required">*</span></label
-              >
-              <div class="input-wrapper">
-                <i class="bx bx-buildings prefix"></i>
-                <select
-                  id="add-cpu-brand"
-                  class="form-control with-prefix"
-                  required
-                >
-                  <option value="" disabled selected>
-                    Chọn hãng sản xuất...
-                  </option>
-                  <option value="Intel">Intel</option>
-                  <option value="AMD">AMD</option>
-                  <option value="Khác">Khác</option>
-                </select>
-                <i class="bx bx-chevron-down suffix"></i>
-              </div>
-            </div>
-
-            <!-- Điểm Benchmark -->
-            <div class="form-group">
-              <label class="form-label"
-                >Điểm Benchmark <span class="required">*</span></label
-              >
-              <div class="input-wrapper">
-                <i class="bx bx-bar-chart-alt-2 prefix"></i>
-                <input
-                  type="number"
-                  id="add-cpu-score"
-                  class="form-control with-prefix"
-                  placeholder="Ví dụ: 18500"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Footer -->
-          <div
-            class="modal-footer"
-            style="display: flex; justify-content: flex-end; gap: 12px"
-          >
-            <button type="button" class="btn-secondary" id="cancel-cpu-add-btn">
-              Hủy
-            </button>
-            <button type="submit" class="btn-primary">
-              <i class="bx bx-save"></i> Lưu CPU
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Modal Thêm GPU Mới -->
-    <div class="modal-overlay hw-modal" id="gpu-add-modal">
-      <div class="modal-content" onclick="event.stopPropagation()">
-        <!-- Header -->
-        <div class="modal-header">
-          <div class="header-left">
-            <div class="modal-header-icon">
-              <i class="bx bxs-microchip"></i>
-            </div>
-            <div class="header-text">
-              <h2>Thêm GPU (Card đồ họa) Mới</h2>
-            </div>
-          </div>
-          <button type="button" class="btn-close" id="close-gpu-add-modal">
-            <i class="bx bx-x"></i>
-          </button>
-        </div>
-
-        <!-- Body -->
-        <form id="gpu-add-form">
-          <div class="modal-body">
-            <!-- Tên GPU -->
-            <div class="form-group">
-              <label class="form-label"
-                >Tên GPU <span class="required">*</span></label
-              >
-              <div class="input-wrapper">
-                <i class="bx bxs-microchip prefix"></i>
-                <input
-                  type="text"
-                  id="add-gpu-name"
-                  class="form-control with-prefix"
-                  placeholder="Ví dụ: NVIDIA GeForce RTX 4070..."
-                  required
-                />
-              </div>
-            </div>
-
-            <!-- Hãng sản xuất -->
-            <div class="form-group">
-              <label class="form-label"
-                >Hãng sản xuất <span class="required">*</span></label
-              >
-              <div class="input-wrapper">
-                <i class="bx bx-buildings prefix"></i>
-                <select
-                  id="add-gpu-brand"
-                  class="form-control with-prefix"
-                  required
-                >
-                  <option value="" disabled selected>
-                    Chọn hãng sản xuất...
-                  </option>
-                  <option value="NVIDIA">NVIDIA</option>
-                  <option value="AMD">AMD</option>
-                  <option value="Intel">Intel</option>
-                  <option value="Khác">Khác</option>
-                </select>
-                <i class="bx bx-chevron-down suffix"></i>
-              </div>
-            </div>
-
-            <!-- Điểm Benchmark -->
-            <div class="form-group">
-              <label class="form-label"
-                >Điểm Benchmark <span class="required">*</span></label
-              >
-              <div class="input-wrapper">
-                <i class="bx bx-bar-chart-alt-2 prefix"></i>
-                <input
-                  type="number"
-                  id="add-gpu-score"
-                  class="form-control with-prefix"
-                  placeholder="Ví dụ: 21200"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Footer -->
-          <div
-            class="modal-footer"
-            style="display: flex; justify-content: flex-end; gap: 12px"
-          >
-            <button type="button" class="btn-secondary" id="cancel-gpu-add-btn">
-              Hủy
-            </button>
-            <button type="submit" class="btn-primary">
-              <i class="bx bx-save"></i> Lưu GPU
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="home-toast" class="home-toast"></div>
-
-    <!-- JavaScript Modules -->
-    <script src="../../js/utils/toast.js" defer></script>
-    <script src="../../js/utils/auth-storage.js" defer></script>
-    <script src="../../js/data/games-data.js" defer></script>
-    <script src="../../js/components/navbar.js" defer></script>
-    <script src="../../js/components/user-dropdown.js" defer></script>
-    <script src="../../js/components/profile-modal.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="../../js/components/statistics.js" defer></script>
-    <script src="../../js/pages/admin/dashboard.js" defer></script>
-    <script src="../../js/components/cpu-gpu-combobox.js" defer></script>
-    <script src="../js/components/pc-config-modal.js" defer></script>
-  </body>
 </html>
