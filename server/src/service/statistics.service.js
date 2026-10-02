@@ -53,11 +53,33 @@ const getHardwareStatistics = async (limit = 20) => {
       total_gpus: 0,
       total_user_pcs: 0,
     };
-    const cpuMarketShare = result.recordsets[1] || [];
-    const gpuMarketShare = result.recordsets[2] || [];
+    const cpuMarketShareRaw = result.recordsets[1] || [];
+    const gpuMarketShareRaw = result.recordsets[2] || [];
     const topCpus = result.recordsets[3] || [];
     const topGpus = result.recordsets[4] || [];
-    const ramDistribution = result.recordsets[5] || [];
+    const ramDistributionRaw = result.recordsets[5] || [];
+
+    const totalCpuCount = totals.total_cpus || cpuMarketShareRaw.reduce((sum, item) => sum + (item.count || 0), 0) || 1;
+    const cpuMarketShare = cpuMarketShareRaw.map((c) => ({
+      brand: c.brand,
+      count: c.count,
+      percentage: Number(((c.count / totalCpuCount) * 100).toFixed(1)),
+    }));
+
+    const totalGpuCount = totals.total_gpus || gpuMarketShareRaw.reduce((sum, item) => sum + (item.count || 0), 0) || 1;
+    const gpuMarketShare = gpuMarketShareRaw.map((g) => ({
+      brand: g.brand,
+      count: g.count,
+      percentage: Number(((g.count / totalGpuCount) * 100).toFixed(1)),
+    }));
+
+    const totalRamPcs = totals.total_user_pcs || ramDistributionRaw.reduce((sum, item) => sum + (item.count || 0), 0) || 1;
+    const ramDistribution = ramDistributionRaw.map((r) => ({
+      ram_tier: r.ram_tier,
+      ram_group: r.ram_tier,
+      count: r.count,
+      percentage: Number(((r.count / totalRamPcs) * 100).toFixed(1)),
+    }));
 
     return {
       totals,

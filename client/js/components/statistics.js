@@ -1455,13 +1455,19 @@ function collectExportDatasets(scope) {
     if (generalDataCache) {
       const { totals, timeline, recentGames } = generalDataCache;
       if (totals) {
+        const totalGames = totals.total_games || 0;
+        const activeGames = totals.active_games || 0;
+        const inactiveGames = totals.inactive_games || 0;
+        const activePct = totalGames > 0 ? ((activeGames / totalGames) * 100).toFixed(1) : "100.0";
+        const inactivePct = totalGames > 0 ? ((inactiveGames / totalGames) * 100).toFixed(1) : "0.0";
+
         result.push({
           name: "Thống kê chung",
           title: "BÁO CÁO THỐNG KÊ CHUNG - TỔNG QUAN HỆ THỐNG",
           data: [
-            { "Chỉ số": "Tổng số game", "Giá trị": totals.total_games || 0 },
-            { "Chỉ số": "Game đang hoạt động", "Giá trị": totals.active_games || 0 },
-            { "Chỉ số": "Game ngừng hoạt động", "Giá trị": totals.inactive_games || 0 },
+            { "Chỉ số": "Tổng số game", "Giá trị": totalGames, "Tỷ lệ %": "100%" },
+            { "Chỉ số": "Game đang hoạt động", "Giá trị": activeGames, "Tỷ lệ %": `${activePct}%` },
+            { "Chỉ số": "Game ngừng hoạt động", "Giá trị": inactiveGames, "Tỷ lệ %": `${inactivePct}%` },
           ],
         });
       }
@@ -1495,6 +1501,26 @@ function collectExportDatasets(scope) {
   // Tab 2: Thể loại
   if (scope === "all" || scope === "tab-2") {
     if (genreDataCache && genreDataCache.genres) {
+      const totalGames = genreDataCache.totals?.total_games || (genreDataCache.genres.reduce((s, g) => s + (g.game_count || 0), 0) || 1);
+      const totalWishlists = genreDataCache.totals?.total_wishlists || (genreDataCache.genres.reduce((s, g) => s + (g.wishlist_count || 0), 0) || 1);
+
+      if (genreDataCache.totals) {
+        const topGenre = genreDataCache.genres[0] || {};
+        const topPct = topGenre.game_count ? `${((topGenre.game_count / totalGames) * 100).toFixed(1)}%` : "0%";
+
+        result.push({
+          name: "Tổng quan thể loại",
+          title: "TỔNG QUAN PHÂN BỔ THỂ LOẠI GAME",
+          data: [
+            { "Chỉ số": "Tổng số game", "Giá trị": genreDataCache.totals.total_games || 0 },
+            { "Chỉ số": "Tổng số thể loại", "Giá trị": genreDataCache.totals.total_genres || genreDataCache.genres.length || 0 },
+            { "Chỉ số": "Tổng lượt Wishlist", "Giá trị": genreDataCache.totals.total_wishlists || 0 },
+            { "Chỉ số": "Thể loại dẫn đầu", "Giá trị": topGenre.genre_name || "N/A" },
+            { "Chỉ số": "Tỷ lệ dẫn đầu", "Giá trị": topPct },
+          ],
+        });
+      }
+
       result.push({
         name: "Thống kê thể loại",
         title: "PHÂN BỔ THỐNG KÊ THEO THỂ LOẠI GAME",
@@ -1503,7 +1529,9 @@ function collectExportDatasets(scope) {
           "Mã thể loại": g.tag_id,
           "Tên thể loại": g.genre_name,
           "Số lượng game": g.game_count || 0,
+          "Tỷ lệ game (%)": `${((g.game_count / totalGames) * 100).toFixed(1)}%`,
           "Lượt Wishlist": g.wishlist_count || 0,
+          "Tỷ lệ Wishlist (%)": `${((g.wishlist_count / totalWishlists) * 100).toFixed(1)}%`,
           "Điểm đánh giá TB": g.avg_rating || 0,
           "Số lượt đánh giá": g.review_count || 0,
         })),
@@ -1514,6 +1542,17 @@ function collectExportDatasets(scope) {
   // Tab 3: Wishlist & Đánh giá
   if (scope === "all" || scope === "tab-3") {
     if (wishlistDataCache) {
+      if (wishlistDataCache.summary) {
+        result.push({
+          name: "Tổng quan Wishlist",
+          title: "TỔNG QUAN WISHLIST & ĐÁNH GIÁ",
+          data: [
+            { "Chỉ số": "Tổng lượt Wishlist", "Giá trị": wishlistDataCache.summary.total_wishlist_items || 0 },
+            { "Chỉ số": "Số game trong Wishlist", "Giá trị": wishlistDataCache.summary.total_games_in_wishlist || 0 },
+            { "Chỉ số": "Người dùng đã Wishlist", "Giá trị": wishlistDataCache.summary.total_users_with_wishlist || 0 },
+          ],
+        });
+      }
       if (wishlistDataCache.topGames && wishlistDataCache.topGames.length > 0) {
         result.push({
           name: "Top Wishlist",
@@ -1547,6 +1586,17 @@ function collectExportDatasets(scope) {
   // Tab 4: Phần cứng
   if (scope === "all" || scope === "tab-4") {
     if (hardwareDataCache) {
+      if (hardwareDataCache.totals) {
+        result.push({
+          name: "Tổng quan phần cứng",
+          title: "TỔNG QUAN KHO PHẦN CỨNG & CẤU HÌNH NGƯỜI DÙNG",
+          data: [
+            { "Chỉ số": "Tổng số CPU trong kho", "Giá trị": hardwareDataCache.totals.total_cpus || 0 },
+            { "Chỉ số": "Tổng số GPU trong kho", "Giá trị": hardwareDataCache.totals.total_gpus || 0 },
+            { "Chỉ số": "Số cấu hình PC đã lưu", "Giá trị": hardwareDataCache.totals.total_user_pcs || 0 },
+          ],
+        });
+      }
       if (hardwareDataCache.topCpus && hardwareDataCache.topCpus.length > 0) {
         result.push({
           name: "Top CPU",
@@ -1574,36 +1624,48 @@ function collectExportDatasets(scope) {
         });
       }
       if (hardwareDataCache.cpuMarketShare && hardwareDataCache.cpuMarketShare.length > 0) {
+        const totalCpus = hardwareDataCache.totals?.total_cpus || hardwareDataCache.cpuMarketShare.reduce((s, c) => s + (c.count || 0), 0) || 1;
         result.push({
           name: "Thị phần CPU",
           title: "THỊ PHẦN THƯƠNG HIỆU CPU",
-          data: hardwareDataCache.cpuMarketShare.map((c) => ({
-            "Hãng CPU": c.brand,
-            "Số máy": c.count,
-            "Tỷ lệ %": c.percentage + "%",
-          })),
+          data: hardwareDataCache.cpuMarketShare.map((c) => {
+            const pct = c.percentage !== undefined ? c.percentage : Number(((c.count / totalCpus) * 100).toFixed(1));
+            return {
+              "Hãng CPU": c.brand,
+              "Số máy": c.count,
+              "Tỷ lệ %": `${pct}%`,
+            };
+          }),
         });
       }
       if (hardwareDataCache.gpuMarketShare && hardwareDataCache.gpuMarketShare.length > 0) {
+        const totalGpus = hardwareDataCache.totals?.total_gpus || hardwareDataCache.gpuMarketShare.reduce((s, g) => s + (g.count || 0), 0) || 1;
         result.push({
           name: "Thị phần GPU",
           title: "THỊ PHẦN THƯƠNG HIỆU GPU",
-          data: hardwareDataCache.gpuMarketShare.map((g) => ({
-            "Hãng GPU": g.brand,
-            "Số máy": g.count,
-            "Tỷ lệ %": g.percentage + "%",
-          })),
+          data: hardwareDataCache.gpuMarketShare.map((g) => {
+            const pct = g.percentage !== undefined ? g.percentage : Number(((g.count / totalGpus) * 100).toFixed(1));
+            return {
+              "Hãng GPU": g.brand,
+              "Số máy": g.count,
+              "Tỷ lệ %": `${pct}%`,
+            };
+          }),
         });
       }
       if (hardwareDataCache.ramDistribution && hardwareDataCache.ramDistribution.length > 0) {
+        const totalPcs = hardwareDataCache.totals?.total_user_pcs || hardwareDataCache.ramDistribution.reduce((s, r) => s + (r.count || 0), 0) || 1;
         result.push({
           name: "Phân bố RAM",
           title: "PHÂN BỐ DUNG LƯỢNG BỘ NHỚ RAM",
-          data: hardwareDataCache.ramDistribution.map((r) => ({
-            "Dung lượng RAM": r.ram_group,
-            "Số máy": r.count,
-            "Tỷ lệ %": r.percentage + "%",
-          })),
+          data: hardwareDataCache.ramDistribution.map((r) => {
+            const pct = r.percentage !== undefined ? r.percentage : Number(((r.count / totalPcs) * 100).toFixed(1));
+            return {
+              "Dung lượng RAM": r.ram_tier || r.ram_group || "N/A",
+              "Số máy": r.count,
+              "Tỷ lệ %": `${pct}%`,
+            };
+          }),
         });
       }
     }
@@ -1628,12 +1690,17 @@ async function exportToExcel(datasets, scope, dateStr) {
   }
 
   const wb = window.XLSX.utils.book_new();
+  const usedSheetNames = new Set();
 
   datasets.forEach((ds) => {
     if (ds.data && ds.data.length > 0) {
       const ws = window.XLSX.utils.json_to_sheet(ds.data);
-      // Giới hạn tên sheet tối đa 31 ký tự theo chuẩn Excel
-      const sheetName = ds.name.substring(0, 31);
+      // Giới hạn tên sheet tối đa 31 ký tự theo chuẩn Excel & tránh trùng lặp
+      let sheetName = ds.name.substring(0, 31);
+      if (usedSheetNames.has(sheetName)) {
+        sheetName = ds.name.substring(0, 27) + "_" + (usedSheetNames.size + 1);
+      }
+      usedSheetNames.add(sheetName);
       window.XLSX.utils.book_append_sheet(wb, ws, sheetName);
     }
   });
