@@ -3,8 +3,7 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  background: rgba(27, 24, 43, 0.85);
-  /* Chính là #1b182b với 85% opacity */
+  background: rgba(27, 24, 43);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 3px solid rgba(1, 1, 1, 0.1);
@@ -85,7 +84,6 @@ header {
   cursor: pointer;
 }
 
-/* Nút 3 gạch (menu-icon) - Tạm thời ẩn đi cho đến khi làm Responsive */
 .menu-icon {
   display: none;
   flex-direction: column;
