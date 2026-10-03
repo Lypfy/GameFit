@@ -73,7 +73,6 @@ async function loadCategoriesFilter() {
   } catch (error) {
     console.error("Lỗi khi load danh sách tags:", error);
   }
-  window.isFilterDataLoaded = true;
 }
 
 async function loadPublishersFilter() {

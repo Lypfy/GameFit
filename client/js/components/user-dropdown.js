@@ -18,8 +18,12 @@ function renderUserDropdownUI() {
   const menuDashboard = document.getElementById("menu-dashboard");
   const userDropdown = document.getElementById("user-dropdown");
 
-  const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
-  const isAdmin = currentUser && currentUser.role && currentUser.role.toLowerCase() === "admin";
+  const currentUser =
+    typeof getCurrentUser === "function" ? getCurrentUser() : null;
+  const isAdmin =
+    currentUser &&
+    currentUser.role &&
+    currentUser.role.toLowerCase() === "admin";
 
   // Display/Hide all admin-only elements across navbar and menus
   const adminOnlyElements = document.querySelectorAll(".admin-only");
@@ -61,9 +65,7 @@ function renderUserDropdownUI() {
   if (userIcon) userIcon.style.display = "none";
 
   const username =
-    currentUser.user_name ||
-    currentUser.username ||
-    "Người dùng";
+    currentUser.user_name || currentUser.username || "Người dùng";
   const initial = username.trim().charAt(0).toUpperCase() || "U";
 
   if (!userCapsule) {
@@ -105,6 +107,47 @@ function renderUserDropdownUI() {
   }
 }
 
+async function checkUserLockStatus() {
+  const token = typeof getAuthToken === "function" ? getAuthToken() : null;
+  const currentUser =
+    typeof getCurrentUser === "function" ? getCurrentUser() : null;
+  if (!token || !currentUser) return;
+
+  try {
+    const res = await fetch("/api/auth/check-status", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const result = await res.json();
+
+    if (!res.ok || result.isLocked) {
+      if (typeof logoutUser === "function") logoutUser();
+      alert(
+        result.message || "Tài khoản của bạn đã bị khóa bởi Quản trị viên!",
+      );
+
+      const currentPath = window.location.pathname.toLowerCase();
+      const isProtectedPage =
+        currentPath.includes("/admin/") ||
+        currentPath.includes("/user/") ||
+        currentPath.includes("wishlist") ||
+        currentPath.includes("pc_config") ||
+        currentPath.includes("dashboard");
+
+      if (isProtectedPage) {
+        const homePath =
+          currentPath.includes("/admin/") || currentPath.includes("/user/")
+            ? "../home.html"
+            : "home.html";
+        window.location.href = homePath;
+      } else {
+        renderUserDropdownUI();
+      }
+    }
+  } catch (err) {
+    // Silent fail if network issue
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const userIcon = document.getElementById("user-icon");
   const userDisplayName = document.getElementById("user-display-name");
@@ -112,6 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnLogout = document.getElementById("btn-logout");
 
   renderUserDropdownUI();
+  checkUserLockStatus();
 
   // Close dropdown when clicking outside
   document.addEventListener("click", function (e) {

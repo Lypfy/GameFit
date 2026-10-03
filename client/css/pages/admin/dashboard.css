@@ -190,6 +190,53 @@
   color: #95a5a6;
 }
 
+/* Custom Tooltip instant hover */
+.status-badge[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+
+.status-badge[data-tooltip]::before,
+.status-badge[data-tooltip]::after {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 100;
+}
+
+.status-badge[data-tooltip]::before {
+  content: "";
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  border-width: 6px 6px 0 6px;
+  border-style: solid;
+  border-color: #181528 transparent transparent transparent;
+}
+
+.status-badge[data-tooltip]::after {
+  content: attr(data-tooltip);
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #181528;
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.status-badge[data-tooltip]:hover::before,
+.status-badge[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 /* Action Buttons */
 .btn-action {
   border: none;
@@ -200,6 +247,13 @@
   align-items: center;
   gap: 4px;
   font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.btn-action:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .btn-action.btn-edit,
@@ -374,6 +428,41 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
+}
+
+.user-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.filter-select {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.filter-select:hover,
+.filter-select:focus {
+  border-color: var(--main-color, #fa5353);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(250, 83, 83, 0.15);
+}
+
+.filter-select option {
+  background: #211f34;
+  color: #ffffff;
+  padding: 8px;
 }
 
 .table-search {

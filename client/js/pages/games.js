@@ -211,7 +211,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const urlParams = new URLSearchParams(window.location.search);
     const categoryFromUrl = urlParams.get("category");
-    if (typeof loadCategoriesFilter === "function") {
+    if (typeof loadCategoriesFilter === "function" && typeof loadPublishersFilter === "function") {
+      await Promise.all([loadCategoriesFilter(), loadPublishersFilter()]);
+      window.isFilterDataLoaded = true;
+    } else if (typeof loadCategoriesFilter === "function") {
       await loadCategoriesFilter();
     }
     if (categoryFromUrl) {
