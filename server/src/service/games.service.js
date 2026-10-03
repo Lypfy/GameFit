@@ -36,7 +36,45 @@ const getGames = async (page = 1, limit = 20, filters = {}) => {
 
     // Lấy ra danh sách game và tổng số game
     const totalItems = countResult.recordset?.[0]?.totalItems || 0;
-    const games = gamesResult.recordset || [];
+    let games = gamesResult.recordset || [];
+
+    const sort = filters.sort;
+    if (sort === "name-asc" || sort === "name") {
+      if (!categories && !publishers && !rams) {
+        try {
+          const spReq = pool.request();
+          const spRes = await spReq.execute("sp_sortByname");
+          if (spRes.recordset && spRes.recordset.length > 0) {
+            games = spRes.recordset.slice(offset, offset + validLimit);
+          } else {
+            games.sort((a, b) => (a.name || "").localeCompare(b.name || "", "vi", { sensitivity: "base" }));
+          }
+        } catch (spErr) {
+          games.sort((a, b) => (a.name || "").localeCompare(b.name || "", "vi", { sensitivity: "base" }));
+        }
+      } else {
+        games.sort((a, b) => (a.name || "").localeCompare(b.name || "", "vi", { sensitivity: "base" }));
+      }
+    } else if (sort === "rating-desc" || sort === "rating") {
+      if (!categories && !publishers && !rams) {
+        try {
+          const spReq = pool.request();
+          const spRes = await spReq.execute("sp_sortByRating");
+          if (spRes.recordset && spRes.recordset.length > 0) {
+            games = spRes.recordset.map((row) => ({
+              ...row,
+              rating: row.DiemTrungBinh !== undefined ? row.DiemTrungBinh : row.rating,
+            })).slice(offset, offset + validLimit);
+          } else {
+            games.sort((a, b) => (parseFloat(b.rating || b.DiemTrungBinh) || 0) - (parseFloat(a.rating || a.DiemTrungBinh) || 0));
+          }
+        } catch (spErr) {
+          games.sort((a, b) => (parseFloat(b.rating || b.DiemTrungBinh) || 0) - (parseFloat(a.rating || a.DiemTrungBinh) || 0));
+        }
+      } else {
+        games.sort((a, b) => (parseFloat(b.rating || b.DiemTrungBinh) || 0) - (parseFloat(a.rating || a.DiemTrungBinh) || 0));
+      }
+    }
 
     return {
       data: games,
@@ -304,6 +342,33 @@ const getAllPublishers = async () => {
   return result.recordset.map(row => row.publisher);
 };
 
+const sortGamesByName = async () => {
+  try {
+    const pool = await sql.connect();
+    const result = await pool.request().execute("sp_sortByname");
+    return {
+      success: true,
+      data: result.recordset || [],
+    };
+  } catch (error) {
+    console.error("Lỗi khi sắp xếp game theo tên (sp_sortByname):", error);
+    throw error;
+  }
+};
+
+const sortGamesByRating = async () => {
+  try {
+    const pool = await sql.connect();
+    const result = await pool.request().execute("sp_sortByRating");
+    return {
+      success: true,
+      data: result.recordset || [],
+    };
+  } catch (error) {
+    console.error("Lỗi khi sắp xếp game theo đánh giá (sp_sortByRating):", error);
+    throw error;
+  }
+};
 
 module.exports = {
   getGames,
@@ -316,5 +381,7 @@ module.exports = {
   updateGame,
   deleteGame,
   getAllCategories,
-  getAllPublishers
+  getAllPublishers,
+  sortGamesByName,
+  sortGamesByRating
 };

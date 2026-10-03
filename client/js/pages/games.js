@@ -86,7 +86,10 @@ document.addEventListener("DOMContentLoaded", function () {
     gamesContent.innerHTML = skeletonHtml;
   }
 
-  // Lấy dữ liệu từ Database thông qua API có hỗ trợ Filter
+  let currentFilters = {};
+  let currentSort = document.getElementById("sort-by")?.value || "default";
+
+  // Lấy dữ liệu từ Database thông qua API có hỗ trợ Filter & Sort
   async function fetchGames(page = 1, filters = {}) {
     renderSkeletonCards(12);
     try {
@@ -94,16 +97,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Gắn tham số lọc vào URL
       if (filters.categories?.length)
-        url += `&categories=${filters.categories.join(",")}`;
+        url += `&categories=${encodeURIComponent(filters.categories.join(","))}`;
       if (filters.publishers?.length)
-        url += `&publishers=${filters.publishers.join(",")}`;
-      if (filters.rams?.length) url += `&rams=${filters.rams.join(",")}`;
+        url += `&publishers=${encodeURIComponent(filters.publishers.join(","))}`;
+      if (filters.rams?.length) url += `&rams=${encodeURIComponent(filters.rams.join(","))}`;
+      if (filters.sort && filters.sort !== "default") {
+        url += `&sort=${encodeURIComponent(filters.sort)}`;
+      }
 
       const response = await fetch(url);
       const result = await response.json();
 
       if (result.success) {
-        games = result.data;
+        games = result.data || [];
+
+        // Sap xep client-side (fallback/guarantee)
+        const activeSort = filters.sort || currentSort;
+        if (activeSort === "name-asc") {
+          games.sort((a, b) =>
+            (a.name || a.title || "").localeCompare(b.name || b.title || "", "vi", { sensitivity: "base" })
+          );
+        } else if (activeSort === "rating-desc") {
+          games.sort((a, b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0));
+        }
+
         currentPage = result.pagination?.currentPage || 1;
         totalPages = result.pagination?.totalPages || 1;
 
@@ -117,6 +134,13 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Lỗi khi gọi API fetch games:", error);
       if (typeof gamesData !== "undefined") {
         games = gamesData;
+        if (currentSort === "name-asc") {
+          games.sort((a, b) =>
+            (a.name || a.title || "").localeCompare(b.name || b.title || "", "vi", { sensitivity: "base" })
+          );
+        } else if (currentSort === "rating-desc") {
+          games.sort((a, b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0));
+        }
         renderGames(games);
       }
     }
@@ -154,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function changePage(page) {
     if (page < 1 || page > totalPages || page === currentPage) return;
-    fetchGames(page);
+    fetchGames(page, { ...currentFilters, sort: currentSort });
     window.scrollTo({
       top: document.querySelector(".games").offsetTop - 100,
       behavior: "smooth",
@@ -200,9 +224,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     }
-    const filters = {};
     if (categoryFromUrl) {
-      filters.categories = [categoryFromUrl];
+      currentFilters.categories = [categoryFromUrl];
 
       // Đợi danh sách tag được render xong rồi đánh dấu active
       setTimeout(() => {
@@ -212,11 +235,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (btn) btn.classList.add("active");
       }, 500);
     }
-    await fetchGames(1, filters);
+    await fetchGames(1, { ...currentFilters, sort: currentSort });
     fetchUserWishlist().then(() => {
       updateWishlistUI();
     });
   }
+
   function updateWishlistUI() {
     document.querySelectorAll(".wishlist-btn").forEach((btn) => {
       const gameId = btn.getAttribute("data-game-id");
@@ -231,6 +255,13 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   initializeData();
+
+  // Sắp xếp game khi thay đổi select #sort-by
+  const sortBySelect = document.getElementById("sort-by");
+  sortBySelect?.addEventListener("change", function () {
+    currentSort = this.value;
+    fetchGames(1, { ...currentFilters, sort: currentSort });
+  });
 
   // Lọc game
   const btnApplyFilter = document.getElementById("btn-apply-filter");
@@ -249,16 +280,26 @@ document.addEventListener("DOMContentLoaded", function () {
       if (type === "ram") selectedRams.push(value);
     });
 
-    // Thay vì lọc bằng JS tĩnh, gọi API yêu cầu backend lọc
-    fetchGames(1, {
+    currentFilters = {
       categories: selectedCategories,
       publishers: selectedPublishers,
       rams: selectedRams,
+    };
+
+    fetchGames(1, {
+      ...currentFilters,
+      sort: currentSort,
     });
 
     if (typeof window.closeFilterModal === "function") {
       window.closeFilterModal();
     }
+  });
+
+  const btnResetFilter = document.getElementById("btn-reset-filter");
+  btnResetFilter?.addEventListener("click", function () {
+    currentFilters = {};
+    fetchGames(1, { ...currentFilters, sort: currentSort });
   });
   // Lắng nghe click vào toàn bộ Card Game (Event Delegation)
   document
