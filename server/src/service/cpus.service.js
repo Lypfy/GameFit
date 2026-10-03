@@ -2,35 +2,33 @@ const { sql } = require("../config/db");
 
 const getCPUs = async (params = {}) => {
   try {
-    const page = params.page || 1;
-    const limit = params.limit || 20;
+    const page = Math.max(1, parseInt(params.page, 10) || 1);
+    const limit = Math.max(1, parseInt(params.limit, 10) || 20);
     const offset = (page - 1) * limit;
-    const search = params.search ? `%${params.search}%` : "%";
+    const search = params.search ? params.search.trim() : "";
 
     const request = new sql.Request();
-    request.input("search", search);
-    request.input("offset", offset);
-    request.input("limit", limit);
+    request.input("search", sql.NVarChar(100), search);
+    request.input("offset", sql.Int, offset);
+    request.input("limit", sql.Int, limit);
 
     const query = `
-            SELECT * FROM CPUs 
-            WHERE name LIKE @search OR brand LIKE @search
-            ORDER BY cpu_id ASC
-            OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY;
-        `;
+      SELECT * FROM dbo.fn_SearchCpus(@search) 
+      ORDER BY cpu_id ASC
+      OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY;
+    `;
     const countQuery = `
-            SELECT COUNT(*) AS totalItems FROM CPUs 
-            WHERE name LIKE @search OR brand LIKE @search;
-        `;
+      SELECT COUNT(*) AS totalItems FROM dbo.fn_SearchCpus(@search);
+    `;
 
     const result = await request.query(query);
     const countResult = await new sql.Request()
-      .input("search", search)
+      .input("search", sql.NVarChar(100), search)
       .query(countQuery);
     const totalItems = countResult.recordset[0]?.totalItems || 0;
 
     return {
-      data: result.recordset,
+      data: result.recordset || [],
       pagination: {
         currentPage: page,
         limit: limit,
@@ -47,9 +45,9 @@ const getCPUs = async (params = {}) => {
 const getCPUById = async (cpu_id) => {
   try {
     const request = new sql.Request();
-    request.input("cpu_id", cpu_id);
+    request.input("cpu_id", sql.Int, parseInt(cpu_id, 10));
     const result = await request.query(
-      "SELECT * FROM CPUs WHERE cpu_id = @cpu_id",
+      "SELECT * FROM dbo.fn_GetCpus(@cpu_id)"
     );
     return result.recordset[0] || null;
   } catch (error) {
@@ -61,16 +59,13 @@ const getCPUById = async (cpu_id) => {
 const addCPU = async ({ cpu_name, brand, benchmark_score }) => {
   try {
     const request = new sql.Request();
-    request.input("cpu_name", cpu_name);
-    request.input("brand", brand || null);
-    request.input("benchmark_score", benchmark_score || 0);
+    request.input("cpu_id", sql.Int, null);
+    request.input("name", sql.NVarChar(100), cpu_name);
+    request.input("brand", sql.NVarChar(50), brand || null);
+    request.input("benchmark_score", sql.Int, parseInt(benchmark_score, 10) || 0);
 
-    const result = await request.query(`
-            INSERT INTO CPUs (name, brand, benchmark_score)
-            OUTPUT INSERTED.*
-            VALUES (@cpu_name, @brand, @benchmark_score);
-        `);
-    return result.recordset[0];
+    const result = await request.execute("dbo.sp_addCpus");
+    return result.recordset?.[0] || null;
   } catch (error) {
     console.error("Error in addCPU Service:", error.message);
     throw new Error("Lỗi khi thêm CPU");
@@ -80,19 +75,13 @@ const addCPU = async ({ cpu_name, brand, benchmark_score }) => {
 const updateCPU = async (cpu_id, { cpu_name, brand, benchmark_score }) => {
   try {
     const request = new sql.Request();
-    request.input("cpu_id", cpu_id);
-    request.input("cpu_name", cpu_name);
-    request.input("brand", brand || null);
-    request.input("benchmark_score", benchmark_score || 0);
+    request.input("cpu_id", sql.Int, parseInt(cpu_id, 10));
+    request.input("name", sql.NVarChar(100), cpu_name || null);
+    request.input("brand", sql.NVarChar(50), brand || null);
+    request.input("benchmark_score", sql.Int, benchmark_score !== undefined ? parseInt(benchmark_score, 10) : null);
 
-    const result = await request.query(`
-            UPDATE CPUs
-            SET cpu_name = COALESCE(@cpu_name, cpu_name),
-                brand = COALESCE(@brand, brand),
-                benchmark_score = COALESCE(@benchmark_score, benchmark_score)
-            WHERE cpu_id = @cpu_id;
-        `);
-    return result.rowsAffected?.[0] > 0;
+    const result = await request.execute("dbo.sp_updateCpus");
+    return (result.recordset && result.recordset.length > 0) || result.rowsAffected?.[0] > 0;
   } catch (error) {
     console.error("Error in updateCPU Service:", error.message);
     throw new Error("Lỗi khi cập nhật CPU");
@@ -102,12 +91,9 @@ const updateCPU = async (cpu_id, { cpu_name, brand, benchmark_score }) => {
 const deleteCPU = async (cpu_id) => {
   try {
     const request = new sql.Request();
-    request.input("cpu_id", cpu_id);
-
-    const result = await request.query(
-      "DELETE FROM CPUs WHERE cpu_id = @cpu_id",
-    );
-    return result.rowsAffected?.[0] > 0;
+    request.input("cpu_id", sql.Int, parseInt(cpu_id, 10));
+    await request.execute("dbo.sp_deleteCpus");
+    return true;
   } catch (error) {
     console.error("Error in deleteCPU Service:", error.message);
     throw new Error("Lỗi khi xóa CPU");
@@ -117,15 +103,11 @@ const deleteCPU = async (cpu_id) => {
 const searchCPUByName = async (cpu_name) => {
   try {
     const request = new sql.Request();
-    request.input("cpu_name", `%${cpu_name}%`);
+    request.input("search", sql.NVarChar(100), cpu_name || "");
 
-    const query = `
-            SELECT cpu_id, name, brand, benchmark_score 
-            FROM Cpus
-            WHERE name LIKE @cpu_name
-        `;
+    const query = `SELECT * FROM dbo.fn_SearchCpus(@search)`;
     const result = await request.query(query);
-    return result.recordset;
+    return result.recordset || [];
   } catch (error) {
     console.error("Error in searchCPUByName Service:", error.message);
     throw new Error("Lỗi khi tìm kiếm CPU theo tên");
