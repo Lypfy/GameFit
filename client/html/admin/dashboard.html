@@ -351,9 +351,6 @@
                     <button title="Khóa/Mở" class="btn-action btn-lock">
                       <i class="bx bx-lock-alt"></i>
                     </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
                   </td>
                 </tr>
                 <tr>
@@ -369,9 +366,6 @@
                     </button>
                     <button title="Khóa/Mở" class="btn-action btn-lock">
                       <i class="bx bx-lock-alt"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
                     </button>
                   </td>
                 </tr>
@@ -399,9 +393,6 @@
                     </button>
                     <button title="Khóa/Mở" class="btn-action btn-unlock">
                       <i class="bx bx-lock-open-alt"></i>
-                    </button>
-                    <button title="Xóa" class="btn-action btn-delete">
-                      <i class="bx bx-trash"></i>
                     </button>
                   </td>
                 </tr>
@@ -1343,6 +1334,68 @@
             Mở khóa ngay
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- Modal Thay đổi Vai trò Người dùng -->
+    <div class="modal" id="user-role-modal">
+      <div class="modal-overlay" id="user-role-overlay"></div>
+      <div class="modal-card modal-compact">
+        <div class="modal-header">
+          <h3><i class="bx bx-user-pin"></i> Thay đổi Vai trò Người dùng</h3>
+          <button type="button" class="close-btn" id="close-user-role-modal">
+            &times;
+          </button>
+        </div>
+        <form id="user-role-form">
+          <input type="hidden" id="edit-role-target-user-id" />
+
+          <!-- Thông tin tài khoản cần đổi vai trò -->
+          <div class="user-lock-info-card" style="margin-bottom: 1rem">
+            <div class="lock-info-header">THÔNG TIN TÀI KHOẢN:</div>
+            <div class="lock-info-row">
+              <span class="lock-info-label">Mã ID:</span>
+              <span id="role-user-id-text" class="lock-info-val-id"
+                >#U-000</span
+              >
+            </div>
+            <div class="lock-info-row">
+              <span class="lock-info-label">Tên người dùng:</span>
+              <span id="role-username-text" class="lock-info-val-name">-</span>
+            </div>
+            <div class="lock-info-row">
+              <span class="lock-info-label">Email:</span>
+              <span id="role-email-text" class="lock-info-val-email">-</span>
+            </div>
+            <div class="lock-info-row">
+              <span class="lock-info-label">Vai trò hiện tại:</span>
+              <span id="role-current-text" class="role-tag user">User</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-user-role-select"
+              >Vai trò mới <span style="color: red">*</span></label
+            >
+            <select id="edit-user-role-select" class="filter-select">
+              <option value="User">User</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" id="cancel-user-role-btn">
+              Hủy
+            </button>
+            <button
+              type="submit"
+              class="btn-save btn-success"
+              id="confirm-user-role-btn"
+            >
+              <i class="bx bx-check"></i> Lưu thay đổi
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 

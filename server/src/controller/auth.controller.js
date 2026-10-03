@@ -270,6 +270,49 @@ const lockUnlockUser = async (req, res) => {
   }
 };
 
+const changeUserRole = async (req, res) => {
+  try {
+    const { userId, role } = req.body;
+
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Thiếu mã người dùng (userId)" });
+    }
+    if (!role || !["Admin", "User"].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Vai trò không hợp lệ! Chỉ chấp nhận Admin hoặc User.",
+      });
+    }
+
+    if (
+      req.user &&
+      Number(req.user.user_id) === Number(userId) &&
+      role !== "Admin"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Bạn không thể tự giáng cấp vai trò của chính mình!",
+      });
+    }
+
+    const result = await authService.changeUserRole(userId, role);
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Error in changeUserRole Controller:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Lỗi server khi đổi vai trò người dùng",
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -279,4 +322,6 @@ module.exports = {
   getUsers,
   adminAddUser,
   lockUnlockUser,
+  changeUserRole,
 };
+

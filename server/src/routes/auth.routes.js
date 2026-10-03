@@ -32,4 +32,8 @@ router.post("/admin/add-user", authController.adminAddUser);
 // Route Admin Khóa / Mở khóa tài khoản người dùng
 router.post("/admin/lock-user", authController.lockUnlockUser);
 
+// Route Admin Đổi vai trò người dùng (Admin/User)
+router.post("/admin/change-role", authController.changeUserRole);
+
 module.exports = router;
+

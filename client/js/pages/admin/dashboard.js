@@ -1221,14 +1221,11 @@ function renderUsersTable(users) {
           <td>${statusHtml}</td>
           <td>${formattedDate}</td>
           <td class="text-right">
-            <button title="Sửa" class="btn-action btn-edit btn-edit-user" data-id="${userId}">
+            <button title="Sửa vai trò" class="btn-action btn-edit btn-edit-user" data-id="${userId}">
               <i class="bx bx-edit"></i>
             </button>
             <button title="${lockBtnTitle}" class="btn-action ${lockBtnClass} btn-toggle-lock-user" data-id="${userId}">
               <i class="bx ${lockBtnIcon}"></i>
-            </button>
-            <button title="Xóa" class="btn-action btn-delete btn-delete-user" data-id="${userId}">
-              <i class="bx bx-trash"></i>
             </button>
           </td>
         </tr>
@@ -1475,9 +1472,119 @@ function initUserActions() {
     }
   });
 
-  // Event delegation trên bảng người dùng cho nút Khóa / Mở khóa
+  // --- MODAL THAY ĐỔI VAI TRÒ NGƯỜI DÙNG ---
+  const userRoleModal = document.getElementById("user-role-modal");
+  const userRoleForm = document.getElementById("user-role-form");
+  const closeUserRoleModalBtn = document.getElementById(
+    "close-user-role-modal",
+  );
+  const cancelUserRoleBtn = document.getElementById("cancel-user-role-btn");
+  const userRoleOverlay = document.getElementById("user-role-overlay");
+
+  function hideUserRoleModal() {
+    if (userRoleModal) userRoleModal.classList.remove("active");
+    if (userRoleForm) userRoleForm.reset();
+  }
+
+  if (closeUserRoleModalBtn)
+    closeUserRoleModalBtn.addEventListener("click", hideUserRoleModal);
+  if (cancelUserRoleBtn)
+    cancelUserRoleBtn.addEventListener("click", hideUserRoleModal);
+  if (userRoleOverlay) {
+    userRoleOverlay.addEventListener("click", function (e) {
+      if (e.target === userRoleOverlay) hideUserRoleModal();
+    });
+  }
+
+  userRoleForm?.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const userIdVal = document.getElementById(
+      "edit-role-target-user-id",
+    )?.value;
+    const newRole = document.getElementById("edit-user-role-select")?.value;
+    if (!userIdVal || !newRole) return;
+    const userId = parseInt(userIdVal, 10);
+
+    const currentUser =
+      typeof getCurrentUser === "function" ? getCurrentUser() : null;
+    const currentUserId = currentUser
+      ? currentUser.user_id || currentUser.id
+      : null;
+    if (
+      currentUserId &&
+      Number(currentUserId) === userId &&
+      newRole !== "Admin"
+    ) {
+      if (typeof showToast === "function") {
+        showToast("Bạn không thể tự giáng cấp vai trò của chính mình!", true);
+      } else {
+        alert("Bạn không thể tự giáng cấp vai trò của chính mình!");
+      }
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/auth/admin/change-role", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, role: newRole }),
+      });
+      const result = await res.json();
+
+      if (result.success) {
+        if (typeof showToast === "function") {
+          showToast("Cập nhật vai trò người dùng thành công!");
+        }
+        hideUserRoleModal();
+        loadUsersData(userCurrentPage);
+      } else {
+        if (typeof showToast === "function") {
+          showToast(result.message || "Lỗi khi cập nhật vai trò", true);
+        } else {
+          alert(result.message || "Lỗi khi cập nhật vai trò");
+        }
+      }
+    } catch (err) {
+      console.error("Lỗi khi cập nhật vai trò người dùng:", err);
+      if (typeof showToast === "function") {
+        showToast("Lỗi kết nối máy chủ!", true);
+      }
+    }
+  });
+
+  // Event delegation trên bảng người dùng cho các nút Sửa / Khóa / Mở khóa
   const usersTableBody = document.getElementById("users-table-body");
   usersTableBody?.addEventListener("click", async function (e) {
+    const editBtn = e.target.closest(".btn-edit-user");
+    if (editBtn) {
+      const userId = parseInt(editBtn.dataset.id, 10);
+      const user = allAdminUsers.find((u) => u.user_id === userId);
+      if (!user) return;
+
+      document.getElementById("edit-role-target-user-id").value = user.user_id;
+      document.getElementById("role-user-id-text").textContent =
+        `${user.user_id}`;
+      document.getElementById("role-username-text").textContent =
+        user.user_name || "-";
+      document.getElementById("role-email-text").textContent =
+        user.email || "-";
+
+      const currentRoleEl = document.getElementById("role-current-text");
+      if (currentRoleEl) {
+        const roleLower = (user.role || "User").toLowerCase();
+        currentRoleEl.textContent = user.role || "User";
+        currentRoleEl.className = `role-tag ${roleLower === "admin" ? "admin" : "user"}`;
+      }
+
+      const roleSelect = document.getElementById("edit-user-role-select");
+      if (roleSelect) {
+        roleSelect.value = user.role || "User";
+      }
+
+      if (userRoleModal) userRoleModal.classList.add("active");
+      return;
+    }
+
     const lockBtn = e.target.closest(".btn-toggle-lock-user");
     if (!lockBtn) return;
 

@@ -369,6 +369,33 @@ const lockUnlockUser = async (
   }
 };
 
+const changeUserRole = async (userId, role) => {
+  try {
+    const pool = await sql.connect();
+    const request = pool.request();
+
+    request.input("user_id", sql.Int, userId);
+    request.input("role", sql.NVarChar(50), role);
+
+    const result = await request.execute("sp_ChangeUserRole");
+
+    return {
+      success: true,
+      message: "Cập nhật vai trò người dùng thành công!",
+      data: result.recordset?.[0] || null,
+    };
+  } catch (error) {
+    console.error("Error in changeUserRole Service:", error.message);
+    if (
+      error.message.includes("Tài khoản người dùng không tồn tại") ||
+      error.message.includes("Vai trò không hợp lệ")
+    ) {
+      return { success: false, message: error.message };
+    }
+    throw new Error(error.message || "Lỗi khi đổi vai trò người dùng");
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -378,4 +405,6 @@ module.exports = {
   getUsers,
   adminAddUser,
   lockUnlockUser,
+  changeUserRole,
 };
+
