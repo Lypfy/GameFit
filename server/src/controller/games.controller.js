@@ -188,7 +188,7 @@ const deleteGame = async (req, res) => {
 
         const result = await gamesService.deleteGame(game_id);
 
-        if (!result) {
+        if (!result || !result.success) {
             return res.status(400).json({
                 success: false,
                 message: 'Xóa game thất bại'
@@ -205,7 +205,7 @@ const deleteGame = async (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: 'Lỗi server khi xóa game'
+            message: error.message || 'Lỗi server khi xóa game'
         });
     }
 };
