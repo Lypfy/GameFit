@@ -19,7 +19,10 @@ let pendingDeleteGameId = null;
 // Lấy danh sách game cho Dashboard Admin
 async function loadGamesData(search = "") {
   try {
-    const res = await fetch(`/api/games?page=1&limit=500`);
+    const res = await fetch(`/api/games?page=1&limit=500&_t=${Date.now()}`, {
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache" }
+    });
     const result = await res.json();
     if (result.success) {
       allAdminGames = result.data || [];
@@ -42,9 +45,12 @@ async function loadGamesData(search = "") {
   }
 }
 
+
 // Đổ dữ liệu vào bảng Quản lý Game
 function renderGamesTable(games) {
   const tbody = document.getElementById("games-table-body");
+  console.log("Dữ liệu game:", games); // <-- Đặt ở đây
+  console.log("Phần tử đầu tiên:", games ? games[0] : null);
   if (!tbody) return;
 
   if (!games || games.length === 0) {
@@ -62,9 +68,9 @@ function renderGamesTable(games) {
       const tagsHtml =
         tagArray.length > 0
           ? tagArray
-              .slice(0, 3)
-              .map((tag) => `<span class="genre-badge">${tag}</span>`)
-              .join(" ")
+            .slice(0, 3)
+            .map((tag) => `<span class="genre-badge">${tag}</span>`)
+            .join(" ")
           : `<span style="color: rgba(255,255,255,0.4);">-</span>`;
 
       const isActive = game.is_active !== false && game.is_active !== 0;

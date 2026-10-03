@@ -76,6 +76,33 @@ const getGames = async (page = 1, limit = 20, filters = {}) => {
       }
     }
 
+    // Bổ sung các thông tin chi tiết (developer, publisher, is_active) từ bảng Games
+    if (games.length > 0) {
+      try {
+        const gameIds = games.map((g) => g.game_id || g.id).filter(Boolean);
+        if (gameIds.length > 0) {
+          const devReq = pool.request();
+          const devRes = await devReq.query(`SELECT game_id, developer, publisher, is_active FROM Games WHERE game_id IN (${gameIds.join(",")})`);
+          const devMap = new Map();
+          (devRes.recordset || []).forEach((row) => {
+            devMap.set(row.game_id, row);
+          });
+          games = games.map((g) => {
+            const id = g.game_id || g.id;
+            const extra = devMap.get(id);
+            return {
+              ...g,
+              developer: extra?.developer || g.developer || "",
+              publisher: extra?.publisher || g.publisher || "",
+              is_active: extra?.is_active !== undefined ? extra.is_active : (g.is_active !== undefined ? g.is_active : 1),
+            };
+          });
+        }
+      } catch (enrichErr) {
+        console.warn("Không thể bổ sung thông tin developer/publisher/is_active từ Games:", enrichErr.message);
+      }
+    }
+
     return {
       data: games,
       pagination: {
@@ -222,20 +249,68 @@ const addGame = async (game) => {
 const updateGame = async (game) => {
   try {
     const pool = await sql.connect();
-    const request = pool.request();
+    const validId = parseInt(game.game_id, 10);
+    const isActive = game.is_active ? 1 : 0;
+    const nameStr = game.name ? game.name.trim() : "";
+    const devStr = game.developer ? game.developer.trim() : "";
+    const tagStr = game.name_tag ? game.name_tag.trim() : "";
 
-    request.input("game_id", sql.Int, game.game_id);
-    request.input("name", sql.VarChar(30), game.name);
-    request.input("name_tag", sql.VarChar(sql.MAX), game.name_tag);
-    request.input("developer", sql.VarChar(30), game.developer);
-    request.input("is_active", sql.Bit, game.is_active);
+    try {
+      const request = pool.request();
+      request.input("game_id", sql.Int, validId);
+      request.input("name", sql.NVarChar(255), nameStr);
+      request.input("name_tag", sql.NVarChar(sql.MAX), tagStr);
+      request.input("developer", sql.NVarChar(255), devStr);
+      request.input("is_active", sql.Bit, isActive);
 
-    const result = await request.execute("sp_updateGame");
+      const result = await request.execute("sp_updateGame");
+      return {
+        success: true,
+        data: result.recordset || [],
+      };
+    } catch (spErr) {
+      console.warn("Thử lại cập nhật game với direct query:", spErr.message);
 
-    return {
-      success: true,
-      data: result.recordset || [],
-    };
+      const reqUpdate = pool.request();
+      reqUpdate.input("game_id", sql.Int, validId);
+      reqUpdate.input("name", sql.NVarChar(255), nameStr);
+      reqUpdate.input("developer", sql.NVarChar(255), devStr);
+      reqUpdate.input("is_active", sql.Bit, isActive);
+
+      await reqUpdate.query(`
+        UPDATE Games 
+        SET name = @name, developer = @developer, is_active = @is_active 
+        WHERE game_id = @game_id
+      `);
+
+      if (tagStr !== undefined && tagStr !== null) {
+        try {
+          const reqDelTags = pool.request();
+          reqDelTags.input("game_id", sql.Int, validId);
+          await reqDelTags.query(`DELETE FROM Games_Tags WHERE game_id = @game_id`);
+
+          if (tagStr) {
+            const reqInsTags = pool.request();
+            reqInsTags.input("game_id", sql.Int, validId);
+            reqInsTags.input("name_tag", sql.NVarChar(sql.MAX), tagStr);
+            await reqInsTags.query(`
+              INSERT INTO Games_Tags (game_id, tag_id)
+              SELECT DISTINCT @game_id, t.tag_id
+              FROM Tags t
+              INNER JOIN STRING_SPLIT(@name_tag, ',') s
+                ON LOWER(LTRIM(RTRIM(s.value))) = LOWER(LTRIM(RTRIM(t.name)))
+            `);
+          }
+        } catch (tagErr) {
+          console.warn("Lỗi khi cập nhật Games_Tags:", tagErr.message);
+        }
+      }
+
+      return {
+        success: true,
+        data: [],
+      };
+    }
   } catch (error) {
     console.error("Lỗi khi cập nhật game:", error);
     throw error;
@@ -259,15 +334,14 @@ const deleteGame = async (game_id) => {
     } catch (spErr) {
       console.warn("Lỗi sp_deleteGame, thực hiện xóa trực tiếp (xóa ràng buộc FK):", spErr.message);
 
-      const reqDel = pool.request();
-      reqDel.input("game_id", sql.Int, validId);
-
       // Xóa các bảng liên quan (FK) trước để tránh lỗi dính khóa ngoại
       const tablesToDeleteFrom = [
         "Wishlist",
         "Wishlists",
+        "Games_Tags",
         "Game_Tags",
         "GameTags",
+        "Game_requirement",
         "Game_Requirements",
         "GameRequirements",
         "Reviews",
@@ -277,6 +351,8 @@ const deleteGame = async (game_id) => {
 
       for (const table of tablesToDeleteFrom) {
         try {
+          const reqDel = pool.request();
+          reqDel.input("game_id", sql.Int, validId);
           await reqDel.query(`DELETE FROM ${table} WHERE game_id = @game_id`);
         } catch (e) {
           // Bỏ qua nếu bảng không tồn tại hoặc không có khóa ngoại
@@ -284,7 +360,9 @@ const deleteGame = async (game_id) => {
       }
 
       // Xóa game khỏi bảng Games
-      const finalResult = await reqDel.query("DELETE FROM Games WHERE game_id = @game_id");
+      const reqFinal = pool.request();
+      reqFinal.input("game_id", sql.Int, validId);
+      const finalResult = await reqFinal.query("DELETE FROM Games WHERE game_id = @game_id");
 
       return {
         success: true,
