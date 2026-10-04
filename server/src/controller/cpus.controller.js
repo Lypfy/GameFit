@@ -91,7 +91,8 @@ const addCPU = async (req, res) => {
 const updateCPU = async (req, res) => {
   try {
     const cpu_id = req.params.id || req.body.cpu_id;
-    const { cpu_name, brand, benchmark_score } = req.body;
+    const name = req.body.cpu_name || req.body.name;
+    const { brand, benchmark_score } = req.body;
 
     if (!cpu_id) {
       return res
@@ -100,7 +101,8 @@ const updateCPU = async (req, res) => {
     }
 
     const result = await cpusService.updateCPU(cpu_id, {
-      cpu_name,
+      cpu_name: name,
+      name,
       brand,
       benchmark_score,
     });
@@ -119,7 +121,7 @@ const updateCPU = async (req, res) => {
     console.error("Error in updateCPU Controller:", error.message);
     return res
       .status(500)
-      .json({ success: false, message: "Lỗi server khi cập nhật CPU" });
+      .json({ success: false, message: error.message || "Lỗi server khi cập nhật CPU" });
   }
 };
 
@@ -149,7 +151,7 @@ const deleteCPU = async (req, res) => {
     console.error("Error in deleteCPU Controller:", error.message);
     return res
       .status(500)
-      .json({ success: false, message: "Lỗi server khi xóa CPU" });
+      .json({ success: false, message: error.message || "Lỗi server khi xóa CPU" });
   }
 };
 

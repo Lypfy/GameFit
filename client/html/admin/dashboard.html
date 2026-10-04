@@ -1679,6 +1679,130 @@
       </div>
     </div>
 
+    <!-- Modal Cập Nhật CPU -->
+    <div class="modal-overlay hw-modal" id="cpu-edit-modal">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div class="modal-header">
+          <div class="header-left">
+            <div class="modal-header-icon">
+              <i class="bx bx-edit"></i>
+            </div>
+            <div class="header-text">
+              <h2>Cập Nhật CPU (Vi xử lý)</h2>
+            </div>
+          </div>
+          <button type="button" class="btn-close" id="close-cpu-edit-modal">
+            <i class="bx bx-x"></i>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <form id="cpu-edit-form">
+          <input type="hidden" id="edit-cpu-id" />
+          <div class="modal-body">
+            <!-- Tên CPU -->
+            <div class="form-group">
+              <label class="form-label"
+                >Tên CPU <span class="required">*</span></label
+              >
+              <div class="input-wrapper">
+                <i class="bx bx-microchip prefix"></i>
+                <input
+                  type="text"
+                  id="edit-cpu-name"
+                  class="form-control with-prefix"
+                  placeholder="Ví dụ: Intel Core i7-13700K..."
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Hãng sản xuất -->
+            <div class="form-group">
+              <label class="form-label"
+                >Hãng sản xuất <span class="required">*</span></label
+              >
+              <div class="input-wrapper">
+                <i class="bx bx-buildings prefix"></i>
+                <select
+                  id="edit-cpu-brand"
+                  class="form-control with-prefix"
+                  required
+                >
+                  <option value="" disabled selected>
+                    Chọn hãng sản xuất...
+                  </option>
+                  <option value="Intel">Intel</option>
+                  <option value="AMD">AMD</option>
+                  <option value="Khác">Khác</option>
+                </select>
+                <i class="bx bx-chevron-down suffix"></i>
+              </div>
+            </div>
+
+            <!-- Điểm Benchmark -->
+            <div class="form-group">
+              <label class="form-label"
+                >Điểm Benchmark <span class="required">*</span></label
+              >
+              <div class="input-wrapper">
+                <i class="bx bx-bar-chart-alt-2 prefix"></i>
+                <input
+                  type="number"
+                  id="edit-cpu-score"
+                  class="form-control with-prefix"
+                  placeholder="Ví dụ: 18500"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" id="cancel-cpu-edit-btn">
+              Hủy
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="bx bx-save"></i> Cập nhật CPU
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Xác Nhận Xóa CPU -->
+    <div class="modal" id="delete-cpu-modal">
+      <div class="modal-overlay" id="delete-cpu-overlay"></div>
+      <div class="modal-card modal-sm">
+        <div class="modal-header">
+          <button type="button" class="close-btn" id="close-delete-cpu-modal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <i class="bx bx-error-circle confirm-icon"></i>
+          <h3 class="confirm-title">Xác nhận xóa CPU</h3>
+          <p id="delete-cpu-confirm-msg" class="confirm-message">
+            Bạn có chắc chắn muốn xóa CPU này không?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="cancel-delete-cpu-btn">
+            Hủy
+          </button>
+          <button
+            type="button"
+            class="btn-save btn-danger"
+            id="confirm-delete-cpu-btn"
+          >
+            Xóa ngay
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal Thêm GPU Mới -->
     <div class="modal-overlay hw-modal" id="gpu-add-modal">
       <div class="modal-content" onclick="event.stopPropagation()">
@@ -1769,6 +1893,131 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Modal Cập Nhật GPU -->
+    <div class="modal-overlay hw-modal" id="gpu-edit-modal">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div class="modal-header">
+          <div class="header-left">
+            <div class="modal-header-icon">
+              <i class="bx bx-edit"></i>
+            </div>
+            <div class="header-text">
+              <h2>Cập Nhật GPU (Card đồ họa)</h2>
+            </div>
+          </div>
+          <button type="button" class="btn-close" id="close-gpu-edit-modal">
+            <i class="bx bx-x"></i>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <form id="gpu-edit-form">
+          <input type="hidden" id="edit-gpu-id" />
+          <div class="modal-body">
+            <!-- Tên GPU -->
+            <div class="form-group">
+              <label class="form-label"
+                >Tên GPU <span class="required">*</span></label
+              >
+              <div class="input-wrapper">
+                <i class="bx bxs-microchip prefix"></i>
+                <input
+                  type="text"
+                  id="edit-gpu-name"
+                  class="form-control with-prefix"
+                  placeholder="Ví dụ: NVIDIA GeForce RTX 4070..."
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Hãng sản xuất -->
+            <div class="form-group">
+              <label class="form-label"
+                >Hãng sản xuất <span class="required">*</span></label
+              >
+              <div class="input-wrapper">
+                <i class="bx bx-buildings prefix"></i>
+                <select
+                  id="edit-gpu-brand"
+                  class="form-control with-prefix"
+                  required
+                >
+                  <option value="" disabled selected>
+                    Chọn hãng sản xuất...
+                  </option>
+                  <option value="NVIDIA">NVIDIA</option>
+                  <option value="AMD">AMD</option>
+                  <option value="Intel">Intel</option>
+                  <option value="Khác">Khác</option>
+                </select>
+                <i class="bx bx-chevron-down suffix"></i>
+              </div>
+            </div>
+
+            <!-- Điểm Benchmark -->
+            <div class="form-group">
+              <label class="form-label"
+                >Điểm Benchmark <span class="required">*</span></label
+              >
+              <div class="input-wrapper">
+                <i class="bx bx-bar-chart-alt-2 prefix"></i>
+                <input
+                  type="number"
+                  id="edit-gpu-score"
+                  class="form-control with-prefix"
+                  placeholder="Ví dụ: 21200"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" id="cancel-gpu-edit-btn">
+              Hủy
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="bx bx-save"></i> Cập nhật GPU
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Xác Nhận Xóa GPU -->
+    <div class="modal" id="delete-gpu-modal">
+      <div class="modal-overlay" id="delete-gpu-overlay"></div>
+      <div class="modal-card modal-sm">
+        <div class="modal-header">
+          <button type="button" class="close-btn" id="close-delete-gpu-modal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <i class="bx bx-error-circle confirm-icon"></i>
+          <h3 class="confirm-title">Xác nhận xóa GPU</h3>
+          <p id="delete-gpu-confirm-msg" class="confirm-message">
+            Bạn có chắc chắn muốn xóa GPU này không?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="cancel-delete-gpu-btn">
+            Hủy
+          </button>
+          <button
+            type="button"
+            class="btn-save btn-danger"
+            id="confirm-delete-gpu-btn"
+          >
+            Xóa ngay
+          </button>
+        </div>
       </div>
     </div>
 

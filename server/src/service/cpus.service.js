@@ -72,19 +72,37 @@ const addCPU = async ({ cpu_name, brand, benchmark_score }) => {
   }
 };
 
-const updateCPU = async (cpu_id, { cpu_name, brand, benchmark_score }) => {
+const updateCPU = async (cpu_id, data = {}, brandArg, scoreArg) => {
   try {
+    let id = cpu_id;
+    let cpu_name = typeof data === "object" && data !== null ? (data.cpu_name || data.name) : data;
+    let brand = typeof data === "object" && data !== null ? data.brand : brandArg;
+    let benchmark_score = typeof data === "object" && data !== null ? data.benchmark_score : scoreArg;
+
+    if (typeof cpu_id === "object" && cpu_id !== null) {
+      id = cpu_id.cpu_id || cpu_id.id;
+      cpu_name = cpu_id.cpu_name || cpu_id.name;
+      brand = cpu_id.brand;
+      benchmark_score = cpu_id.benchmark_score;
+    }
+
     const request = new sql.Request();
-    request.input("cpu_id", sql.Int, parseInt(cpu_id, 10));
-    request.input("name", sql.NVarChar(100), cpu_name || null);
-    request.input("brand", sql.NVarChar(50), brand || null);
-    request.input("benchmark_score", sql.Int, benchmark_score !== undefined ? parseInt(benchmark_score, 10) : null);
+    request.input("cpu_id", sql.Int, parseInt(id, 10));
+    request.input("name", sql.NVarChar(100), typeof cpu_name === "string" ? cpu_name : null);
+    request.input("brand", sql.NVarChar(50), typeof brand === "string" ? brand : null);
+    request.input(
+      "benchmark_score",
+      sql.Int,
+      benchmark_score !== undefined && benchmark_score !== null && benchmark_score !== ""
+        ? parseInt(benchmark_score, 10)
+        : null
+    );
 
     const result = await request.execute("dbo.sp_updateCpus");
-    return (result.recordset && result.recordset.length > 0) || result.rowsAffected?.[0] > 0;
+    return (result.recordset && result.recordset.length > 0) || (result.rowsAffected && result.rowsAffected[0] > 0);
   } catch (error) {
     console.error("Error in updateCPU Service:", error.message);
-    throw new Error("Lỗi khi cập nhật CPU");
+    throw new Error("Lỗi khi cập nhật CPU: " + error.message);
   }
 };
 
@@ -96,7 +114,7 @@ const deleteCPU = async (cpu_id) => {
     return true;
   } catch (error) {
     console.error("Error in deleteCPU Service:", error.message);
-    throw new Error("Lỗi khi xóa CPU");
+    throw new Error("Lỗi khi xóa CPU: " + error.message);
   }
 };
 

@@ -94,12 +94,12 @@ const addGpu = async (gpu_id, name, brand, benchmark_score) => {
   }
 };
 
-const updateGpu = async (gpu_id, name, brand, benchmark_score) => {
+const updateGpu = async (gpu_id, data = {}, brandArg, scoreArg) => {
   try {
     let id = gpu_id;
-    let gName = name;
-    let gBrand = brand;
-    let gScore = benchmark_score;
+    let gName = typeof data === "object" && data !== null ? (data.gpu_name || data.name) : data;
+    let gBrand = typeof data === "object" && data !== null ? data.brand : brandArg;
+    let gScore = typeof data === "object" && data !== null ? data.benchmark_score : scoreArg;
 
     if (typeof gpu_id === "object" && gpu_id !== null) {
       id = gpu_id.gpu_id || gpu_id.id;
@@ -110,15 +110,19 @@ const updateGpu = async (gpu_id, name, brand, benchmark_score) => {
 
     const request = new sql.Request();
     request.input("gpu_id", sql.Int, parseInt(id, 10));
-    request.input("name", sql.NVarChar(100), gName || null);
-    request.input("brand", sql.NVarChar(50), gBrand || null);
-    request.input("benchmark_score", sql.Int, gScore !== undefined && gScore !== null ? parseInt(gScore, 10) : null);
+    request.input("name", sql.NVarChar(100), typeof gName === "string" ? gName : null);
+    request.input("brand", sql.NVarChar(50), typeof gBrand === "string" ? gBrand : null);
+    request.input(
+      "benchmark_score",
+      sql.Int,
+      gScore !== undefined && gScore !== null && gScore !== "" ? parseInt(gScore, 10) : null
+    );
 
     const result = await request.execute("dbo.sp_updateGpus");
-    return (result.recordset && result.recordset.length > 0) || result.rowsAffected?.[0] > 0;
+    return (result.recordset && result.recordset.length > 0) || (result.rowsAffected && result.rowsAffected[0] > 0);
   } catch (error) {
     console.error("Error in updateGpu Service:", error.message);
-    throw new Error("Lỗi khi cập nhật GPU");
+    throw new Error("Lỗi khi cập nhật GPU: " + error.message);
   }
 };
 
@@ -131,7 +135,7 @@ const deleteGpu = async (gpu_id) => {
     return true;
   } catch (error) {
     console.error("Error in deleteGpu Service:", error.message);
-    throw new Error("Lỗi khi xóa GPU");
+    throw new Error("Lỗi khi xóa GPU: " + error.message);
   }
 };
 
@@ -154,8 +158,12 @@ const searchGpuByName = async (name) => {
 
 module.exports = {
   getGpus,
+  getGPUById: getGpus,
   addGpu,
+  addGPU: addGpu,
   updateGpu,
+  updateGPU: updateGpu,
   deleteGpu,
+  deleteGPU: deleteGpu,
   searchGpuByName,
 };

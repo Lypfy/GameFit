@@ -73,13 +73,14 @@ const addGPU = async (req, res) => {
 const updateGPU = async (req, res) => {
     try {
         const gpu_id = req.params.id || req.body.gpu_id;
-        const { gpu_name, brand, benchmark_score } = req.body;
+        const name = req.body.gpu_name || req.body.name;
+        const { brand, benchmark_score } = req.body;
 
         if (!gpu_id) {
             return res.status(400).json({ success: false, message: 'Thiếu gpu_id hợp lệ' });
         }
 
-        const result = await gpusService.updateGPU(gpu_id, { gpu_name, brand, benchmark_score });
+        const result = await gpusService.updateGPU(gpu_id, { gpu_name: name, name, brand, benchmark_score });
 
         if (!result) {
             return res.status(400).json({ success: false, message: 'Cập nhật GPU thất bại' });
@@ -91,7 +92,7 @@ const updateGPU = async (req, res) => {
         });
     } catch (error) {
         console.error('Error in updateGPU Controller:', error.message);
-        return res.status(500).json({ success: false, message: 'Lỗi server khi cập nhật GPU' });
+        return res.status(500).json({ success: false, message: error.message || 'Lỗi server khi cập nhật GPU' });
     }
 };
 
@@ -115,7 +116,7 @@ const deleteGPU = async (req, res) => {
         });
     } catch (error) {
         console.error('Error in deleteGPU Controller:', error.message);
-        return res.status(500).json({ success: false, message: 'Lỗi server khi xóa GPU' });
+        return res.status(500).json({ success: false, message: error.message || 'Lỗi server khi xóa GPU' });
     }
 };
 
