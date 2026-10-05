@@ -75,7 +75,7 @@ const deleteReview = async (user_id, game_id) => {
     }
 }
 
-const writeReviewPcCompatibility = async (user_id, game_id, pc_id, type, note) => {
+const createGamePCRecommendation = async (user_id, game_id, pc_id, type, note) => {
     try {
         const request = new sql.Request();
 
@@ -90,22 +90,22 @@ const writeReviewPcCompatibility = async (user_id, game_id, pc_id, type, note) =
             request.input('note', sql.NVarChar, null);
         }
 
-        const result = await request.execute('sp_WriteReviewPcCompatibility');
+        const result = await request.execute('sp_CreateGamePCRecommendation');
 
         return { success: true, message: 'Đã đính kèm cấu hình đề xuất thành công!' };
     }
     catch (error) {
-        console.log('Error in writeReviewPcCompatibility Service: ', error.message);
+        console.log('Error in createGamePCRecommendation Service: ', error.message);
         throw new Error(error.message);
     }
 }
 
-const getReviewPcCompatibility = async (game_id) => {
+const getGamePCRecommendations = async (game_id) => {
     try {
         const request = new sql.Request();
         request.input('game_id', sql.Int, game_id);
 
-        const result = await request.execute('sp_GetReviewPcCompatibility');
+        const result = await request.execute('sp_GetGamePCRecommendations');
         let recommendations = result.recordset;
 
         if (recommendations.length > 0) {
@@ -127,12 +127,12 @@ const getReviewPcCompatibility = async (game_id) => {
         return { success: true, data: recommendations };
     }
     catch (error) {
-        console.log('Error in getReviewPcCompatibility Service: ', error.message);
+        console.log('Error in getGamePCRecommendations Service: ', error.message);
         throw new Error(error.message);
     }
 }
 
-const deleteReviewPcCompatibility = async (user_id, recommendation_id) => {
+const deleteGamePCRecommendation = async (user_id, recommendation_id) => {
     try {
         const request = new sql.Request();
 
@@ -140,7 +140,7 @@ const deleteReviewPcCompatibility = async (user_id, recommendation_id) => {
         request.input('recommendation_id', sql.Int, recommendation_id);
 
         // Gọi Procedure thực hiện lệnh UPDATE ẩn bài (Soft Delete)
-        const result = await request.execute('sp_DeleteReviewPcCompatibility');
+        const result = await request.execute('sp_DeleteGamePCRecommendation');
 
         // Nếu rowsAffected[0] === 0 nghĩa là không tìm thấy bài nào khớp id hoặc user đó không phải chủ bài
         if (result.rowsAffected[0] === 0) {
@@ -150,7 +150,7 @@ const deleteReviewPcCompatibility = async (user_id, recommendation_id) => {
         return { success: true, message: 'Đã ẩn đề xuất cấu hình thành công' };
     }
     catch (error) {
-        console.log('Error in deleteReviewPcCompatibility Service: ', error.message);
+        console.log('Error in deleteGamePCRecommendation Service: ', error.message);
         throw new Error(error.message);
     }
 }
@@ -179,8 +179,8 @@ module.exports = {
     deleteReview,
     getReview,
     getAvgRating,
-    writeReviewPcCompatibility,
-    getReviewPcCompatibility,
-    deleteReviewPcCompatibility,
+    createGamePCRecommendation,
+    getGamePCRecommendations,
+    deleteGamePCRecommendation,
     vote
 }

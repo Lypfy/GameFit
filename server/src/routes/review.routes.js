@@ -10,9 +10,9 @@ router.put('/:game_id', verifyToken, reviewController.updateReview);
 router.delete('/:game_id', verifyToken, reviewController.deleteReview);
 router.get('/:game_id', reviewController.getReviews);
 router.get('/avg/:game_id', reviewController.getAvgRating);
-router.post('/recommendation/:game_id', verifyToken, reviewController.writeReviewPcCompatibility);
+router.post('/recommendation/:game_id', verifyToken, reviewController.createGamePCRecommendation);
 
-router.get('/recommendation/:game_id', reviewController.getReviewPcCompatibility);
-router.delete('/recommendation/:recommendation_id', verifyToken, reviewController.deleteReviewPcCompatibility);
+router.get('/recommendation/:game_id', reviewController.getGamePCRecommendations);
+router.delete('/recommendation/:recommendation_id', verifyToken, reviewController.deleteGamePCRecommendation);
 
 module.exports = router;
