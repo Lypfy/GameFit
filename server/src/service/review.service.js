@@ -43,7 +43,7 @@ const getReview = async (game_id) => {
         return { success: true, data: result.recordset };
     }
     catch (error) {
-        console.log('Error in updateReview Service: ', error.message);
+        console.log('Error in getReview Service: ', error.message);
         throw new Error(error.message);
     }
 }
@@ -173,6 +173,50 @@ const vote = async (user_id, target_type, target_id, vote_type) => {
     }
 }
 
+const reportReview = async (review_id, report_reason) => {
+    try {
+        const request = new sql.Request();
+        request.input('review_id', sql.Int, review_id);
+        request.input('report_reason', sql.NVarChar, report_reason);
+
+        await request.execute('sp_ReportReview');
+        return { success: true, message: 'Báo cáo đánh giá thành công' };
+    } catch (error) {
+        console.log('Error in reportReview Service: ', error.message);
+        throw new Error(error.message);
+    }
+}
+
+const getReportedReviews = async (status, time_range, search) => {
+    try {
+        const request = new sql.Request();
+        request.input('status', sql.VarChar, status || null);
+        request.input('time_range', sql.VarChar, time_range || 'all');
+        request.input('search', sql.NVarChar, search || null);
+
+        const result = await request.execute('sp_GetReportedReviews');
+        return { success: true, data: result.recordset };
+    } catch (error) {
+        console.log('Error in getReportedReviews Service: ', error.message);
+        throw new Error(error.message);
+    }
+}
+
+const moderateReview = async (review_id, action) => {
+    try {
+        const request = new sql.Request();
+        request.input('review_id', sql.Int, review_id);
+        request.input('action', sql.VarChar, action);
+
+        await request.execute('sp_ModerateReview');
+        const msg = action === 'HIDE' ? 'Đã ẩn đánh giá vi phạm thành công' : 'Đã bỏ qua báo cáo thành công';
+        return { success: true, message: msg };
+    } catch (error) {
+        console.log('Error in moderateReview Service: ', error.message);
+        throw new Error(error.message);
+    }
+}
+
 module.exports = {
     writeReview,
     updateReview,
@@ -182,5 +226,8 @@ module.exports = {
     createGamePCRecommendation,
     getGamePCRecommendations,
     deleteGamePCRecommendation,
-    vote
+    vote,
+    reportReview,
+    getReportedReviews,
+    moderateReview
 }

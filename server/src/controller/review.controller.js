@@ -246,6 +246,66 @@ const vote = async (req, res) => {
     }
 }
 
+const reportReview = async (req, res) => {
+    try {
+        const { review_id } = req.params;
+        const { report_reason } = req.body;
+
+        if (!review_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu review_id hợp lệ' });
+        }
+        if (!report_reason) {
+            return res.status(400).json({ success: false, message: 'Thiếu lý do báo cáo' });
+        }
+
+        const result = await reviewService.reportReview(review_id, report_reason);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('Error in reportReview Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi báo cáo đánh giá'
+        });
+    }
+}
+
+const getReportedReviews = async (req, res) => {
+    try {
+        const { status, time_range, search } = req.query;
+        const result = await reviewService.getReportedReviews(status, time_range, search);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('Error in getReportedReviews Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi lấy danh sách báo cáo vi phạm'
+        });
+    }
+}
+
+const moderateReview = async (req, res) => {
+    try {
+        const { review_id } = req.params;
+        const { action } = req.body;
+
+        if (!review_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu review_id hợp lệ' });
+        }
+        if (!action || !['HIDE', 'DISMISS'].includes(action)) {
+            return res.status(400).json({ success: false, message: 'Hành động không hợp lệ (chỉ chấp nhận HIDE hoặc DISMISS)' });
+        }
+
+        const result = await reviewService.moderateReview(review_id, action);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('Error in moderateReview Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi kiểm duyệt đánh giá'
+        });
+    }
+}
+
 module.exports = {
     writeReview,
     updateReview,
@@ -255,5 +315,8 @@ module.exports = {
     createGamePCRecommendation,
     getGamePCRecommendations,
     deleteGamePCRecommendation,
-    vote
+    vote,
+    reportReview,
+    getReportedReviews,
+    moderateReview
 }

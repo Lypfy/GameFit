@@ -448,7 +448,7 @@
   if (reportModalOverlay) reportModalOverlay.addEventListener('click', closeReportModalFunc);
 
   if (reportForm) {
-    reportForm.addEventListener('submit', (e) => {
+    reportForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const activeUser = getActiveUser();
@@ -461,13 +461,67 @@
         return;
       }
 
-      const selectedReason = reportForm.querySelector('input[name="report-reason"]:checked')?.value || 'Lý do khác';
-      closeReportModalFunc();
+      const reviewId = reportReviewIdInput?.value;
+      if (!reviewId) {
+        if (typeof showToast === 'function') {
+          showToast('Không tìm thấy thông tin đánh giá cần báo cáo!', 'error');
+        }
+        return;
+      }
 
-      if (typeof showToast === 'function') {
-        showToast(`Đã gửi báo cáo vi phạm ("${selectedReason}")!`, 'success');
-      } else {
-        alert(`Đã gửi báo cáo vi phạm ("${selectedReason}") tới Ban quản trị!`);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        if (typeof showToast === 'function') {
+          showToast('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!', 'error');
+        }
+        return;
+      }
+
+      const selectedReason = reportForm.querySelector('input[name="report-reason"]:checked')?.value || 'Lý do khác';
+      const detailText = reportDetailInput?.value?.trim();
+      const finalReason = detailText ? `${selectedReason} - ${detailText}` : selectedReason;
+
+      const submitBtn = reportForm.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang gửi...';
+      }
+
+      try {
+        const res = await fetch(`/api/reviews/report/${reviewId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ report_reason: finalReason })
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          closeReportModalFunc();
+          if (typeof showToast === 'function') {
+            showToast('Đã gửi báo cáo vi phạm thành công!', 'success');
+          } else {
+            alert('Đã gửi báo cáo vi phạm tới Ban quản trị!');
+          }
+        } else {
+          if (typeof showToast === 'function') {
+            showToast(result.message || 'Lỗi khi gửi báo cáo!', 'error');
+          } else {
+            alert(result.message || 'Lỗi khi gửi báo cáo!');
+          }
+        }
+      } catch (err) {
+        console.error('Lỗi khi gửi báo cáo:', err);
+        if (typeof showToast === 'function') {
+          showToast('Lỗi kết nối máy chủ khi gửi báo cáo!', 'error');
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Gửi báo cáo';
+        }
       }
     });
   }

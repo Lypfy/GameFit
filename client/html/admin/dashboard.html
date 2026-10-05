@@ -134,7 +134,7 @@
         </button>
         <button class="tab-pill" data-tab="tab-games">Quản lý Game</button>
         <button class="tab-pill" data-tab="tab-users">Người dùng</button>
-        <button class="tab-pill" data-tab="tab-hardware">Hardware</button>
+        <button class="tab-pill" data-tab="tab-hardware">Phần cứng</button>
         <button class="tab-pill" data-tab="tab-genres">Tag</button>
         <button class="tab-pill" data-tab="tab-violations">
           Báo cáo vi phạm
@@ -689,6 +689,22 @@
           <div class="table-header">
             <h2>Danh sách Báo cáo Vi phạm</h2>
             <div class="table-actions">
+              <!-- Bộ lọc Trạng thái -->
+              <select id="violation-status-filter" class="table-filter-select">
+                <option value="ALL" selected>Tất cả trạng thái</option>
+                <option value="PENDING">Chờ xử lý</option>
+                <option value="DISMISSED">Đã bỏ qua</option>
+                <option value="HIDDEN">Đã ẩn</option>
+              </select>
+
+              <!-- Bộ lọc Thời gian -->
+              <select id="violation-time-filter" class="table-filter-select">
+                <option value="all" selected>Mọi lúc</option>
+                <option value="today">Hôm nay</option>
+                <option value="week">7 ngày qua</option>
+                <option value="month">Tháng này</option>
+              </select>
+
               <div class="table-search search-poda">
                 <div class="search-glow"></div>
                 <div class="search-dark-border-bg"></div>
@@ -697,7 +713,8 @@
                 <div class="search-white"></div>
                 <div class="search-border"></div>
                 <div class="search-main">
-                  <input type="text" placeholder="Tìm kiếm..." class="search-input" />
+                  <input type="text" id="violation-search-input" placeholder="Người dùng, lý do..."
+                    class="search-input" />
                   <div class="search-input-mask"></div>
                   <div class="search-pink-mask"></div>
                   <div class="search-icon">
@@ -715,26 +732,16 @@
             <thead class="highlight-headers">
               <tr>
                 <th>ID</th>
-                <th>Người vi phạm</th>
+                <th>Người dùng</th>
+                <th>Tên game</th>
                 <th>Lý do</th>
                 <th>Thời gian</th>
                 <th>Trạng thái</th>
-                <th class="text-center">Chỉnh sửa</th>
+                <th class="text-center">Thao tác</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>#REP-001</td>
-                <td class="text-highlight">user_x99</td>
-                <td>Ngôn từ xúc phạm, thù hận</td>
-                <td>25/09/2026 14:30</td>
-                <td><span class="status-badge warning">Chờ xử lý</span></td>
-                <td class="text-center">
-                  <button title="Xem chi tiết & Kiểm duyệt" class="btn-action btn-edit btn-view-violation">
-                    <i class="bx bx-edit"></i>
-                  </button>
-                </td>
-              </tr>
+            <tbody id="violations-table-body">
+              <!-- Sẽ render động từ API loadViolationsData() -->
             </tbody>
           </table>
         </div>
@@ -1520,23 +1527,30 @@
 
       <!-- Body -->
       <div class="modal-body violation-modal-body">
+        <input type="hidden" id="violation-target-review-id" />
         <!-- Khung thông tin tóm tắt -->
         <div class="violation-info-card">
           <div class="violation-info-item">
-            <strong>Người vi phạm:</strong>
+            <strong>Người dùng:</strong>
             <span id="violation-user" class="violation-user">user_x99</span>
           </div>
           <div class="violation-info-item">
-            <strong>Tựa game:</strong>
+            <strong>Game:</strong>
             <span id="violation-game" class="violation-game">Counter-Strike 2</span>
           </div>
           <div class="violation-info-item">
-            <strong>Lý do báo cáo:</strong>
-            <span id="violation-reason" class="violation-reason">Ngôn từ xúc phạm, thù hận</span>
+            <strong>Lượt báo cáo:</strong>
+            <span id="violation-count" class="violation-count-badge">1 lượt</span>
           </div>
           <div class="violation-info-item">
-            <strong>Thời gian gửi:</strong>
+            <strong>Thời gian bị báo cáo:</strong>
             <span id="violation-time" class="violation-time">25/09/2026 14:30</span>
+          </div>
+          <div class="violation-info-item full-width">
+            <strong>Lý do:</strong>
+            <div id="violation-reason-summary" class="violation-reason-summary">
+              <!-- Hiển thị lý do đơn lẻ hoặc nút 'Xem chi tiết' khi có nhiều lý do -->
+            </div>
           </div>
         </div>
 
@@ -1553,7 +1567,7 @@
       <!-- Footer: Các nút hành động mặc định -->
       <div class="modal-footer" id="violation-footer-default">
         <button type="button" class="btn-cancel" id="btn-dismiss-violation">
-          <i class="bx bx-check"></i> Bỏ qua
+          Bỏ qua
         </button>
         <button type="button" class="btn-save btn-danger" id="btn-trigger-delete">
           <i class="bx bx-trash"></i> Ẩn bình luận
@@ -1568,8 +1582,39 @@
             Hủy
           </button>
           <button type="button" class="btn-save btn-danger-sm" id="btn-confirm-delete">
-            Đồng ý ẩn
+            Xác nhận
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Danh Sách Chi Tiết Các Lý Do Báo Cáo -->
+  <div class="modal" id="violation-reasons-list-modal">
+    <div class="modal-overlay" id="violation-reasons-modal-overlay"></div>
+    <div class="modal-card modal-compact">
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <button type="button" id="btn-back-to-violation-detail" class="btn-icon-back"
+            title="Quay lại chi tiết báo cáo">
+            <i class='bx bx-arrow-back'></i>
+          </button>
+          <h3 class="modal-sub-title">Lý do báo cáo</h3>
+        </div>
+        <button type="button" class="close-btn" id="close-violation-reasons-modal">
+          &times;
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <p class="modal-reasons-intro">
+          Tổng cộng có <strong id="reasons-modal-count" class="violation-count-badge">0 lượt</strong> phản ánh vi phạm
+          cho bình luận này:
+        </p>
+        <div id="violation-all-reasons-list" class="violation-all-reasons-list">
+          <!-- Từng lý do vi phạm -->
         </div>
       </div>
     </div>

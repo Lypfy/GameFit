@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", function () {
   loadCpuData();
   loadGpuData();
   initHardwareActions();
+  loadViolationsData();
+  initViolationActions();
 });
 
 let allAdminGames = [];
@@ -90,10 +92,10 @@ function renderGamesTable(games) {
           <td>${game.developer || game.publisher || "-"}</td>
           <td>${statusHtml}</td>
           <td class="text-right">
-            <button title="Sửa" class="btn-action btn-edit-game" data-id="${gameId}">
+            <button title="Sửa" class="btn-action btn-edit btn-edit-game" data-id="${gameId}">
               <i class="bx bx-edit"></i>
             </button>
-            <button title="Xóa" class="btn-action btn-delete-game" data-id="${gameId}">
+            <button title="Xóa" class="btn-action btn-delete btn-delete-game" data-id="${gameId}">
               <i class="bx bx-trash"></i>
             </button>
           </td>
@@ -325,6 +327,11 @@ function initAdminTabs() {
         if (tab.id === targetId) {
           tab.classList.add("active");
           tab.style.display = "block";
+          if (targetId === "tab-violations") {
+            const statusFilter = document.getElementById("violation-status-filter");
+            if (statusFilter) statusFilter.value = "ALL";
+            loadViolationsData();
+          }
         } else {
           tab.classList.remove("active");
           tab.style.display = "none";
@@ -1396,7 +1403,6 @@ if (btnCancelDelete) {
   });
 }
 
-// Bấm Đồng ý ẩn (Demo giao diện)
 if (btnConfirmDelete) {
   btnConfirmDelete.addEventListener("click", function () {
     hideViolationModal();
@@ -2031,6 +2037,384 @@ function initUserActions() {
         if (typeof showToast === "function") {
           showToast("Lỗi kết nối máy chủ!", true);
         }
+      }
+    });
+  }
+}
+
+/* ==========================================================================
+   QUẢN LÝ BÁO CÁO VI PHẠM (VIOLATIONS & MODERATION)
+   ========================================================================== */
+let allReportedReviews = [];
+let activeViolationsSearchTimer = null;
+
+function formatViolationDate(dateStr) {
+  if (!dateStr) return "-";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
+async function loadViolationsData() {
+  const tbody = document.getElementById("violations-table-body");
+  if (!tbody) return;
+
+  const statusFilter = document.getElementById("violation-status-filter")?.value || "ALL";
+  const timeFilter = document.getElementById("violation-time-filter")?.value || "all";
+  const search = document.getElementById("violation-search-input")?.value?.trim() || "";
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: rgba(255,255,255,0.6); padding: 16px;"><i class='bx bx-loader-alt bx-spin'></i> Đang tải danh sách báo cáo...</td></tr>`;
+
+    const queryParams = new URLSearchParams();
+    if (statusFilter && statusFilter !== "ALL") queryParams.append("status", statusFilter);
+    if (timeFilter && timeFilter !== "all") queryParams.append("time_range", timeFilter);
+    if (search) queryParams.append("search", search);
+
+    const res = await fetch(`/api/reviews/admin/reports?${queryParams.toString()}&_t=${Date.now()}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Cache-Control": "no-cache"
+      }
+    });
+
+    const result = await res.json();
+    if (result.success) {
+      allReportedReviews = result.data || [];
+      renderViolationsTable(allReportedReviews);
+    } else {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #ef4444; padding: 16px;">${result.message || "Lỗi tải dữ liệu"}</td></tr>`;
+    }
+  } catch (error) {
+    console.error("Lỗi khi load danh sách báo cáo vi phạm:", error);
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #ef4444; padding: 16px;">Không thể kết nối máy chủ để tải danh sách báo cáo</td></tr>`;
+  }
+}
+
+function formatTableReason(reasonStr) {
+  if (!reasonStr) return "-";
+  // Nếu có nhiều lý do (chứa dấu phân cách |)
+  if (reasonStr.includes(" | ")) {
+    return "Nhiều lý do";
+  }
+  // Nếu là "Lý do khác - [nội dung...]"
+  if (reasonStr.startsWith("Lý do khác")) {
+    return "Lý do khác";
+  }
+  return reasonStr;
+}
+
+function renderViolationsTable(reports) {
+  const tbody = document.getElementById("violations-table-body");
+  if (!tbody) return;
+
+  if (!reports || reports.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: rgba(255,255,255,0.5); padding: 24px;">Không có báo cáo vi phạm nào phù hợp với bộ lọc</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = reports.map((r) => {
+    let statusBadge = "";
+    if (r.report_status === "PENDING") {
+      statusBadge = `<span class="status-badge warning">Chờ xử lý</span>`;
+    } else if (r.report_status === "DISMISSED") {
+      statusBadge = `<span class="status-badge success">Đã bỏ qua</span>`;
+    } else if (r.report_status === "HIDDEN") {
+      statusBadge = `<span class="status-badge danger">Đã ẩn</span>`;
+    } else {
+      statusBadge = `<span class="status-badge">${r.report_status || "Chưa duyệt"}</span>`;
+    }
+
+    return `
+      <tr data-review-id="${r.review_id}">
+        <td>#REP-${String(r.review_id).padStart(3, "0")}</td>
+        <td class="text-highlight">${r.violator_name || "Người dùng"}</td>
+        <td>${r.game_name || "-"}</td>
+        <td>${formatTableReason(r.report_reason)}</td>
+        <td>${formatViolationDate(r.reported_at)}</td>
+        <td>${statusBadge}</td>
+        <td class="text-center">
+          <button title="Xem chi tiết & Kiểm duyệt" class="btn-action btn-edit btn-view-violation" data-id="${r.review_id}">
+            <i class="bx bx-edit"></i>
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function initViolationActions() {
+  const statusFilter = document.getElementById("violation-status-filter");
+  const timeFilter = document.getElementById("violation-time-filter");
+  const searchInput = document.getElementById("violation-search-input");
+
+  if (statusFilter) {
+    statusFilter.addEventListener("change", () => loadViolationsData());
+  }
+  if (timeFilter) {
+    timeFilter.addEventListener("change", () => loadViolationsData());
+  }
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      clearTimeout(activeViolationsSearchTimer);
+      activeViolationsSearchTimer = setTimeout(() => {
+        loadViolationsData();
+      }, 350);
+    });
+  }
+
+  const modal = document.getElementById("violation-detail-modal");
+  const closeBtn = document.getElementById("close-violation-modal");
+  const overlay = document.getElementById("violation-modal-overlay");
+  const btnDismiss = document.getElementById("btn-dismiss-violation");
+  const btnTriggerDelete = document.getElementById("btn-trigger-delete");
+  const btnCancelDelete = document.getElementById("btn-cancel-delete");
+  const btnConfirmDelete = document.getElementById("btn-confirm-delete");
+  const footerDefault = document.getElementById("violation-footer-default");
+  const footerConfirm = document.getElementById("violation-footer-confirm");
+
+  // Modal Danh sách lý do
+  const reasonsModal = document.getElementById("violation-reasons-list-modal");
+  const closeReasonsModalBtn = document.getElementById("close-violation-reasons-modal");
+  const reasonsModalOverlay = document.getElementById("violation-reasons-modal-overlay");
+  const btnBackToDetail = document.getElementById("btn-back-to-violation-detail");
+  const allReasonsListContainer = document.getElementById("violation-all-reasons-list");
+  const reasonsModalCount = document.getElementById("reasons-modal-count");
+
+  let currentInspectedReport = null;
+
+  function hideViolationModal() {
+    if (modal) modal.classList.remove("active");
+    if (footerConfirm) footerConfirm.style.display = "none";
+    if (footerDefault) footerDefault.style.display = "flex";
+  }
+
+  function hideReasonsModal() {
+    if (reasonsModal) reasonsModal.classList.remove("active");
+  }
+
+  function backToDetailModal() {
+    hideReasonsModal();
+    if (modal) modal.classList.add("active");
+  }
+
+  if (closeBtn) closeBtn.addEventListener("click", hideViolationModal);
+  if (overlay) overlay.addEventListener("click", hideViolationModal);
+
+  if (closeReasonsModalBtn) closeReasonsModalBtn.addEventListener("click", hideReasonsModal);
+  if (reasonsModalOverlay) reasonsModalOverlay.addEventListener("click", hideReasonsModal);
+  if (btnBackToDetail) btnBackToDetail.addEventListener("click", backToDetailModal);
+
+  // Click nút xem chi tiết & kiểm duyệt trên bảng
+  const tableBody = document.getElementById("violations-table-body");
+  if (tableBody) {
+    tableBody.addEventListener("click", (e) => {
+      const btn = e.target.closest(".btn-view-violation");
+      if (!btn) return;
+      const reviewId = parseInt(btn.getAttribute("data-id"), 10);
+      const reportItem = allReportedReviews.find((r) => r.review_id === reviewId);
+      if (!reportItem) return;
+
+      currentInspectedReport = reportItem;
+
+      const targetIdInput = document.getElementById("violation-target-review-id");
+      const userEl = document.getElementById("violation-user");
+      const gameEl = document.getElementById("violation-game");
+      const countEl = document.getElementById("violation-count");
+      const timeEl = document.getElementById("violation-time");
+      const commentEl = document.getElementById("violation-comment-text");
+      const reasonSummaryEl = document.getElementById("violation-reason-summary");
+
+      if (targetIdInput) targetIdInput.value = reportItem.review_id;
+      if (userEl) userEl.textContent = reportItem.violator_name || "-";
+      if (gameEl) gameEl.textContent = reportItem.game_name || "-";
+      if (countEl) countEl.textContent = `${reportItem.report_count || 1} lượt`;
+      if (timeEl) timeEl.textContent = formatViolationDate(reportItem.reported_at);
+      if (commentEl) commentEl.textContent = reportItem.comment ? `"${reportItem.comment}"` : "(Không có nội dung bình luận)";
+
+      // Xử lý hiển thị phần Lý do trong Modal chính
+      const rawList = (reportItem.report_reason || "Không rõ")
+        .split(" | ")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      if (reasonSummaryEl) {
+        if (rawList.length > 1) {
+          reasonSummaryEl.innerHTML = `
+            <button type="button" id="btn-open-reasons-list" class="btn-reasons-detail">
+              Xem chi tiết <i class='bx bx-chevron-right'></i>
+            </button>
+          `;
+          const openReasonsBtn = reasonSummaryEl.querySelector("#btn-open-reasons-list");
+          if (openReasonsBtn) {
+            openReasonsBtn.addEventListener("click", () => {
+              hideViolationModal();
+              openReasonsListModal(reportItem);
+            });
+          }
+        } else {
+          // Chỉ có 1 lý do
+          const singleItem = rawList[0] || "Không rõ";
+          if (singleItem.includes(" - ")) {
+            const parts = singleItem.split(" - ");
+            const detail = parts.slice(1).join(" - ").trim();
+            reasonSummaryEl.innerHTML = `<span>"${detail}"</span>`;
+          } else {
+            reasonSummaryEl.innerHTML = `<span>${singleItem}</span>`;
+          }
+        }
+      }
+
+      if (footerConfirm) footerConfirm.style.display = "none";
+      if (footerDefault) footerDefault.style.display = "flex";
+
+      if (modal) modal.classList.add("active");
+    });
+  }
+
+  // Mở modal danh sách chi tiết các lý do
+  function openReasonsListModal(reportItem) {
+    if (!reasonsModal) return;
+
+    if (reasonsModalCount) {
+      reasonsModalCount.textContent = `${reportItem.report_count || 1} lượt`;
+    }
+
+    if (allReasonsListContainer) {
+      const rawList = (reportItem.report_reason || "Không rõ")
+        .split(" | ")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      allReasonsListContainer.innerHTML = rawList
+        .map((item, index) => {
+          if (item.includes(" - ")) {
+            const parts = item.split(" - ");
+            const title = parts[0].trim();
+            const detail = parts.slice(1).join(" - ").trim();
+            return `
+              <div class="violation-reason-card">
+                <div class="violation-reason-card-title">
+                  <span class="violation-reason-index">${index + 1}</span>
+                  ${title}
+                </div>
+                <div class="violation-reason-detail">
+                  <em>Chi tiết: "${detail}"</em>
+                </div>
+              </div>
+            `;
+          }
+          return `
+            <div class="violation-reason-card">
+              <div class="violation-reason-card-title">
+                <span class="violation-reason-index">${index + 1}</span>
+                ${item}
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    reasonsModal.classList.add("active");
+  }
+
+  // Bấm nút "Bỏ qua báo cáo"
+  if (btnDismiss) {
+    btnDismiss.addEventListener("click", async () => {
+      const reviewId = document.getElementById("violation-target-review-id")?.value;
+      if (!reviewId) return;
+
+      const token = localStorage.getItem("token");
+      try {
+        btnDismiss.disabled = true;
+        const res = await fetch(`/api/reviews/admin/moderate/${reviewId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ action: "DISMISS" })
+        });
+        const result = await res.json();
+        if (result.success) {
+          if (typeof showToast === "function") {
+            showToast("Đã bỏ qua báo cáo thành công!");
+          }
+          hideViolationModal();
+          loadViolationsData();
+        } else {
+          if (typeof showToast === "function") {
+            showToast(result.message || "Có lỗi xảy ra", true);
+          }
+        }
+      } catch (err) {
+        console.error("Lỗi khi bỏ qua báo cáo:", err);
+        if (typeof showToast === "function") showToast("Lỗi kết nối máy chủ!", true);
+      } finally {
+        btnDismiss.disabled = false;
+      }
+    });
+  }
+
+  // Bấm nút "Ẩn bình luận" -> Hiện khung xác nhận
+  if (btnTriggerDelete) {
+    btnTriggerDelete.addEventListener("click", () => {
+      if (footerDefault) footerDefault.style.display = "none";
+      if (footerConfirm) footerConfirm.style.display = "flex";
+    });
+  }
+
+  // Bấm nút "Hủy" xác nhận ẩn
+  if (btnCancelDelete) {
+    btnCancelDelete.addEventListener("click", () => {
+      if (footerConfirm) footerConfirm.style.display = "none";
+      if (footerDefault) footerDefault.style.display = "flex";
+    });
+  }
+
+  // Bấm nút "Đồng ý ẩn"
+  if (btnConfirmDelete) {
+    btnConfirmDelete.addEventListener("click", async () => {
+      const reviewId = document.getElementById("violation-target-review-id")?.value;
+      if (!reviewId) return;
+
+      const token = localStorage.getItem("token");
+      try {
+        btnConfirmDelete.disabled = true;
+        const res = await fetch(`/api/reviews/admin/moderate/${reviewId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ action: "HIDE" })
+        });
+        const result = await res.json();
+        if (result.success) {
+          if (typeof showToast === "function") {
+            showToast("Đã ẩn đánh giá vi phạm thành công!");
+          }
+          hideViolationModal();
+          loadViolationsData();
+        } else {
+          if (typeof showToast === "function") {
+            showToast(result.message || "Có lỗi xảy ra", true);
+          }
+        }
+      } catch (err) {
+        console.error("Lỗi khi ẩn đánh giá:", err);
+        if (typeof showToast === "function") showToast("Lỗi kết nối máy chủ!", true);
+      } finally {
+        btnConfirmDelete.disabled = false;
       }
     });
   }
