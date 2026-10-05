@@ -106,8 +106,25 @@ const getReviewPcCompatibility = async (game_id) => {
         request.input('game_id', sql.Int, game_id);
 
         const result = await request.execute('sp_GetReviewPcCompatibility');
+        let recommendations = result.recordset;
 
-        return { success: true, data: result.recordset };
+        if (recommendations.length > 0) {
+            const recIds = recommendations.map(r => r.recommendation_id || r.id).filter(id => id).join(',');
+            if (recIds) {
+                const voteResult = await request.query(`SELECT target_id, user_id, vote_type FROM Votes WHERE target_type = 'RECOMMENDATION' AND target_id IN (${recIds})`);
+                const votes = voteResult.recordset;
+                
+                recommendations.forEach(r => {
+                    const rId = r.recommendation_id || r.id;
+                    const rVotes = votes.filter(v => v.target_id === rId);
+                    r.likes = rVotes.filter(v => v.vote_type === 1).length;
+                    r.dislikes = rVotes.filter(v => v.vote_type === -1).length;
+                    r.voters = rVotes.map(v => ({ user_id: v.user_id, vote_type: v.vote_type }));
+                });
+            }
+        }
+
+        return { success: true, data: recommendations };
     }
     catch (error) {
         console.log('Error in getReviewPcCompatibility Service: ', error.message);
@@ -139,6 +156,23 @@ const deleteReviewPcCompatibility = async (user_id, recommendation_id) => {
 }
 
 
+const vote = async (user_id, target_type, target_id, vote_type) => {
+    try {
+        const request = new sql.Request();
+        request.input('user_id', sql.Int, user_id);
+        request.input('target_type', sql.VarChar, target_type);
+        request.input('target_id', sql.Int, target_id);
+        request.input('vote_type', sql.SmallInt, vote_type);
+        
+        await request.execute('sp_Vote');
+        
+        return { success: true, message: 'Thao tác vote thành công' };
+    } catch (error) {
+        console.log('Error in vote Service: ', error.message);
+        throw new Error(error.message);
+    }
+}
+
 module.exports = {
     writeReview,
     updateReview,
@@ -147,5 +181,6 @@ module.exports = {
     getAvgRating,
     writeReviewPcCompatibility,
     getReviewPcCompatibility,
-    deleteReviewPcCompatibility
+    deleteReviewPcCompatibility,
+    vote
 }

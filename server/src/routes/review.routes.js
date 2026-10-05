@@ -4,6 +4,7 @@ const router = express.Router();
 const reviewController = require('../controller/review.controller');
 const { verifyToken } = require('../middleware/auth.middleware');
 
+router.post('/vote', verifyToken, reviewController.vote);
 router.post('/:game_id', verifyToken, reviewController.writeReview);
 router.put('/:game_id', verifyToken, reviewController.updateReview);
 router.delete('/:game_id', verifyToken, reviewController.deleteReview);

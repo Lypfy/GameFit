@@ -225,6 +225,27 @@ const deleteReviewPcCompatibility = async (req, res) => {
     }
 }
 
+const vote = async (req, res) => {
+    try {
+        const user_id = req.user.user_id;
+        const { target_type, target_id, vote_type } = req.body;
+
+        if (!user_id) return res.status(400).json({ success: false, message: 'Thiếu user_id hợp lệ' });
+        if (!target_type || !target_id || !vote_type) {
+            return res.status(400).json({ success: false, message: 'Thiếu tham số vote hợp lệ' });
+        }
+
+        const result = await reviewService.vote(user_id, target_type, target_id, vote_type);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('Error in vote Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi vote'
+        });
+    }
+}
+
 module.exports = {
     writeReview,
     updateReview,
@@ -233,5 +254,6 @@ module.exports = {
     getAvgRating,
     writeReviewPcCompatibility,
     getReviewPcCompatibility,
-    deleteReviewPcCompatibility
+    deleteReviewPcCompatibility,
+    vote
 }
