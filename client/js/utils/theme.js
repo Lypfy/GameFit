@@ -2,7 +2,7 @@
  * GameFit Theme Manager (Light / Dark Mode)
  * - Executes immediately to set document data-theme attribute before rendering
  * - Manages persistent theme setting in localStorage
- * - Initializes and updates the theme toggle button in the top-right header
+ * - Initializes and synchronizes the theme switch in the navbar
  */
 (function () {
   const THEME_KEY = "gamefit_theme";
@@ -24,54 +24,60 @@
   // Apply immediately on load
   applyTheme(getStoredTheme());
 
-  // Function to create or update theme toggle button UI
-  function updateToggleIcon(btn, theme) {
-    if (!btn) return;
+  // Function to sync switch state
+  function updateToggleState(theme) {
     const isLight = theme === "light";
-    const iconClass = isLight ? "bx bx-moon" : "bx bx-sun";
     const titleText = isLight ? "Chuyển sang giao diện Tối" : "Chuyển sang giao diện Sáng";
-    
-    btn.setAttribute("title", titleText);
-    btn.setAttribute("aria-label", titleText);
-    btn.innerHTML = `<i class="${iconClass}"></i>`;
+
+    const toggleInputs = document.querySelectorAll('input#theme-toggle, input.theme-toggle-input');
+    toggleInputs.forEach((input) => {
+      input.checked = isLight;
+      const parentLabel = input.closest(".theme-switch, .switch");
+      if (parentLabel) {
+        parentLabel.setAttribute("title", titleText);
+        parentLabel.setAttribute("aria-label", titleText);
+      }
+    });
   }
 
   // Setup DOM interaction
   function initThemeToggle() {
-    let toggleBtn = document.getElementById("theme-toggle");
+    let toggleInput = document.getElementById("theme-toggle");
     const navIcon = document.querySelector(".nav-icon");
 
-    // Auto-inject button into .nav-icon if missing
-    if (!toggleBtn && navIcon) {
-      toggleBtn = document.createElement("button");
-      toggleBtn.id = "theme-toggle";
-      toggleBtn.className = "theme-toggle-btn";
-      toggleBtn.type = "button";
-      
+    // Auto-inject switch if missing
+    if (!toggleInput && navIcon) {
+      const switchLabel = document.createElement("label");
+      switchLabel.className = "switch theme-switch";
+      switchLabel.title = "Chuyển đổi giao diện Sáng / Tối";
+      switchLabel.innerHTML = `
+        <input type="checkbox" id="theme-toggle" class="theme-toggle-input" />
+        <span class="slider"></span>
+      `;
+
       const userBox = navIcon.querySelector(".user-box");
       if (userBox) {
-        navIcon.insertBefore(toggleBtn, userBox);
+        navIcon.insertBefore(switchLabel, userBox);
       } else {
-        navIcon.appendChild(toggleBtn);
+        navIcon.appendChild(switchLabel);
       }
     }
 
-    if (toggleBtn) {
-      updateToggleIcon(toggleBtn, getStoredTheme());
+    // Set initial UI state
+    updateToggleState(getStoredTheme());
 
-      // Avoid duplicate listener bindings
-      if (!toggleBtn.dataset.themeBound) {
-        toggleBtn.dataset.themeBound = "true";
-        toggleBtn.addEventListener("click", function () {
-          const currentTheme = getStoredTheme();
-          const newTheme = currentTheme === "light" ? "dark" : "light";
-          
+    // Bind change listeners to all switches
+    document.querySelectorAll('input#theme-toggle, input.theme-toggle-input').forEach((input) => {
+      if (!input.dataset.themeBound) {
+        input.dataset.themeBound = "true";
+        input.addEventListener("change", function () {
+          const newTheme = this.checked ? "light" : "dark";
           localStorage.setItem(THEME_KEY, newTheme);
           applyTheme(newTheme);
-          updateToggleIcon(toggleBtn, newTheme);
+          updateToggleState(newTheme);
         });
       }
-    }
+    });
   }
 
   if (document.readyState === "loading") {
@@ -80,3 +86,5 @@
     initThemeToggle();
   }
 })();
+
+

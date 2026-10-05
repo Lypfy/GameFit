@@ -305,7 +305,7 @@
   background: linear-gradient(135deg, #10b981, #059669);
   color: #ffffff;
   border: none;
-  padding: 7px 16px;
+  padding: 10px 16px;
   border-radius: var(--radius-sm);
   font-size: 0.86rem;
   font-weight: 600;
@@ -329,12 +329,6 @@
 .export-modal-backdrop {
   position: fixed;
   inset: 0;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100vh;
   background: rgba(10, 8, 20, 0.75);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);

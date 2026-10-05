@@ -76,8 +76,8 @@ header {
 
 .nav-icon .bx {
   font-size: 20px;
-  height: 44px;
-  width: 44px;
+  height: 38px;
+  width: 38px;
   display: grid;
   place-items: center;
   color: var(--text-color);
@@ -87,47 +87,77 @@ header {
   transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
-/* Theme Toggle Button in top-right corner */
-.theme-toggle-btn {
-  font-size: 20px;
-  height: 44px;
-  width: 44px;
+/* ==========================================================================
+   GameFit Theme Switch (Morphing Moon to Sun Slider)
+   ========================================================================== */
+.switch {
+  font-size: 19px;
+  position: relative;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  color: var(--text-color);
-  background: var(--icon-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  outline: none;
+  width: 3.5em;
+  height: 2em;
   flex-shrink: 0;
-  padding: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin: 0;
+  cursor: pointer;
+  user-select: none;
 }
 
-.theme-toggle-btn i {
-  font-size: 22px;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
 }
 
-.theme-toggle-btn:hover {
-  background: var(--icon-bg);
+/* The slider */
+.slider {
+  --background: #161322;
+  --moon-color: #fa5353;
+  --sun-color: #fa5353;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--background);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.3s ease;
+  border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1.4em;
+  width: 1.4em;
+  border-radius: 50%;
+  left: 10%;
+  bottom: 15%;
+  box-shadow: inset 8px -4px 0px 0px var(--moon-color);
+  background: var(--background);
+  transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
+}
+
+.switch:hover .slider {
+  box-shadow: 0 0 12px rgba(250, 83, 83, 0.35);
   border-color: var(--main-color);
-  color: var(--main-color);
-  transform: scale(1.08) rotate(15deg);
-  box-shadow: 0 0 14px rgba(250, 83, 83, 0.35);
 }
 
-.theme-toggle-btn:hover i {
-  color: var(--main-color);
+/* Checked state = Light mode (Sun on the right) */
+input:checked + .slider {
+  --background: #fee2e2;
+  background-color: var(--background);
+  border-color: #fca5a5;
 }
 
-.theme-toggle-btn:active {
-  transform: scale(0.92);
+input:checked + .slider:before {
+  transform: translateX(100%);
+  background: var(--background);
+  box-shadow: inset 15px -4px 0px 15px var(--sun-color);
 }
-
 
 .menu-icon {
   display: none;
@@ -162,36 +192,6 @@ header {
 
 .move .line3 {
   transform: rotate(45deg) translate(-5px, -5px);
-}
-
-.search {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.search input {
-  border: none;
-  outline: none;
-  border-radius: 5px;
-  background: var(--light-color);
-  color: var(--text-color);
-  font-size: 0.8rem;
-  padding: 5px 0px 5px 35px;
-  box-sizing: border-box;
-}
-
-.search .bx {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: 0px;
-  font-size: 20px;
-  background: transparent;
-  height: 35px;
-  width: 35px;
-  color: #7f7f83;
 }
 
 .menu {

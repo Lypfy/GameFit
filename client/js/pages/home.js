@@ -2,10 +2,10 @@
 const categoriesToDisplay = [
   { tagId: 1, title: "Action", filterKey: "Action", icon: "bx-joystick" },
   {
-    tagId: 16,
-    title: "Dark Fantasy",
-    filterKey: "Dark Fantasy",
-    icon: "bx-skull",
+    tagId: 12,
+    title: "Cooperative",
+    filterKey: "Cooperative",
+    icon: "bxs-group",
   },
   { tagId: 3, title: "Adventure", filterKey: "Adventure", icon: "bx-compass" },
 ];
