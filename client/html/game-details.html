@@ -114,24 +114,42 @@
         <p class="gd-subtitle" id="gd-subtitle">A downloadable PC Game</p>
       </div>
 
-      <div class="gd-top-section">
-        <div class="gd-buy-box">
-          <a href="#" id="gd-download-btn" target="_blank" class="btn-buy-now">Download Now</a>
-          <span id="gd-wishlist-container"></span>
-          <p class="gd-buy-desc" id="gd-developer-desc">
-            Nhà phát triển:
-            <strong id="gd-dev-name">...</strong> <br />
-            Nhà phát hành:
-            <strong id="gd-pub-name">...</strong>
-          </p>
-          <div class="gd-badges">
-            <span class="gd-badge" id="gd-platform"><i class="bx bx-windows"></i> PC</span>
-            <span class="gd-badge"><i class="bx bx-calendar"></i>
-              <span id="gd-release-date">...</span></span>
+      <div class="steam-top-section">
+        <!-- Left Col: Media -->
+        <div class="steam-media-col">
+          <div class="steam-main-media" id="steam-main-media">
+            <!-- Inject media -->
+          </div>
+          <div class="steam-thumbnails-nav" id="steam-thumbnails">
+            <!-- Inject thumbnails -->
           </div>
         </div>
-        <div class="gd-cover-box">
-          <img id="gd-cover-img" src="../assets/default-game.png" alt="Cover" loading="lazy" />
+
+        <!-- Right Col: Info -->
+        <div class="steam-info-col">
+          <img id="gd-cover-img" src="../assets/default-game.png" alt="Cover" class="steam-header-img" loading="lazy" />
+          <div class="steam-game-details">
+            <div class="detail-row">
+              <span class="detail-label">Nhà phát triển:</span>
+              <span class="detail-value" id="gd-dev-name">...</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Nhà phát hành:</span>
+              <span class="detail-value" id="gd-pub-name">...</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Ngày phát hành:</span>
+              <span class="detail-value" id="gd-release-date">...</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Nền tảng:</span>
+              <span class="detail-value" id="gd-platform"><i class="bx bx-windows"></i> PC</span>
+            </div>
+          </div>
+          <div class="steam-action-buttons">
+            <a href="#" id="gd-download-btn" target="_blank" class="btn-download-now">Download Now</a>
+            <span id="gd-wishlist-container"></span>
+          </div>
         </div>
       </div>
 

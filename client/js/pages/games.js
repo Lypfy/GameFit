@@ -49,7 +49,7 @@ function renderGames(gamesList) {
          onmouseenter="this.style.transform='scale(1.05)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=1; i.style.opacity=0; v.play().catch(()=>{}); }" 
          onmouseleave="this.style.transform='scale(1)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=0; i.style.opacity=1; v.pause(); v.currentTime=0; }">
       <div class="media-wrapper" style="position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden;">
-        <img src="${game.image || "../assets/default-game.png"}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
+        <img src="${game.image ? game.image.split(' ')[0] : "../assets/default-game.png"}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
         ${game.trailer_url ? `<video src="${game.trailer_url.split(' ')[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ''}
       </div>
       ${bookmarkHtml}

@@ -423,7 +423,7 @@ function renderRecentGamesTable(root) {
 
   tableBody.innerHTML = filtered
     .map((game) => {
-      const imgUrl = game.image || "../../img/placeholder.jpg";
+      const imgUrl = game.image ? game.image.split(' ')[0] : "../../img/placeholder.jpg";
       const tagBadges = (game.genres || "")
         .split(",")
         .map((t) => t.trim())
@@ -735,7 +735,7 @@ function renderWishlistTable(root) {
     .map((game, index) => {
       const rank = index + 1;
       const rankClass = rank <= 3 ? `rank-${rank}` : "";
-      const imgUrl = game.image || "../../img/placeholder.jpg";
+      const imgUrl = game.image ? game.image.split(' ')[0] : "../../img/placeholder.jpg";
       const releaseDate = game.release_date
         ? new Date(game.release_date).toLocaleDateString("vi-VN")
         : "Chưa rõ";
@@ -829,7 +829,7 @@ function renderReviewTable(root) {
     .map((game, index) => {
       const rank = index + 1;
       const rankClass = rank <= 3 ? `rank-${rank}` : "";
-      const imgUrl = game.image || "../../img/placeholder.jpg";
+      const imgUrl = game.image ? game.image.split(' ')[0] : "../../img/placeholder.jpg";
 
       const tagBadges = (game.genres || "")
         .split(",")

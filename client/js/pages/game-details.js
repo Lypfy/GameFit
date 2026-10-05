@@ -86,9 +86,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("gd-subtitle").textContent =
       `A downloadable ${gameInfo.platform || "PC"} Game`;
 
+    // Xử lý ảnh: Tách link nếu có nhiều ảnh
+    let imageUrls = [];
+    if (gameInfo.image) {
+       imageUrls = gameInfo.image.split(" ").filter(url => url.trim());
+    }
+
     // Cập nhật Top Section (Mua / Tải)
+    // Ảnh đầu tiên chỉ làm ảnh nền (ảnh cover cột phải)
     document.getElementById("gd-cover-img").src =
-      gameInfo.image || "../assets/default-game.png";
+      imageUrls.length > 0 ? imageUrls[0] : "../assets/default-game.png";
+    
     document.getElementById("gd-download-btn").href =
       gameInfo.download_url || "#";
     document.getElementById("gd-dev-name").textContent =
@@ -96,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("gd-pub-name").textContent =
       gameInfo.publisher || "Đang cập nhật";
     document.getElementById("gd-platform").innerHTML =
-      `<i class='bx bx-laptop'></i> ${gameInfo.platform || "PC"}`;
+      `<i class='bx bx-windows'></i> PC`;
 
     const releaseDateStr = gameInfo.release_date
       ? new Date(gameInfo.release_date).toLocaleDateString("vi-VN")
@@ -107,8 +115,103 @@ document.addEventListener("DOMContentLoaded", async function () {
     const gameIdStr = gameId.toString();
     const isSaved = savedWishlistGameIds.has(gameIdStr);
     document.getElementById("gd-wishlist-container").innerHTML = `
-      <button type="button" class="wishlist-btn ${isSaved ? "active" : ""}" id="gd-wishlist-btn" data-game-id="${gameIdStr}" style="position: static; display: inline-flex; vertical-align: middle; margin-left: 0px; width: 68px; height: 68px;" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}">${bookmarkSvgIcon}</button>
+      <button type="button" class="wishlist-btn ${isSaved ? "active" : ""}" id="gd-wishlist-btn" data-game-id="${gameIdStr}" style="position: static; display: inline-flex; vertical-align: middle; justify-content: center; align-items: center; margin-left: 0px; width: 44px; height: 100%; border-radius: 4px; background: rgba(0,0,0,0.2);" title="${isSaved ? "Xóa khỏi Wishlist" : "Thêm vào Wishlist"}">${bookmarkSvgIcon}</button>
     `;
+
+    // Render Media Gallery
+    const mainMediaContainer = document.getElementById("steam-main-media");
+    const thumbnailsContainer = document.getElementById("steam-thumbnails");
+    
+    // Bỏ các ảnh bìa (header, capsule) khỏi gallery để tránh bị mờ
+    let galleryImages = imageUrls.filter((url, idx) => {
+       if (idx === 0) return false; // Luôn bỏ ảnh đầu tiên vì đã dùng làm cover
+       if (url.includes('capsule') || url.includes('header')) return false; // Bỏ các ảnh capsule/header khác
+       return true;
+    });
+    let galleryVideos = [];
+    if (gameInfo.trailer_url) {
+       galleryVideos = gameInfo.trailer_url.split(" ").filter(url => url.trim());
+    }
+    
+    let mediaItems = [];
+    let imgIdx = 0;
+    let vidIdx = 0;
+    
+    // Trộn ảnh và video theo pattern: video video - ảnh - ảnh
+    while (imgIdx < galleryImages.length || vidIdx < galleryVideos.length) {
+       if (vidIdx < galleryVideos.length) {
+          mediaItems.push({ type: 'video', url: galleryVideos[vidIdx++] });
+       }
+       if (vidIdx < galleryVideos.length) {
+          mediaItems.push({ type: 'video', url: galleryVideos[vidIdx++] });
+       }
+       if (imgIdx < galleryImages.length) {
+          mediaItems.push({ type: 'image', url: galleryImages[imgIdx++] });
+       }
+       if (imgIdx < galleryImages.length) {
+          mediaItems.push({ type: 'image', url: galleryImages[imgIdx++] });
+       }
+    }
+    
+    if(mediaItems.length === 0) {
+       mediaItems.push({ type: 'image', url: imageUrls.length > 0 ? imageUrls[0] : '../assets/default-game.png' });
+    }
+
+    let currentMediaIndex = 0;
+
+    function renderMainMedia(index) {
+       const item = mediaItems[index];
+       const navButtons = `
+         <button class="media-nav-btn prev" id="media-prev"><i class='bx bx-chevron-left'></i></button>
+         <button class="media-nav-btn next" id="media-next"><i class='bx bx-chevron-right'></i></button>
+       `;
+       if(item.type === 'video') {
+          mainMediaContainer.innerHTML = `<video src="${item.url}" controls autoplay muted class="main-media-item"></video>` + navButtons;
+       } else {
+          mainMediaContainer.innerHTML = `<img src="${item.url}" class="main-media-item" />` + navButtons;
+       }
+
+       if (thumbnailsContainer) {
+          thumbnailsContainer.querySelectorAll('.thumbnail-item').forEach(t => t.classList.remove('active'));
+          const activeThumb = thumbnailsContainer.querySelector(`.thumbnail-item[data-index="${index}"]`);
+          if (activeThumb) activeThumb.classList.add('active');
+       }
+
+       document.getElementById('media-prev').addEventListener('click', (e) => {
+          e.stopPropagation();
+          currentMediaIndex = (currentMediaIndex - 1 + mediaItems.length) % mediaItems.length;
+          renderMainMedia(currentMediaIndex);
+       });
+       document.getElementById('media-next').addEventListener('click', (e) => {
+          e.stopPropagation();
+          currentMediaIndex = (currentMediaIndex + 1) % mediaItems.length;
+          renderMainMedia(currentMediaIndex);
+       });
+    }
+
+    if (mainMediaContainer && thumbnailsContainer) {
+       renderMainMedia(currentMediaIndex);
+       
+       thumbnailsContainer.innerHTML = mediaItems.map((item, index) => {
+          if (item.type === 'video') {
+             return `<div class="thumbnail-item ${index === 0 ? 'active' : ''}" data-index="${index}">
+                        <div class="video-play-icon"><i class='bx bx-play-circle'></i></div>
+                        <video src="${item.url}" class="thumb-media"></video>
+                     </div>`;
+          } else {
+             return `<div class="thumbnail-item ${index === 0 ? 'active' : ''}" data-index="${index}">
+                        <img src="${item.url}" class="thumb-media" />
+                     </div>`;
+          }
+       }).join('');
+
+       thumbnailsContainer.querySelectorAll('.thumbnail-item').forEach(thumb => {
+          thumb.addEventListener('click', function() {
+             currentMediaIndex = parseInt(this.getAttribute('data-index'));
+             renderMainMedia(currentMediaIndex);
+          });
+       });
+    }
 
     // Cập nhật Mô tả
     document.getElementById("gd-desc-text").textContent =

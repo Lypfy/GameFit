@@ -13,7 +13,7 @@ async function renderWishlistGames(gamesList) {
     .map(
       (game) => `
     <div class="box" data-id="${game.game_id || game.id || ""}" style="position: relative; cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-      <img src="${game.image || "../../assets/default-game.png"}" loading="lazy" alt="${game.name || game.title}" />
+      <img src="${game.image ? game.image.split(' ')[0] : "../../assets/default-game.png"}" loading="lazy" alt="${game.name || game.title}" />
       <button type="button" class="wishlist-btn active" data-game-id="${game.game_id || game.id}" title="Xóa khỏi Wishlist">${bookmarkSvgIcon}</button>
       <div class="box-text">
         <h2 title="${game.name || game.title}">${game.name || game.title}</h2>

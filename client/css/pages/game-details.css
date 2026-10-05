@@ -26,85 +26,212 @@
   font-weight: 500;
 }
 
-/* Top Section */
-.gd-top-section {
+/* Top Section Steam Style */
+.steam-top-section {
   display: flex;
-  flex-direction: column-reverse;
-  gap: 2rem;
-  background: rgba(20, 18, 30, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 3rem;
+  flex-direction: column;
+  gap: 20px;
+  background: rgba(15, 19, 26, 0.9);
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 2rem;
 }
 
-@media (min-width: 768px) {
-  .gd-top-section {
+@media (min-width: 1024px) {
+  .steam-top-section {
     flex-direction: row;
     align-items: flex-start;
   }
 }
 
-.gd-buy-box {
-  flex: 1;
-}
-
-.btn-buy-now {
-  display: inline-block;
-  background: #ff4757;
-  color: #fff;
-  font-size: 1.1rem;
-  font-weight: 700;
-  padding: 11px 28px;
-  border-radius: 6px;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-
-.btn-buy-now:hover {
-  background: #e03e4e;
-}
-
-.gd-buy-desc {
-  margin-top: 1.5rem;
-  color: #cbd5e1;
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.gd-buy-desc strong {
-  color: #fff;
-}
-
-.gd-badges {
-  margin-top: 1.5rem;
+.steam-media-col {
+  flex: 2.2;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
+  min-width: 0;
 }
 
-.gd-badge {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  color: #fff;
+.steam-main-media {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
 }
 
-.gd-cover-box {
-  flex: 1.5;
-  border-radius: 8px;
-  overflow: hidden;
+.media-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  font-size: 2rem;
+  width: 40px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s, opacity 0.2s;
+  border-radius: 4px;
+  opacity: 0.7;
 }
 
-.gd-cover-box img {
+.media-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  opacity: 1;
+}
+
+.media-nav-btn.prev {
+  left: 10px;
+}
+
+.media-nav-btn.next {
+  right: 10px;
+}
+
+.main-media-item {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 300px;
-  display: block;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.steam-thumbnails-nav {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.steam-thumbnails-nav::-webkit-scrollbar {
+  height: 6px;
+}
+
+.steam-thumbnails-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.thumbnail-item {
+  position: relative;
+  width: 120px;
+  height: 68px;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 2px;
+  overflow: hidden;
+  opacity: 0.7;
+  transition: all 0.2s;
+}
+
+.thumbnail-item:hover, .thumbnail-item.active {
+  opacity: 1;
+  border-color: #fff;
+}
+
+.thumbnail-item .thumb-media {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+}
+
+.thumbnail-item .video-play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.steam-info-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 320px;
+}
+
+.steam-header-img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+}
+
+.steam-game-details {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  width: 120px;
+  flex-shrink: 0;
+  color: #556772;
+}
+
+.detail-value {
+  color: #8f98a0;
+  word-break: break-word;
+}
+
+.detail-value strong {
+  color: #66c0f4;
+  font-weight: normal;
+}
+
+.steam-action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.btn-download-now {
+  flex: 1;
+  background: #ff4757;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-download-now:hover {
+  background: #e03e4e;
 }
 
 /* Main Content */

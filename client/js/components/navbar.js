@@ -127,7 +127,7 @@ function initNavbarLiveSearch() {
           "PC Game";
 
         let rawImg =
-          game.image || game.download_url || game.banner_image || defaultImg;
+          (game.image ? game.image.split(' ')[0] : null) || game.download_url || game.banner_image || defaultImg;
         if (rawImg.startsWith("./"))
           rawImg = rawImg.replace("./", isInSubfolder ? "../../" : "../");
         else if (rawImg.startsWith("../assets/") && isInSubfolder)
