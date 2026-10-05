@@ -402,25 +402,25 @@ select.pc-input {
   margin-top: 10px;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
 }
 
 .data-table.pc-table-dashboard thead th {
-  background-color: #211f34;
-  color: #ffffff;
+  background-color: var(--dropdown-bg);
+  color: var(--text-primary);
   padding: 12px 16px;
   font-size: 14px;
   font-weight: 600;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .data-table.pc-table-dashboard tbody td {
   padding: 12px 16px;
   font-size: 13.5px;
-  color: var(--text-color, #e2e8f0);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(15, 23, 42, 0.4);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--card-bg);
 }
 
 .data-table.pc-table-dashboard tbody tr:last-child td {

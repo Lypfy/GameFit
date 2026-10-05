@@ -196,7 +196,7 @@
 .form-group label,
 .form-label {
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-primary);
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -238,7 +238,7 @@
 .form-control:focus {
   border-color: var(--main-color, #fa5353);
   box-shadow: 0 0 0 3px rgba(250, 83, 83, 0.2);
-  background: rgba(27, 24, 43, 1);
+  background: var(--input-bg);
 }
 
 .form-group input:disabled,
@@ -260,7 +260,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-muted);
   font-size: 1.15rem;
   display: flex;
   align-items: center;
@@ -295,10 +295,10 @@
   justify-content: center;
   gap: 8px;
   padding: 11px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   font-weight: 500;
   font-size: 14px;
   cursor: pointer;
@@ -310,8 +310,8 @@
 }
 
 .toggle-btn:hover {
-  background-color: rgba(255, 255, 255, 0.09);
-  color: #ffffff;
+  background-color: var(--border-hover);
+  color: var(--text-primary);
 }
 
 .toggle-btn.active {
@@ -423,20 +423,20 @@
 }
 
 .modal-sm .confirm-title {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 8px;
 }
 
 .modal-sm .confirm-message {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   font-size: 0.95rem;
   line-height: 1.5;
 }
 
 .modal-sm .confirm-message strong {
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -553,8 +553,8 @@
 }
 
 .violation-info-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 12px 14px;
   margin-bottom: 14px;
@@ -575,7 +575,7 @@
 }
 
 .violation-game {
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -585,24 +585,24 @@
 }
 
 .violation-time {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
   font-size: 0.85rem;
 }
 
 .violation-label {
   font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   font-weight: 500;
   margin-bottom: 6px;
   display: block;
 }
 
 .violation-comment-box {
-  background: rgba(18, 16, 28, 0.9);
+  background: var(--input-bg);
   border: 1px dashed rgba(250, 83, 83, 0.4);
   border-radius: 8px;
   padding: 12px 14px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.92rem;
   line-height: 1.5;
   font-style: italic;
@@ -658,8 +658,8 @@
 
 /* User Lock / Unlock Modal Styles */
 .user-lock-info-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 12px 16px;
   margin-bottom: 16px;
@@ -667,7 +667,7 @@
 
 .lock-info-header {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
   margin-bottom: 6px;
   font-weight: 600;
 }
@@ -684,7 +684,7 @@
 }
 
 .lock-info-label {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   font-size: 0.85rem;
 }
 
@@ -695,11 +695,11 @@
 
 .lock-info-val-name {
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .lock-info-val-email {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-secondary);
   font-size: 0.85rem;
 }
 

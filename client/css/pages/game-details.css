@@ -14,7 +14,7 @@
 .game-header-banner h1 {
   font-size: 3.5rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-primary, #fff);
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 0.5rem;
@@ -1165,3 +1165,212 @@
   color: #ff4757;
   /* Đổi sang màu đỏ khi rê chuột vào */
 }
+
+/* ===================================================
+   LIGHT MODE OVERRIDES FOR GAME DETAILS PAGE
+   =================================================== */
+[data-theme="light"] .game-header-banner h1 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .game-header-banner .gd-subtitle {
+  color: var(--main-color, #fa5353);
+}
+
+[data-theme="light"] .steam-top-section {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .steam-game-details {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+[data-theme="light"] .detail-label {
+  color: #475569;
+  font-weight: 600;
+}
+
+[data-theme="light"] .detail-value {
+  color: #0f172a;
+}
+
+[data-theme="light"] .detail-value strong {
+  color: #0284c7;
+}
+
+[data-theme="light"] .gd-main-content {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .gd-description h3,
+[data-theme="light"] .gd-tags-box h3,
+[data-theme="light"] .gd-requirements-box h3 {
+  color: #0f172a;
+  border-bottom-color: #e2e8f0;
+}
+
+[data-theme="light"] .gd-description p {
+  color: #334155;
+}
+
+[data-theme="light"] .detail-tag-badge {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .detail-tag-badge:hover {
+  background: #fee2e2;
+  color: #fa5353;
+  border-color: #fa5353;
+}
+
+[data-theme="light"] .req-card {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .req-card ul li {
+  color: #475569;
+}
+
+[data-theme="light"] .req-card ul li strong {
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-back {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-back:hover {
+  background: #cbd5e1;
+}
+
+[data-theme="light"] .rating-card,
+[data-theme="light"] .comments-section {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .rating-score span:first-child,
+[data-theme="light"] .comments-header,
+[data-theme="light"] .review-username,
+[data-theme="light"] .report-target-user {
+  color: #0f172a;
+}
+
+[data-theme="light"] .comments-header {
+  border-bottom-color: #e2e8f0;
+}
+
+[data-theme="light"] .review-card {
+  border-bottom-color: #f1f5f9;
+}
+
+[data-theme="light"] .review-comment-text,
+[data-theme="light"] .report-guide-text,
+[data-theme="light"] .reason-text {
+  color: #334155;
+}
+
+[data-theme="light"] .btn-edit-comment,
+[data-theme="light"] .btn-delete-comment {
+  background: #f1f5f9;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .btn-edit-comment:hover {
+  background: #fee2e2;
+  border-color: #fa5353;
+  color: #fa5353;
+}
+
+[data-theme="light"] .btn-delete-comment:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+[data-theme="light"] .report-reason-item {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .report-reason-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+/* Light Mode Overrides for Check Config Modal */
+[data-theme="light"] .cc-modal-card {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="light"] .cc-left-panel {
+  background: #f8fafc !important;
+  border-right-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .cc-right-panel {
+  background: #ffffff !important;
+}
+
+[data-theme="light"] .cc-header-title p,
+[data-theme="light"] .cc-req-info span,
+[data-theme="light"] .cc-pc-subtitle,
+[data-theme="light"] .cc-spec-item span,
+[data-theme="light"] .cc-spec-item i {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .cc-header-title h3,
+[data-theme="light"] .cc-game-title h4,
+[data-theme="light"] .cc-panel-title,
+[data-theme="light"] .cc-req-info p,
+[data-theme="light"] .cc-pc-title h4,
+[data-theme="light"] .cc-spec-item p {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .cc-req-item {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .cc-badge,
+[data-theme="light"] .cc-req-badge {
+  background: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+[data-theme="light"] .cc-pc-card {
+  background: #f8fafc !important;
+  border-color: #ff4757 !important;
+}
+
+[data-theme="light"] .cc-pc-card:not(:first-child) {
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .cc-btn-select.secondary {
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+[data-theme="light"] .cc-btn-select.secondary:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+

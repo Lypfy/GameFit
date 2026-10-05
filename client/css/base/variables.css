@@ -13,14 +13,14 @@
 
 :root {
   --main-color: #fa5353;
-  --dark-color: #1b182b;
-  --light-color: #322f40;
-  --text-color: hsl(0, 0%, 91%);
-  --bg-main: #0a0d14;
-  --bg-modal: #111520;
-  --bg-input: #0f131d;
-  --border-color: #21283b;
-  --border-hover: #333d59;
+  --dark-color: #0b0914;
+  --light-color: #151221;
+  --text-color: hsl(0, 0%, 92%);
+  --bg-main: #07060c;
+  --bg-modal: #0f0d18;
+  --bg-input: #0a0812;
+  --border-color: #1f1b2e;
+  --border-hover: #312b48;
   --primary: #f43f5e;
   --primary-hover: #e11d48;
   --text-primary: #f0f2f5;
@@ -31,15 +31,15 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
 
   /* Dynamic Theme Tokens */
-  --header-bg: rgba(27, 24, 43, 0.95);
-  --card-bg: #322f40;
-  --dropdown-bg: #1b182b;
-  --icon-bg: #21232b;
-  --input-bg: #0f131d;
-  --table-hover: rgba(255, 255, 255, 0.05);
+  --header-bg: rgba(11, 9, 20, 0.95);
+  --card-bg: #151221;
+  --dropdown-bg: #100e19;
+  --icon-bg: #161322;
+  --input-bg: #0a0812;
+  --table-hover: rgba(255, 255, 255, 0.04);
 }
 
 [data-theme="light"] {

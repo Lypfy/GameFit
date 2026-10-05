@@ -58,14 +58,16 @@
 
 .search-poda:hover .search-input,
 .search-poda:focus-within .search-input {
-  background-color: #0f0d18;
-  border-color: rgba(255, 255, 255, 0.18);
+  background-color: var(--input-bg, #0f0d18);
+  border-color: var(--border-hover, rgba(255, 255, 255, 0.18));
+  color: var(--text-primary);
 }
 
 .search-poda .search-input:focus {
   outline: none;
-  border-color: rgba(250, 83, 83, 0.6);
-  background-color: #0a0912;
+  border-color: var(--main-color, rgba(250, 83, 83, 0.6));
+  background-color: var(--input-bg, #0a0912);
+  color: var(--text-primary);
 }
 
 /* Loại bỏ hoàn toàn mảng đen che chữ input mask */
@@ -353,3 +355,58 @@
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.85rem;
 }
+
+/* ===================================================
+   LIGHT MODE OVERRIDES FOR FUTURISTIC SEARCH BAR
+   =================================================== */
+[data-theme="light"] .search-poda .search-input {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .search-poda .search-input::placeholder {
+  color: #94a3b8;
+}
+
+[data-theme="light"] .search-poda:hover .search-input,
+[data-theme="light"] .search-poda:focus-within .search-input,
+[data-theme="light"] .search-poda .search-input:focus {
+  background-color: #ffffff;
+  border-color: var(--main-color, #fa5353);
+  color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(250, 83, 83, 0.15);
+}
+
+[data-theme="light"] .search-poda .search-icon svg line,
+[data-theme="light"] .search-poda .search-icon svg circle {
+  stroke: #475569;
+}
+
+[data-theme="light"] .navbar-search-results {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .search-result-item {
+  border-bottom-color: #f1f5f9;
+}
+
+[data-theme="light"] .search-result-item:hover {
+  background-color: #fee2e2;
+}
+
+[data-theme="light"] .search-result-img {
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .search-result-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .search-result-meta,
+[data-theme="light"] .search-result-empty {
+  color: #64748b;
+}

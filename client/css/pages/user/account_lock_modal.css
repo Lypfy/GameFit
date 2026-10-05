@@ -1,10 +1,10 @@
 :root {
   /* Color Palette */
-  --bg-body: #0b1120;
-  --bg-card: #111827;
-  --bg-card-gradient: linear-gradient(145deg, #1f2937 0%, #111827 100%);
-  --bg-input: #1f2937;
-  --border-color: #374151;
+  --bg-body: #07060c;
+  --bg-card: #0f0d18;
+  --bg-card-gradient: linear-gradient(145deg, #151221 0%, #0f0d18 100%);
+  --bg-input: #0a0812;
+  --border-color: #1f1b2e;
   --border-focus: #3b82f6;
   --text-main: #f9fafb;
   --text-muted: #9ca3af;
