@@ -39,8 +39,8 @@
   align-items: center;
   gap: 10px;
   padding: 6px 10px 5px 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--icon-bg);
+  border: 1px solid var(--border-color);
   border-radius: 30px;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -51,7 +51,7 @@
 
 .user-profile-capsule:hover,
 .user-profile-capsule.active {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--icon-bg);
   border-color: rgba(250, 83, 83, 0.5);
 }
 
@@ -75,7 +75,7 @@
 .user-profile-capsule .user-display-name {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   margin-right: 0;
   white-space: nowrap;
   max-width: 140px;
@@ -85,7 +85,7 @@
 
 .user-profile-capsule .nav-dropdown-arrow {
   transition: transform 0.25s ease, color 0.25s ease;
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-size: 1.15rem;
 }
 
@@ -126,12 +126,10 @@
   top: 55px;
   right: 0;
   width: 270px;
-  background: rgb(27, 24, 43);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--dropdown-bg);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
-  box-shadow:
-    0 15px 35px rgba(0, 0, 0, 0.6),
-    0 0 15px rgba(250, 83, 83, 0.1);
+  box-shadow: var(--shadow-lg);
   padding: 14px;
   opacity: 0;
   visibility: hidden;
@@ -153,7 +151,7 @@
   align-items: center;
   column-gap: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .dropdown-header .user-avatar {
@@ -174,7 +172,7 @@
 .dropdown-header .user-info h4 {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

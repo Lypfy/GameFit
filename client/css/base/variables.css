@@ -32,11 +32,44 @@
   --radius-md: 12px;
   --radius-lg: 16px;
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+
+  /* Dynamic Theme Tokens */
+  --header-bg: rgba(27, 24, 43, 0.95);
+  --card-bg: #322f40;
+  --dropdown-bg: #1b182b;
+  --icon-bg: #21232b;
+  --input-bg: #0f131d;
+  --table-hover: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] {
+  --dark-color: #f1f5f9;
+  --light-color: #ffffff;
+  --text-color: #1e293b;
+  --bg-main: #f8fafc;
+  --bg-modal: #ffffff;
+  --bg-input: #e2e8f0;
+  --border-color: #cbd5e1;
+  --border-hover: #94a3b8;
+  --primary: #fa5353;
+  --primary-hover: #e11d48;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08);
+
+  /* Dynamic Light Tokens */
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --card-bg: #ffffff;
+  --dropdown-bg: #ffffff;
+  --icon-bg: #e2e8f0;
+  --input-bg: #f1f5f9;
+  --table-hover: rgba(0, 0, 0, 0.03);
 }
 
 ::selection {
   background: var(--main-color);
-  color: var(--text-color);
+  color: #ffffff;
 }
 
 section {
@@ -50,6 +83,7 @@ img {
 body {
   background-color: var(--dark-color);
   color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -57,3 +91,4 @@ body {
   width: 100%;
   margin: auto;
 }
+

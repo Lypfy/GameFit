@@ -12,16 +12,17 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background-color: rgba(33, 31, 52, 0.95);
+  background-color: var(--card-bg);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   padding: 0.85rem 1.25rem;
   border-radius: var(--radius-lg);
   margin-bottom: 1.5rem;
   position: sticky;
   top: 0;
   z-index: 20;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .filter-bar.hidden {
@@ -54,7 +55,7 @@
   display: flex;
   gap: 6px;
   background-color: var(--bg-input);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   padding: 4px;
 }
@@ -75,8 +76,8 @@
 }
 
 .genre-metric-btn:hover {
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  background-color: var(--table-hover);
 }
 
 .genre-metric-btn.active {
@@ -88,7 +89,7 @@
 .genre-sort-select {
   background-color: var(--bg-input);
   border: 1px solid var(--border-color);
-  color: #ffffff;
+  color: var(--text-primary);
   padding: 6px 12px;
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
@@ -104,8 +105,8 @@
 }
 
 .genre-sort-select option {
-  background-color: #1b182b;
-  color: #ffffff;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
 }
 
 /* Table Header Controls & Search Box */
@@ -117,7 +118,7 @@
 .table-header-title h2 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -156,7 +157,7 @@
   background: none;
   border: none;
   outline: none;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.82rem;
   width: 140px;
   transition: width 0.25s ease;
@@ -167,7 +168,7 @@
 }
 
 .table-search-box input::placeholder {
-  color: var(--text-secondary);
+  color: var(--text-muted);
 }
 
 /* Table Scroll Container: Giữ nguyên tên và bộ lọc khi cuộn danh sách */
@@ -177,7 +178,7 @@
   overflow-x: auto;
   position: relative;
   scrollbar-width: thin;
-  scrollbar-color: #3c375c rgba(18, 16, 30, 0.6);
+  scrollbar-color: var(--border-hover) var(--input-bg);
   border-radius: 4px;
 }
 
@@ -187,12 +188,12 @@
 }
 
 .table-scroll-container::-webkit-scrollbar-track {
-  background: rgba(18, 16, 30, 0.6);
+  background: var(--input-bg);
   border-radius: 8px;
 }
 
 .table-scroll-container::-webkit-scrollbar-thumb {
-  background: #3c375c;
+  background: var(--border-hover);
   border-radius: 8px;
 }
 
@@ -204,9 +205,10 @@
 .table-scroll-container .data-table thead th {
   position: sticky;
   top: 0;
-  background-color: #1d1b2e;
+  background-color: var(--card-bg);
+  color: var(--text-secondary);
   z-index: 5;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 0 var(--border-color);
 }
 
 /* Sub-Tabs Navigation & Export Actions */
@@ -283,7 +285,7 @@
 .export-scope-select {
   background: transparent;
   border: none;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.84rem;
   font-weight: 500;
   outline: none;
@@ -292,8 +294,8 @@
 }
 
 .export-scope-select option {
-  background-color: #1b182b;
-  color: #ffffff;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
 }
 
 .btn-export-stats {
@@ -399,7 +401,7 @@
 .export-modal-title h3 {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -418,8 +420,8 @@
 }
 
 .export-modal-close:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  background: var(--table-hover);
 }
 
 .export-modal-body {
@@ -520,7 +522,7 @@
 .export-option-info h4 {
   font-size: 0.92rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0 0 2px 0;
 }
 
@@ -620,13 +622,15 @@
 }
 
 .stat-card {
-  background-color: rgba(33, 31, 52, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 1.25rem 1.5rem;
   display: flex;
   align-items: center;
   gap: 16px;
+  box-shadow: var(--shadow-lg);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .stat-icon {
@@ -662,7 +666,7 @@
 
 .stat-info h3 {
   font-size: 1.6rem;
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 700;
 }
 
@@ -676,11 +680,13 @@
 
 .chart-card,
 .table-card {
-  background-color: rgba(33, 31, 52, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   width: 100%;
+  box-shadow: var(--shadow-lg);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
   max-height: none !important;
   overflow: visible !important;
   overflow-y: visible !important;
@@ -703,7 +709,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(33, 31, 52, 0.98);
+  background: var(--card-bg);
   backdrop-filter: blur(8px);
   padding: 4px 0 8px 0;
 }
@@ -712,7 +718,7 @@
 .table-header h2 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .line-chart-svg {
@@ -742,7 +748,7 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background-color: var(--dark-color);
+  background-color: var(--card-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -752,7 +758,7 @@
 .donut-hole h3 {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .donut-hole p {
