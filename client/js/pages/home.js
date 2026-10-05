@@ -1,6 +1,13 @@
 // 2. Danh sách các thể loại hiển thị thành từng mục riêng biệt trên trang Home
 const categoriesToDisplay = [
-  { title: "FPS", filterKey: "FPS", icon: "bx-target-lock" },
+  { tagId: 1, title: "Action", filterKey: "Action", icon: "bx-joystick" },
+  {
+    tagId: 16,
+    title: "Dark Fantasy",
+    filterKey: "Dark Fantasy",
+    icon: "bx-skull",
+  },
+  { tagId: 3, title: "Adventure", filterKey: "Adventure", icon: "bx-compass" },
 ];
 
 let savedWishlistGameIds = new Set();
@@ -47,8 +54,8 @@ function renderPopularGames(games) {
            onmouseenter="this.style.transform='scale(1.05)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=1; i.style.opacity=0; v.play().catch(()=>{}); }" 
            onmouseleave="this.style.transform='scale(1)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=0; i.style.opacity=1; v.pause(); v.currentTime=0; }">
         <div class="media-wrapper" style="position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden;">
-          <img src="${game.image ? game.image.split(' ')[0] : "../assets/default-game.png"}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
-          ${game.trailer_url ? `<video src="${game.trailer_url.split(' ')[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ''}
+          <img src="${game.image ? game.image.split(" ")[0] : "../assets/default-game.png"}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
+          ${game.trailer_url ? `<video src="${game.trailer_url.split(" ")[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ""}
         </div>
         ${bookmarkHtml}
         <div class="box-text">
@@ -70,22 +77,50 @@ function renderPopularGames(games) {
 }
 
 /**
- * Hiển thị từng thể loại thành một mục riêng biệt (Section)
+ * Hiển thị từng thể loại thành một mục riêng biệt (Section) bằng cách fetch API theo tagId/category
  */
-function renderCategorySections() {
+async function renderCategorySections() {
   const container = document.getElementById("category-sections");
   if (!container) return;
 
-  container.innerHTML = categoriesToDisplay
-    .map((cat) => {
-      // Lấy danh sách game thuộc thể loại này (lấy tối đa 4 game)
-      const filtered = allGames
-        .filter((game) => {
-          const gameCat = game.category || game.platform || "";
-          return gameCat.toLowerCase().includes(cat.filterKey.toLowerCase());
-        })
-        .slice(0, 4);
+  const sectionsHtmlArray = await Promise.all(
+    categoriesToDisplay.map(async (cat) => {
+      let games = [];
 
+      // 1. Thử fetch trực tiếp từ API theo tagId để lấy dữ liệu đầy đủ từ DB
+      if (cat.tagId) {
+        try {
+          const res = await fetch(
+            `http://localhost:5000/api/games/tag/${cat.tagId}`,
+          );
+          const data = await res.json();
+          if (
+            data.success &&
+            Array.isArray(data.data) &&
+            data.data.length > 0
+          ) {
+            games = data.data;
+          }
+        } catch (err) {
+          console.error(`Lỗi fetch category ${cat.title}:`, err);
+        }
+      }
+
+      // 2. Fallback nếu không có tagId hoặc fetch API thất bại: Lọc trong mảng allGames
+      if (games.length === 0 && allGames.length > 0) {
+        const key = cat.filterKey.toLowerCase();
+        games = allGames.filter((game) => {
+          const gameCat = game.category || game.platform || "";
+          const gameTags = game.tags || "";
+          return (
+            gameCat.toLowerCase().includes(key) ||
+            gameTags.toLowerCase().includes(key)
+          );
+        });
+      }
+
+      // Lấy tối đa 5 game cho mỗi thể loại
+      const filtered = games.slice(0, 5);
       if (filtered.length === 0) return "";
 
       const gameCardsHtml = filtered
@@ -99,8 +134,8 @@ function renderCategorySections() {
              onmouseenter="this.style.transform='scale(1.05)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=1; i.style.opacity=0; v.play().catch(()=>{}); }" 
              onmouseleave="this.style.transform='scale(1)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=0; i.style.opacity=1; v.pause(); v.currentTime=0; }">
           <div class="media-wrapper" style="position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden;">
-            <img src="${game.image ? game.image.split(' ')[0] : "../assets/default-game.png"}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
-            ${game.trailer_url ? `<video src="${game.trailer_url.split(' ')[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ''}
+            <img src="${game.image ? game.image.split(" ")[0] : "../assets/default-game.png"}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
+            ${game.trailer_url ? `<video src="${game.trailer_url.split(" ")[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ""}
           </div>
           ${bookmarkHtml}
           <div class="box-text">
@@ -135,8 +170,10 @@ function renderCategorySections() {
           </div>
         </section>
       `;
-    })
-    .join("");
+    }),
+  );
+
+  container.innerHTML = sectionsHtmlArray.join("");
 }
 
 async function fetchAndRenderActionGames() {
@@ -153,7 +190,7 @@ async function fetchAndRenderActionGames() {
     const gamesData = await gamesRes.json();
 
     if (gamesData.success && gamesData.data.length > 0) {
-      const actionGames = gamesData.data.slice(0, 4);
+      const actionGames = gamesData.data.slice(0, 5);
 
       const gameCardsHtml = actionGames
         .map((game) => {
@@ -166,8 +203,8 @@ async function fetchAndRenderActionGames() {
              onmouseenter="this.style.transform='scale(1.05)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=1; i.style.opacity=0; v.play().catch(()=>{}); }" 
              onmouseleave="this.style.transform='scale(1)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=0; i.style.opacity=1; v.pause(); v.currentTime=0; }">
           <div class="media-wrapper" style="position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden;">
-            <img src="${game.image ? game.image.split(' ')[0] : "../assets/default-game.png"}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
-            ${game.trailer_url ? `<video src="${game.trailer_url.split(' ')[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ''}
+            <img src="${game.image ? game.image.split(" ")[0] : "../assets/default-game.png"}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
+            ${game.trailer_url ? `<video src="${game.trailer_url.split(" ")[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ""}
           </div>
           ${bookmarkHtml}
           <div class="box-text">
@@ -248,7 +285,7 @@ function renderPopularSkeleton(count = 4) {
 
 async function fetchAllGames() {
   try {
-    const res = await fetch(`http://localhost:5000/api/games?page=1&limit=8`);
+    const res = await fetch(`http://localhost:5000/api/games?page=1&limit=100`);
     const data = await res.json();
     if (data.success) {
       allGames = data.data;
@@ -313,8 +350,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   renderPopularGames(popularGames);
   initOrUpdateSwiper();
 
-  renderCategorySections();
-  await fetchAndRenderActionGames();
+  await renderCategorySections();
   fetchUserWishlist().then(() => {
     updateWishlistUI();
   });
