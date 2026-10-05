@@ -143,10 +143,95 @@ const deleteReview = async (req, res) => {
     }
 }
 
+const writeReviewPcCompatibility = async (req, res) => {
+    try {
+        const user_id = req.user.user_id;
+        const { game_id } = req.params;
+        const { pc_id, type, note } = req.body;
+
+        if (!user_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu user_id hợp lệ' });
+        }
+        if (!game_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu game_id hợp lệ' });
+        }
+        if (!pc_id || !type) {
+            return res.status(400).json({ success: false, message: 'Thiếu pc_id hoặc type hợp lệ' });
+        }
+
+        const result = await reviewService.writeReviewPcCompatibility(user_id, game_id, pc_id, type, note);
+        if (!result.success) {
+            return res.status(400).json({ success: false, message: 'Đề xuất cấu hình thất bại' });
+        }
+
+        return res.status(200).json({ success: true, message: 'Đề xuất cấu hình thành công' });
+    }
+    catch (error) {
+        console.log('Error in writeReviewPcCompatibility Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi đề xuất cấu hình'
+        });
+    }
+}
+
+const getReviewPcCompatibility = async (req, res) => {
+    try {
+        const { game_id } = req.params;
+        if (!game_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu game_id hợp lệ' });
+        }
+
+        const result = await reviewService.getReviewPcCompatibility(game_id);
+        return res.status(200).json({
+            success: true,
+            message: 'Lấy danh sách đề xuất cấu hình thành công',
+            data: result.data
+        });
+    } catch (error) {
+        console.log('Error in getReviewPcCompatibility Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi lấy danh sách đề xuất cấu hình'
+        });
+    }
+}
+
+const deleteReviewPcCompatibility = async (req, res) => {
+    try {
+        const user_id = req.user.user_id;
+        const { recommendation_id } = req.params;
+
+        if (!user_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu user_id hợp lệ' });
+        }
+        if (!recommendation_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu recommendation_id hợp lệ' });
+        }
+
+        const result = await reviewService.deleteReviewPcCompatibility(user_id, recommendation_id);
+        if (!result.success) {
+            return res.status(400).json({ success: false, message: result.message });
+        }
+
+        return res.status(200).json({ success: true, message: result.message });
+    }
+    catch (error) {
+        console.log('Error in deleteReviewPcCompatibility Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi xóa đề xuất cấu hình'
+        });
+    }
+}
+
 module.exports = {
     writeReview,
     updateReview,
     deleteReview,
     getReviews,
-    getAvgRating
+    getAvgRating,
+    writeReviewPcCompatibility,
+    getReviewPcCompatibility,
+    deleteReviewPcCompatibility
 }
