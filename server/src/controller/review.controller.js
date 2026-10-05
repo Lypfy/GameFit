@@ -143,7 +143,7 @@ const deleteReview = async (req, res) => {
     }
 }
 
-const writeReviewPcCompatibility = async (req, res) => {
+const createGamePCRecommendation = async (req, res) => {
     try {
         const user_id = req.user.user_id;
         const { game_id } = req.params;
@@ -159,7 +159,7 @@ const writeReviewPcCompatibility = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Thiếu pc_id hoặc type hợp lệ' });
         }
 
-        const result = await reviewService.writeReviewPcCompatibility(user_id, game_id, pc_id, type, note);
+        const result = await reviewService.createGamePCRecommendation(user_id, game_id, pc_id, type, note);
         if (!result.success) {
             return res.status(400).json({ success: false, message: 'Đề xuất cấu hình thất bại' });
         }
@@ -167,7 +167,7 @@ const writeReviewPcCompatibility = async (req, res) => {
         return res.status(200).json({ success: true, message: 'Đề xuất cấu hình thành công' });
     }
     catch (error) {
-        console.log('Error in writeReviewPcCompatibility Controller: ', error.message);
+        console.log('Error in createGamePCRecommendation Controller: ', error.message);
         return res.status(400).json({
             success: false,
             message: error.message || 'Lỗi server khi đề xuất cấu hình'
@@ -175,21 +175,21 @@ const writeReviewPcCompatibility = async (req, res) => {
     }
 }
 
-const getReviewPcCompatibility = async (req, res) => {
+const getGamePCRecommendations = async (req, res) => {
     try {
         const { game_id } = req.params;
         if (!game_id) {
             return res.status(400).json({ success: false, message: 'Thiếu game_id hợp lệ' });
         }
 
-        const result = await reviewService.getReviewPcCompatibility(game_id);
+        const result = await reviewService.getGamePCRecommendations(game_id);
         return res.status(200).json({
             success: true,
             message: 'Lấy danh sách đề xuất cấu hình thành công',
             data: result.data
         });
     } catch (error) {
-        console.log('Error in getReviewPcCompatibility Controller: ', error.message);
+        console.log('Error in getGamePCRecommendations Controller: ', error.message);
         return res.status(400).json({
             success: false,
             message: error.message || 'Lỗi server khi lấy danh sách đề xuất cấu hình'
@@ -197,7 +197,7 @@ const getReviewPcCompatibility = async (req, res) => {
     }
 }
 
-const deleteReviewPcCompatibility = async (req, res) => {
+const deleteGamePCRecommendation = async (req, res) => {
     try {
         const user_id = req.user.user_id;
         const { recommendation_id } = req.params;
@@ -209,7 +209,7 @@ const deleteReviewPcCompatibility = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Thiếu recommendation_id hợp lệ' });
         }
 
-        const result = await reviewService.deleteReviewPcCompatibility(user_id, recommendation_id);
+        const result = await reviewService.deleteGamePCRecommendation(user_id, recommendation_id);
         if (!result.success) {
             return res.status(400).json({ success: false, message: result.message });
         }
@@ -217,10 +217,31 @@ const deleteReviewPcCompatibility = async (req, res) => {
         return res.status(200).json({ success: true, message: result.message });
     }
     catch (error) {
-        console.log('Error in deleteReviewPcCompatibility Controller: ', error.message);
+        console.log('Error in deleteGamePCRecommendation Controller: ', error.message);
         return res.status(400).json({
             success: false,
             message: error.message || 'Lỗi server khi xóa đề xuất cấu hình'
+        });
+    }
+}
+
+const vote = async (req, res) => {
+    try {
+        const user_id = req.user.user_id;
+        const { target_type, target_id, vote_type } = req.body;
+
+        if (!user_id) return res.status(400).json({ success: false, message: 'Thiếu user_id hợp lệ' });
+        if (!target_type || !target_id || !vote_type) {
+            return res.status(400).json({ success: false, message: 'Thiếu tham số vote hợp lệ' });
+        }
+
+        const result = await reviewService.vote(user_id, target_type, target_id, vote_type);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('Error in vote Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi vote'
         });
     }
 }
@@ -231,7 +252,8 @@ module.exports = {
     deleteReview,
     getReviews,
     getAvgRating,
-    writeReviewPcCompatibility,
-    getReviewPcCompatibility,
-    deleteReviewPcCompatibility
+    createGamePCRecommendation,
+    getGamePCRecommendations,
+    deleteGamePCRecommendation,
+    vote
 }

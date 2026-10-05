@@ -529,3 +529,29 @@ document.addEventListener("click", (e) => {
     document.getElementById("result-modal").classList.remove("active");
   }
 });
+
+// --- XỬ LÝ CHUYỂN TAB CỘNG ĐỒNG ---
+window.openCommunityTab = function(tabId, clickedBtn) {
+  // Ẩn tất cả tab nội dung
+  const contents = document.querySelectorAll('.community-tab-content');
+  contents.forEach(content => {
+    content.style.display = 'none';
+    content.classList.remove('active');
+  });
+
+  // Gỡ active tất cả nút
+  const buttons = document.querySelectorAll('.tab-btn');
+  buttons.forEach(btn => btn.classList.remove('active'));
+
+  // Hiện tab được chọn
+  const targetTab = document.getElementById(tabId);
+  if (targetTab) {
+    targetTab.style.display = 'block';
+    targetTab.classList.add('active');
+  }
+
+  // Active nút
+  if (clickedBtn) {
+    clickedBtn.classList.add('active');
+  }
+};

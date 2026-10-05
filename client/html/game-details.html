@@ -173,43 +173,72 @@
         </div>
       </div>
 
-      <!-- Khu vực đánh giá -->
-      <section class="review-section" id="review-section">
-        <!-- Rating Card -->
-        <div class="rating-card">
-          <div class="rating-card__left">
-            <img id="review-game-thumb" src="../assets/default-game.png" alt="Game Thumbnail" class="rating-thumb"
-              loading="lazy" />
-            <div class="rating-info">
-              <p class="rating-label">GAME RATING</p>
-              <div class="star-display" id="star-display"></div>
-              <div class="rating-score">
-                <span id="avg-score">0.0</span>
-                <span class="rating-sep">/ 5</span>
-              </div>
-              <p class="review-count">
-                <i class="bx bx-comment"></i>
-                <span id="review-count-label">0 Review(s)</span>
-              </p>
-            </div>
-          </div>
-          <div class="rating-card__right">
-            <button class="btn-write-review" id="btn-open-review-modal">
-              Viết đánh giá
-            </button>
-          </div>
+      <!-- Khu vực Cộng Đồng (Tabs) -->
+      <section class="community-section">
+        <div class="tab-buttons-container">
+          <button class="tab-btn active" onclick="openCommunityTab('tab-reviews', this)">
+            <i class="bx bx-star"></i> Đánh giá Game
+          </button>
+          <button class="tab-btn" onclick="openCommunityTab('tab-pc-recommend', this)">
+            <i class="bx bx-desktop"></i> Đề xuất Cấu hình
+          </button>
         </div>
 
-        <!-- Comments -->
-        <div class="comments-section">
-          <div class="comments-header">
-            <i class="bx bx-message-square-dots comments-icon"></i>
-            <span id="comments-count-label">0 Comments</span>
+        <!-- Nội dung Tab 1: Đánh giá -->
+        <div id="tab-reviews" class="community-tab-content active">
+          <section class="review-section" id="review-section" style="margin-top: 0; padding-top: 10px;">
+            <!-- Rating Card -->
+            <div class="rating-card">
+              <div class="rating-card__left">
+                <img id="review-game-thumb" src="../assets/default-game.png" alt="Game Thumbnail" class="rating-thumb" loading="lazy" />
+                <div class="rating-info">
+                  <p class="rating-label">GAME RATING</p>
+                  <div class="star-display" id="star-display"></div>
+                  <div class="rating-score">
+                    <span id="avg-score">0.0</span>
+                    <span class="rating-sep">/ 5</span>
+                  </div>
+                  <p class="review-count">
+                    <i class="bx bx-comment"></i>
+                    <span id="review-count-label">0 Review(s)</span>
+                  </p>
+                </div>
+              </div>
+              <div class="rating-card__right">
+                <button class="btn-write-review" id="btn-open-review-modal">
+                  Viết đánh giá
+                </button>
+              </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="comments-section">
+              <div class="comments-header">
+                <i class="bx bx-message-square-dots comments-icon"></i>
+                <span id="comments-count-label">0 Comments</span>
+              </div>
+              <div id="comments-list">
+                <div class="comments-empty" id="comments-empty">
+                  <i class="bx bx-message-dots empty-chat-icon"></i>
+                  <p>No comments yet. Be the first to comment on this game!</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Nội dung Tab 2: Đề xuất cấu hình -->
+        <div id="tab-pc-recommend" class="community-tab-content" style="display: none;">
+          <div class="pc-recommend-header">
+            <h3><i class="bx bx-server"></i> Cấu hình do cộng đồng GameFit đề xuất</h3>
+            <button class="btn-write-review" id="btn-open-recommend-modal">
+              <i class="bx bx-plus"></i> Đề xuất cấu hình của bạn
+            </button>
           </div>
-          <div id="comments-list">
-            <div class="comments-empty" id="comments-empty">
-              <i class="bx bx-message-dots empty-chat-icon"></i>
-              <p>No comments yet. Be the first to comment on this game!</p>
+          <div id="pc-recommend-list" class="pc-recommend-list">
+            <div class="comments-empty">
+              <i class="bx bx-desktop empty-chat-icon"></i>
+              <p>Chưa có cấu hình nào được đề xuất. Hãy là người đầu tiên!</p>
             </div>
           </div>
         </div>
@@ -312,6 +341,50 @@
           <button type="button" class="btn-cancel" id="cancel-report-btn">Hủy</button>
           <button type="submit" class="btn-save btn-danger" id="submit-report-btn">
             <i class="bx bx-paper-plane"></i> Gửi báo cáo
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Đề xuất cấu hình -->
+  <div class="modal" id="recommend-modal">
+    <div class="modal-overlay" id="recommend-modal-overlay"></div>
+    <div class="modal-card modal-compact">
+      <div class="modal-header">
+        <h3>
+          <i class="bx bx-server"></i>
+          <span>Đề xuất cấu hình</span>
+        </h3>
+        <button type="button" class="close-btn" id="close-recommend-modal">&times;</button>
+      </div>
+      <form id="recommend-form">
+        <div class="modal-body" style="padding: 0 0 16px 0;">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label" style="margin-bottom: 8px; color: white;">Chọn máy tính của bạn <span style="color: red">*</span></label>
+            <select id="recommend-pc-select" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #334155; background: #1e293b; color: white; font-size: 14px; outline: none;">
+              <option value="">-- Đang tải... --</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label" style="margin-bottom: 8px; color: white;">Loại cấu hình <span style="color: red">*</span></label>
+            <select id="recommend-type-select" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #334155; background: #1e293b; color: white; font-size: 14px; outline: none;">
+              <option value="MINIMUM">Tối thiểu (Chơi được, setting thấp)</option>
+              <option value="RECOMMENDED">Đề nghị (Chơi tốt, setting trung bình-cao)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="recommend-note" class="form-label" style="margin-bottom: 6px; color: white;">Ghi chú thêm (tùy chọn)</label>
+            <textarea id="recommend-note" rows="3" placeholder="Chia sẻ thêm về trải nghiệm (FPS, setting...) với cấu hình này..." style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #334155; background: #1e293b; color: white; font-family: inherit; font-size: 14px; resize: vertical; outline: none;"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding-top: 14px;">
+          <button type="button" class="btn-cancel" id="cancel-recommend-btn">Hủy</button>
+          <button type="submit" class="btn-save" id="submit-recommend-btn" style="display: flex; align-items: center; gap: 5px;">
+            <i class="bx bx-share"></i> Đăng đề xuất
           </button>
         </div>
       </form>

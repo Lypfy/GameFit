@@ -564,6 +564,306 @@
 
   if (gameId) {
     fetchReviews();
+    fetchRecommendations();
+  }
+
+  /* =============================================
+     PC RECOMMENDATION LOGIC
+     ============================================= */
+  const btnOpenRecommend = document.getElementById('btn-open-recommend-modal');
+  const recommendModal = document.getElementById('recommend-modal');
+  const recommendOverlay = document.getElementById('recommend-modal-overlay');
+  const closeRecommendModal = document.getElementById('close-recommend-modal');
+  const cancelRecommendBtn = document.getElementById('cancel-recommend-btn');
+  const recommendForm = document.getElementById('recommend-form');
+  const recommendPcSelect = document.getElementById('recommend-pc-select');
+  const recommendTypeSelect = document.getElementById('recommend-type-select');
+  const recommendNote = document.getElementById('recommend-note');
+  const submitRecommendBtn = document.getElementById('submit-recommend-btn');
+  const pcRecommendList = document.getElementById('pc-recommend-list');
+
+  async function fetchUserPCs() {
+    const token = localStorage.getItem("token");
+    if (!token) return [];
+    try {
+      const res = await fetch('/api/computer-config', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const result = await res.json();
+      return result.success ? result.data : [];
+    } catch (e) {
+      console.error("Lỗi lấy danh sách PC:", e);
+      return [];
+    }
+  }
+
+  function openRecommendModalFunc() {
+    const activeUser = getActiveUser();
+    if (!activeUser) {
+      if (typeof showToast === 'function') {
+        showToast('Bạn cần đăng nhập để đề xuất cấu hình!', 'error');
+      } else {
+        alert('Bạn cần đăng nhập để đề xuất cấu hình!');
+      }
+      return;
+    }
+
+    // Tải danh sách PC
+    if (recommendPcSelect) recommendPcSelect.innerHTML = '<option value="">-- Đang tải... --</option>';
+    fetchUserPCs().then(pcs => {
+      if (recommendPcSelect) {
+        if (pcs.length === 0) {
+          recommendPcSelect.innerHTML = '<option value="">Bạn chưa thêm máy tính nào. Vui lòng thêm trong hồ sơ.</option>';
+        } else {
+          recommendPcSelect.innerHTML = '<option value="">-- Chọn máy tính --</option>' + pcs.map(pc => 
+            `<option value="${pc.pc_id}">${pc.pc_name} - ${pc.cpu_name || 'CPU N/A'}, ${pc.gpu_name || 'GPU N/A'}, RAM ${pc.ram}GB</option>`
+          ).join('');
+        }
+      }
+    });
+
+    if (recommendNote) recommendNote.value = '';
+    if (recommendTypeSelect) recommendTypeSelect.value = 'MINIMUM';
+
+    if (recommendModal) {
+      recommendModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeRecommendModalFunc() {
+    if (recommendModal) {
+      recommendModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  if (btnOpenRecommend) btnOpenRecommend.addEventListener('click', openRecommendModalFunc);
+  if (closeRecommendModal) closeRecommendModal.addEventListener('click', closeRecommendModalFunc);
+  if (cancelRecommendBtn) cancelRecommendBtn.addEventListener('click', closeRecommendModalFunc);
+  if (recommendOverlay) recommendOverlay.addEventListener('click', closeRecommendModalFunc);
+
+  if (recommendForm) {
+    recommendForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pcId = recommendPcSelect.value;
+      if (!pcId) {
+        if (typeof showToast === 'function') showToast('Vui lòng chọn một máy tính!', 'error');
+        return;
+      }
+      
+      const token = localStorage.getItem("token");
+      if (submitRecommendBtn) {
+        submitRecommendBtn.disabled = true;
+        submitRecommendBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Đang gửi...';
+      }
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/reviews/recommendation/${gameId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            pc_id: pcId,
+            type: recommendTypeSelect.value,
+            note: recommendNote.value
+          })
+        });
+        const result = await response.json();
+        if (result.success) {
+          if (typeof showToast === 'function') showToast('Đã đăng đề xuất thành công!', 'success');
+          closeRecommendModalFunc();
+          fetchRecommendations(); // Tải lại danh sách
+        } else {
+          if (typeof showToast === 'function') showToast(result.message || 'Có lỗi xảy ra!', 'error');
+        }
+      } catch (err) {
+        if (typeof showToast === 'function') showToast('Lỗi kết nối!', 'error');
+      } finally {
+        if (submitRecommendBtn) {
+          submitRecommendBtn.disabled = false;
+          submitRecommendBtn.innerHTML = '<i class="bx bx-share"></i> Đăng đề xuất';
+        }
+      }
+    });
+  }
+
+  async function fetchRecommendations() {
+    if (!gameId || !pcRecommendList) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/reviews/recommendation/${gameId}`);
+      const result = await res.json();
+      if (result.success && result.data && result.data.length > 0) {
+        renderRecommendations(result.data);
+      } else {
+        pcRecommendList.innerHTML = `
+          <div class="comments-empty">
+            <i class="bx bx-desktop empty-chat-icon"></i>
+            <p>Chưa có cấu hình nào được đề xuất. Hãy là người đầu tiên!</p>
+          </div>
+        `;
+      }
+    } catch (e) {
+      console.error('Lỗi tải đề xuất cấu hình:', e);
+    }
+  }
+
+  window.deleteRecommendation = async function(recId) {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    openConfirmDeleteModal(
+      'Xác nhận xóa đề xuất',
+      'Bạn có chắc chắn muốn xóa đề xuất này không?',
+      async () => {
+        try {
+          const res = await fetch(`http://localhost:5000/api/reviews/recommendation/${recId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const result = await res.json();
+          if (result.success) {
+            if (typeof showToast === 'function') showToast('Đã xóa đề xuất thành công', 'success');
+            fetchRecommendations();
+          } else {
+            if (typeof showToast === 'function') showToast(result.message, 'error');
+          }
+        } catch(e) {}
+      }
+    );
+  };
+
+  window.vote = async function(targetType, targetId, voteType) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      if (typeof showToast === 'function') showToast('Vui lòng đăng nhập để đánh giá', 'error');
+      else alert('Vui lòng đăng nhập để đánh giá');
+      return;
+    }
+    
+    try {
+      const res = await fetch('http://localhost:5000/api/reviews/vote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ target_type: targetType, target_id: targetId, vote_type: voteType })
+      });
+      const result = await res.json();
+      if (result.success) {
+        if (targetType === 'RECOMMENDATION') {
+            fetchRecommendations();
+        } else {
+            fetchReviews();
+        }
+      } else {
+        if (typeof showToast === 'function') showToast(result.message, 'error');
+      }
+    } catch (e) {
+      console.error('Lỗi khi vote:', e);
+    }
+  };
+
+  window.vote = async function(targetType, targetId, voteType) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      if (typeof showToast === 'function') showToast('Vui lòng đăng nhập để đánh giá', 'error');
+      else alert('Vui lòng đăng nhập để đánh giá');
+      return;
+    }
+    
+    try {
+      const res = await fetch('http://localhost:5000/api/reviews/vote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ target_type: targetType, target_id: targetId, vote_type: voteType })
+      });
+      const result = await res.json();
+      if (result.success) {
+        if (targetType === 'RECOMMENDATION') {
+            fetchRecommendations();
+        } else {
+            fetchReviews();
+        }
+      } else {
+        if (typeof showToast === 'function') showToast(result.message, 'error');
+      }
+    } catch (e) {
+      console.error('Lỗi khi vote:', e);
+    }
+  };
+
+  function renderRecommendations(list) {
+    const activeUser = getActiveUser();
+    pcRecommendList.innerHTML = list.map(rec => {
+      const isMyRec = activeUser && (rec.user_id === activeUser.user_id || rec.user_id === activeUser.id);
+      
+      let typeLabel = 'Khác';
+      let badgeColor = '#3b82f6'; // default
+      if (rec.type === 'MINIMUM') {
+        typeLabel = 'Tối thiểu';
+        badgeColor = '#3b82f6';
+      } else if (rec.type === 'RECOMMENDED') {
+        typeLabel = 'Đề nghị';
+        badgeColor = '#10b981';
+      }
+      
+      let userVote = 0;
+      if (activeUser && rec.voters) {
+        const myVote = rec.voters.find(v => v.user_id === activeUser.user_id || v.user_id === activeUser.id);
+        if (myVote) userVote = myVote.vote_type;
+      }
+      
+      return `
+        <div class="review-card">
+          <div class="review-avatar">${getInitial(rec.user_name || rec.username)}</div>
+          <div class="review-body" style="width: 100%;">
+            <div class="review-body__header" style="justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="review-username">${rec.user_name || rec.username || 'Người dùng'}</span>
+                <span class="review-dot">•</span>
+                <span class="review-date">${formatDate(rec.created_at || rec.createdAt || new Date())}</span>
+              </div>
+              ${isMyRec ? `<button type="button" class="btn-delete-comment" onclick="deleteRecommendation(${rec.id || rec.recommendation_id})" title="Xóa đề xuất">
+                <i class="bx bx-trash"></i>
+              </button>` : ''}
+            </div>
+            
+            <div style="margin-top: 10px; padding: 12px; background: #0f172a; border-radius: 8px; border: 1px solid #1e293b;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span style="background: ${badgeColor}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">
+                  ${typeLabel}
+                </span>
+                <strong style="color: #f8fafc; font-size: 15px;">${rec.pc_name || 'Máy tính của ' + (rec.user_name || rec.username)}</strong>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; color: #94a3b8; margin-bottom: ${rec.note ? '10px' : '0'};">
+                <div><i class="bx bx-chip"></i> CPU: ${rec.cpu_name || 'N/A'}</div>
+                <div><i class="bx bx-microchip"></i> GPU: ${rec.gpu_name || 'N/A'}</div>
+                <div><i class="bx bx-memory-card"></i> RAM: ${rec.ram ? rec.ram + ' GB' : 'N/A'}</div>
+                <div><i class="bx bx-hdd"></i> Storage: ${rec.storage ? rec.storage + ' GB' : 'N/A'}</div>
+              </div>
+              ${rec.note ? `<div style="padding-top: 10px; border-top: 1px solid #1e293b; color: #cbd5e1; font-size: 14px; font-style: italic;">
+                "${rec.note}"
+              </div>` : ''}
+              
+              <div class="vote-actions" style="display: flex; gap: 12px; margin-top: 12px; border-top: 1px solid #1e293b; padding-top: 12px;">
+                <button type="button" onclick="vote('RECOMMENDATION', ${rec.id || rec.recommendation_id}, 1)" style="background: none; border: none; color: ${userVote === 1 ? '#3b82f6' : '#94a3b8'}; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: bold; transition: color 0.2s;">
+                  <i class="bx ${userVote === 1 ? 'bxs-upvote' : 'bx-upvote'}" style="font-size: 18px;"></i> <span>${rec.likes || 0}</span>
+                </button>
+                <button type="button" onclick="vote('RECOMMENDATION', ${rec.id || rec.recommendation_id}, -1)" style="background: none; border: none; color: ${userVote === -1 ? '#ef4444' : '#94a3b8'}; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: bold; transition: color 0.2s;">
+                  <i class="bx ${userVote === -1 ? 'bxs-downvote' : 'bx-downvote'}" style="font-size: 18px;"></i> <span>${rec.dislikes || 0}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
 })();
