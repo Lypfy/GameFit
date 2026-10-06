@@ -219,7 +219,7 @@ function renderGameCards(games, isSearching = false) {
     .map((g) => {
       const gameId = g.game_id || g.id;
       const title = g.name || g.title;
-      const img = g.image || "../assets/default-game.png";
+      const img = g.image ? g.image.split(" ")[0] : "../assets/default-game.png";
 
       return `
       <div class="game-select-card" data-game-id="${gameId}">
@@ -367,7 +367,7 @@ async function handleCheckCompatibility(e) {
 
   // 1. Cập nhật thông tin Game ở bên Trái (Flex Row)
   document.getElementById("res-game-poster").src =
-    selectedGameObj.image || "../assets/default-game.png";
+    selectedGameObj.image ? selectedGameObj.image.split(" ")[0] : "../assets/default-game.png";
   document.getElementById("res-game-title").textContent =
     selectedGameObj.name || selectedGameObj.title;
   document.getElementById("res-game-dev").textContent =

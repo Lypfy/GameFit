@@ -1,13 +1,13 @@
 // 2. Danh sách các thể loại hiển thị thành từng mục riêng biệt trên trang Home
 const categoriesToDisplay = [
-  { tagId: 1, title: "Action", filterKey: "Action", icon: "bx-joystick" },
+  { tagId: 1, title: "Action", filterKey: "Action", icon: "../assets/action.png" },
   {
     tagId: 12,
     title: "Cooperative",
     filterKey: "Cooperative",
-    icon: "bxs-group",
+    icon: "../assets/cooperative.png",
   },
-  { tagId: 3, title: "Adventure", filterKey: "Adventure", icon: "bx-compass" },
+  { tagId: 3, title: "Adventure", filterKey: "Adventure", icon: "../assets/adventure.png" },
 ];
 
 let savedWishlistGameIds = new Set();
@@ -158,7 +158,7 @@ async function renderCategorySections() {
         <section class="new container">
           <div class="heading">
             <div class="left-heading">
-              <i class="bx ${cat.icon}"></i>
+              <img src="${cat.icon}" alt="${cat.title} icon" style="width: 25px; height: 25px;" />
               <h2>${cat.title} Games</h2>
             </div>
             <div class="right-heading">
@@ -227,7 +227,7 @@ async function fetchAndRenderActionGames() {
         <section class="new container">
           <div class="heading">
             <div class="left-heading">
-              <i class="bx bx-joystick"></i>
+              <img src="../assets/action.png" alt="Action icon" style="width: 25px; height: 25px;" />
               <h2>Action Games</h2>
             </div>
             <div class="right-heading">
