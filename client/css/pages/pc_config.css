@@ -187,7 +187,12 @@ select.pc-input {
   font-size: 14px;
   outline: none;
   transition: border-color 0.2s, background-color 0.2s, color 0.2s;
-  box-sizing: border-box;
+}
+
+select.pc-input option {
+  background-color: var(--card-bg, #161324);
+  color: var(--text-primary, #ffffff);
+  padding: 8px;
 }
 
 .pc-input:focus,

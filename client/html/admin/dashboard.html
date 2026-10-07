@@ -1057,11 +1057,13 @@
           </div>
           <div class="form-group">
             <label for="pc-os">Hệ điều hành</label>
-            <input
-              type="text"
-              id="pc-os"
-              placeholder="Ví dụ: Windows 10, Windows 11..."
-            />
+              <select id="pc-os" class="form-control">
+                <option value="">-- Chọn Hệ điều hành --</option>
+                <option value="Windows 10 32-bit">Windows 10 32-bit</option>
+                <option value="Windows 10 64-bit">Windows 10 64-bit</option>
+                <option value="Windows 11 32-bit">Windows 11 32-bit</option>
+                <option value="Windows 11 64-bit">Windows 11 64-bit</option>
+              </select>
           </div>
           <div class="form-group">
             <label>CPU <span style="color: red">*</span></label>

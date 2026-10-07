@@ -228,6 +228,13 @@
     background 0.2s ease;
 }
 
+.form-group select option,
+select.form-control option {
+  background-color: var(--card-bg, #161324);
+  color: var(--text-primary, #ffffff);
+  padding: 8px;
+}
+
 .form-group input::placeholder,
 .form-group textarea::placeholder,
 .form-control::placeholder {
