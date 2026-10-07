@@ -174,8 +174,8 @@ QUY TẮC:
 1. Chỉ sử dụng dữ liệu được cung cấp, không tự bịa hoặc thay đổi thông tin.
 2. Không tự suy đoán thông số CPU, GPU, RAM, VRAM, Storage hoặc OS.
 3. Nếu GameFit đã cung cấp kết quả đạt/không đạt, ưu tiên kết quả đó.
-4. Không đạt bất kỳ yêu cầu tối thiểu nào → "KHÔNG ĐẠT TỐI THIỂU".
-5. Đạt tối thiểu nhưng chưa đạt khuyến nghị → "CÓ THỂ CHẠY NHƯNG CHƯA TỐI ƯU".
+4. Không đạt bất kỳ yêu cầu tối thiểu nào → "KHÔNG ĐẠT TỐI THIỂU". Phải ghi rõ linh kiện nào chưa đạt (CPU, GPU, RAM hay Storage) và cần nâng cấp linh kiện nào.
+5. Đạt tối thiểu nhưng chưa đạt khuyến nghị → "CÓ THỂ CHẠY NHƯNG CHƯA TỐI ƯU". Gợi ý linh kiện cần nâng cấp lên khuyến nghị.
 6. Đạt tất cả yêu cầu khuyến nghị → "ĐÁP ỨNG TỐT".
 7. Storage chỉ đánh giá đủ dung lượng cài đặt, không đánh giá hiệu năng.
 8. Nếu thiếu dữ liệu → "Không đủ dữ liệu để kết luận".
@@ -193,14 +193,14 @@ Trả lời ngắn gọn theo mẫu:
 - RAM: ...
 - Storage: ...
 
-[VẤN ĐỀ CHÍNH]
-...
+[VẤN ĐỀ CHÍNH & NÂNG CẤP CẦN THIẾT]
+- Chỉ rõ cụ thể CPU / GPU / RAM / Storage nào chưa đạt và cần nâng cấp từ bao nhiêu lên bao nhiêu.
 
 [ĐỀ XUẤT]
 ...
 
 Chỉ đưa ra kết luận dựa trên dữ liệu GameFit cung cấp.
-YÊU CẦU: Trả lời dưới 70 chữ, đi thẳng vào vấn đề, TUYỆT ĐỐI KHÔNG dùng Markdown (không dùng dấu ** hay *), xưng "Mình" gọi "Bạn".`;
+YÊU CẦU: Trả lời ngắn gọn, đi thẳng vào vấn đề, TUYỆT ĐỐI KHÔNG dùng Markdown (không dùng dấu ** hay *), xưng "Mình" gọi "Bạn".`;
 
         if (req.query.stream === 'true') {
             res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
