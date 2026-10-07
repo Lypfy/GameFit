@@ -173,3 +173,13 @@ function initNavbarLiveSearch() {
     }
   });
 }
+
+// Khởi tạo Chatbot AI toàn cục
+(function initGlobalChatbot() {
+  const isInSub = window.location.pathname.toLowerCase().includes('/user/') || window.location.pathname.toLowerCase().includes('/admin/');
+  const jsPrefix = isInSub ? '../../js/' : '../js/';
+  const chatbotScript = document.createElement('script');
+  chatbotScript.src = `${jsPrefix}components/chatbot.js`;
+  chatbotScript.defer = true;
+  document.head.appendChild(chatbotScript);
+})();

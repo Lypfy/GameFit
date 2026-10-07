@@ -46,6 +46,9 @@
   const commentsList = document.getElementById('comments-list');
   const commentsEmpty = document.getElementById('comments-empty');
 
+  const btnAiSummarize = document.getElementById('btn-ai-summarize');
+  const aiSummaryBox = document.getElementById('ai-review-summary');
+
   const btnOpenModal = document.getElementById('btn-open-review-modal');
   const reviewModal = document.getElementById('review-modal');
   const reviewModalOverlay = document.getElementById('review-modal-overlay');
@@ -129,10 +132,13 @@
 
     if (reviews.length === 0) {
       commentsEmpty.style.display = 'flex';
+      if (btnAiSummarize) btnAiSummarize.style.display = 'none';
+      if (aiSummaryBox) aiSummaryBox.style.display = 'none';
       return;
     }
 
     commentsEmpty.style.display = 'none';
+    if (btnAiSummarize) btnAiSummarize.style.display = 'inline-flex';
 
     const activeUser = getActiveUser();
 
@@ -248,6 +254,38 @@
     } catch (e) {
       console.error("Lỗi khi tải đánh giá:", e);
     }
+  }
+
+  /* =============================================
+     AI SUMMARIZE
+     ============================================= */
+  if (btnAiSummarize) {
+      btnAiSummarize.addEventListener('click', async () => {
+          const originalText = btnAiSummarize.innerHTML;
+          btnAiSummarize.innerHTML = `<i class="bx bx-loader-alt bx-spin"></i> Đang tóm tắt...`;
+          btnAiSummarize.disabled = true;
+          aiSummaryBox.style.display = 'none';
+          
+          try {
+              const res = await fetch('/api/ai/summarize-reviews', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ reviews: reviews })
+              });
+              const result = await res.json();
+              if (result.success) {
+                  aiSummaryBox.style.display = 'block';
+                  aiSummaryBox.innerHTML = `<strong><i class='bx bxs-bot'></i> AI Tóm Tắt Đánh Giá:</strong><br/>${result.summary}`;
+              } else {
+                  if (typeof showToast === 'function') showToast(result.message || 'Lỗi AI', 'error');
+              }
+          } catch(e) {
+              if (typeof showToast === 'function') showToast('Lỗi kết nối AI', 'error');
+          } finally {
+              btnAiSummarize.innerHTML = originalText;
+              btnAiSummarize.disabled = false;
+          }
+      });
   }
 
   /* =============================================

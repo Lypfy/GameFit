@@ -213,10 +213,16 @@
 
             <!-- Comments -->
             <div class="comments-section">
-              <div class="comments-header">
-                <i class="bx bx-message-square-dots comments-icon"></i>
-                <span id="comments-count-label">0 Comments</span>
+              <div class="comments-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <i class="bx bx-message-square-dots comments-icon"></i>
+                  <span id="comments-count-label">0 Comments</span>
+                </div>
+                <button id="btn-ai-summarize" style="background: linear-gradient(45deg, #8b5cf6, #3b82f6); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; display: none; align-items: center; gap: 5px;">
+                  <i class='bx bxs-magic-wand'></i> AI Tóm tắt
+                </button>
               </div>
+              <div id="ai-review-summary" style="display: none; margin-top: 10px; margin-bottom: 15px; padding: 12px; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.5; white-space: pre-wrap;"></div>
               <div id="comments-list">
                 <div class="comments-empty" id="comments-empty">
                   <i class="bx bx-message-dots empty-chat-icon"></i>
@@ -545,6 +551,8 @@
             margin: 0 0 25px 0;
             font-size: 15px;
           "></p>
+      
+
       <button id="close-result-modal" style="
             background: #3b82f6;
             color: white;

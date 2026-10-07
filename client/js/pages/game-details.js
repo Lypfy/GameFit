@@ -89,14 +89,14 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Xử lý ảnh: Tách link nếu có nhiều ảnh
     let imageUrls = [];
     if (gameInfo.image) {
-       imageUrls = gameInfo.image.split(" ").filter(url => url.trim());
+      imageUrls = gameInfo.image.split(" ").filter(url => url.trim());
     }
 
     // Cập nhật Top Section (Mua / Tải)
     // Ảnh đầu tiên chỉ làm ảnh nền (ảnh cover cột phải)
     document.getElementById("gd-cover-img").src =
       imageUrls.length > 0 ? imageUrls[0] : "../assets/default-game.png";
-    
+
     document.getElementById("gd-download-btn").href =
       gameInfo.download_url || "#";
     document.getElementById("gd-dev-name").textContent =
@@ -121,96 +121,96 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Render Media Gallery
     const mainMediaContainer = document.getElementById("steam-main-media");
     const thumbnailsContainer = document.getElementById("steam-thumbnails");
-    
+
     // Bỏ các ảnh bìa (header, capsule) khỏi gallery để tránh bị mờ
     let galleryImages = imageUrls.filter((url, idx) => {
-       if (idx === 0) return false; // Luôn bỏ ảnh đầu tiên vì đã dùng làm cover
-       if (url.includes('capsule') || url.includes('header')) return false; // Bỏ các ảnh capsule/header khác
-       return true;
+      if (idx === 0) return false; // Luôn bỏ ảnh đầu tiên vì đã dùng làm cover
+      if (url.includes('capsule') || url.includes('header')) return false; // Bỏ các ảnh capsule/header khác
+      return true;
     });
     let galleryVideos = [];
     if (gameInfo.trailer_url) {
-       galleryVideos = gameInfo.trailer_url.split(" ").filter(url => url.trim());
+      galleryVideos = gameInfo.trailer_url.split(" ").filter(url => url.trim());
     }
-    
+
     let mediaItems = [];
     let imgIdx = 0;
     let vidIdx = 0;
-    
+
     // Trộn ảnh và video theo pattern: video video - ảnh - ảnh
     while (imgIdx < galleryImages.length || vidIdx < galleryVideos.length) {
-       if (vidIdx < galleryVideos.length) {
-          mediaItems.push({ type: 'video', url: galleryVideos[vidIdx++] });
-       }
-       if (vidIdx < galleryVideos.length) {
-          mediaItems.push({ type: 'video', url: galleryVideos[vidIdx++] });
-       }
-       if (imgIdx < galleryImages.length) {
-          mediaItems.push({ type: 'image', url: galleryImages[imgIdx++] });
-       }
-       if (imgIdx < galleryImages.length) {
-          mediaItems.push({ type: 'image', url: galleryImages[imgIdx++] });
-       }
+      if (vidIdx < galleryVideos.length) {
+        mediaItems.push({ type: 'video', url: galleryVideos[vidIdx++] });
+      }
+      if (vidIdx < galleryVideos.length) {
+        mediaItems.push({ type: 'video', url: galleryVideos[vidIdx++] });
+      }
+      if (imgIdx < galleryImages.length) {
+        mediaItems.push({ type: 'image', url: galleryImages[imgIdx++] });
+      }
+      if (imgIdx < galleryImages.length) {
+        mediaItems.push({ type: 'image', url: galleryImages[imgIdx++] });
+      }
     }
-    
-    if(mediaItems.length === 0) {
-       mediaItems.push({ type: 'image', url: imageUrls.length > 0 ? imageUrls[0] : '../assets/default-game.png' });
+
+    if (mediaItems.length === 0) {
+      mediaItems.push({ type: 'image', url: imageUrls.length > 0 ? imageUrls[0] : '../assets/default-game.png' });
     }
 
     let currentMediaIndex = 0;
 
     function renderMainMedia(index) {
-       const item = mediaItems[index];
-       const navButtons = `
+      const item = mediaItems[index];
+      const navButtons = `
          <button class="media-nav-btn prev" id="media-prev"><i class='bx bx-chevron-left'></i></button>
          <button class="media-nav-btn next" id="media-next"><i class='bx bx-chevron-right'></i></button>
        `;
-       if(item.type === 'video') {
-          mainMediaContainer.innerHTML = `<video src="${item.url}" controls autoplay muted class="main-media-item"></video>` + navButtons;
-       } else {
-          mainMediaContainer.innerHTML = `<img src="${item.url}" class="main-media-item" />` + navButtons;
-       }
+      if (item.type === 'video') {
+        mainMediaContainer.innerHTML = `<video src="${item.url}" controls autoplay muted class="main-media-item"></video>` + navButtons;
+      } else {
+        mainMediaContainer.innerHTML = `<img src="${item.url}" class="main-media-item" />` + navButtons;
+      }
 
-       if (thumbnailsContainer) {
-          thumbnailsContainer.querySelectorAll('.thumbnail-item').forEach(t => t.classList.remove('active'));
-          const activeThumb = thumbnailsContainer.querySelector(`.thumbnail-item[data-index="${index}"]`);
-          if (activeThumb) activeThumb.classList.add('active');
-       }
+      if (thumbnailsContainer) {
+        thumbnailsContainer.querySelectorAll('.thumbnail-item').forEach(t => t.classList.remove('active'));
+        const activeThumb = thumbnailsContainer.querySelector(`.thumbnail-item[data-index="${index}"]`);
+        if (activeThumb) activeThumb.classList.add('active');
+      }
 
-       document.getElementById('media-prev').addEventListener('click', (e) => {
-          e.stopPropagation();
-          currentMediaIndex = (currentMediaIndex - 1 + mediaItems.length) % mediaItems.length;
-          renderMainMedia(currentMediaIndex);
-       });
-       document.getElementById('media-next').addEventListener('click', (e) => {
-          e.stopPropagation();
-          currentMediaIndex = (currentMediaIndex + 1) % mediaItems.length;
-          renderMainMedia(currentMediaIndex);
-       });
+      document.getElementById('media-prev').addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentMediaIndex = (currentMediaIndex - 1 + mediaItems.length) % mediaItems.length;
+        renderMainMedia(currentMediaIndex);
+      });
+      document.getElementById('media-next').addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentMediaIndex = (currentMediaIndex + 1) % mediaItems.length;
+        renderMainMedia(currentMediaIndex);
+      });
     }
 
     if (mainMediaContainer && thumbnailsContainer) {
-       renderMainMedia(currentMediaIndex);
-       
-       thumbnailsContainer.innerHTML = mediaItems.map((item, index) => {
-          if (item.type === 'video') {
-             return `<div class="thumbnail-item ${index === 0 ? 'active' : ''}" data-index="${index}">
+      renderMainMedia(currentMediaIndex);
+
+      thumbnailsContainer.innerHTML = mediaItems.map((item, index) => {
+        if (item.type === 'video') {
+          return `<div class="thumbnail-item ${index === 0 ? 'active' : ''}" data-index="${index}">
                         <div class="video-play-icon"><i class='bx bx-play-circle'></i></div>
                         <video src="${item.url}" class="thumb-media"></video>
                      </div>`;
-          } else {
-             return `<div class="thumbnail-item ${index === 0 ? 'active' : ''}" data-index="${index}">
+        } else {
+          return `<div class="thumbnail-item ${index === 0 ? 'active' : ''}" data-index="${index}">
                         <img src="${item.url}" class="thumb-media" />
                      </div>`;
-          }
-       }).join('');
+        }
+      }).join('');
 
-       thumbnailsContainer.querySelectorAll('.thumbnail-item').forEach(thumb => {
-          thumb.addEventListener('click', function() {
-             currentMediaIndex = parseInt(this.getAttribute('data-index'));
-             renderMainMedia(currentMediaIndex);
-          });
-       });
+      thumbnailsContainer.querySelectorAll('.thumbnail-item').forEach(thumb => {
+        thumb.addEventListener('click', function () {
+          currentMediaIndex = parseInt(this.getAttribute('data-index'));
+          renderMainMedia(currentMediaIndex);
+        });
+      });
     }
 
     // Cập nhật Mô tả
@@ -467,8 +467,15 @@ document.addEventListener("click", async (e) => {
       if (result.success) {
         showResultPopup("success", "Tương thích tốt!");
       } else {
+        const reqList = document.querySelectorAll("#cc-req-list p");
+        const gameSpecsText = `OS: ${reqList[0]?.innerText}, CPU: ${reqList[1]?.innerText}, GPU: ${reqList[2]?.innerText}, RAM: ${reqList[3]?.innerText}`;
+
+        const pcCard = selectBtn.closest(".cc-pc-card");
+        const pcSpecs = pcCard.querySelectorAll(".cc-spec-item p");
+        const userSpecsText = `OS: ${pcSpecs[0]?.innerText}, RAM: ${pcSpecs[1]?.innerText}, CPU: ${pcSpecs[2]?.innerText}, GPU: ${pcSpecs[4]?.innerText}`;
+
         // Truyền thẳng câu báo lỗi (ví dụ: "Cpu không phù hợp") vào popup
-        showResultPopup("error", result.message);
+        showResultPopup("error", result.message, null, gameSpecsText, userSpecsText);
       }
     } catch (error) {
       selectBtn.innerHTML = originalText;
@@ -491,16 +498,16 @@ document.addEventListener("click", async (e) => {
 });
 
 // --- HÀM VẼ POPUP THÔNG BÁO KẾT QUẢ ---
-function showResultPopup(type, title, message) {
+function showResultPopup(type, title, message, gameSpecsText = null, userSpecsText = null) {
   const modal = document.getElementById("result-modal");
   const icon = document.getElementById("result-icon");
   const titleEl = document.getElementById("result-title");
   const msgEl = document.getElementById("result-message");
-
   if (type === "success") {
     icon.innerHTML =
       '<i class="bx bxs-check-circle" style="color: #4ade80;"></i>';
     titleEl.style.color = "#4ade80"; // Màu xanh lá
+    if (aiContainer) aiContainer.style.display = "none";
   } else {
     icon.innerHTML = '<i class="bx bxs-x-circle" style="color: #ff4757;"></i>';
     titleEl.style.color = "#ff4757"; // Màu đỏ
@@ -531,7 +538,7 @@ document.addEventListener("click", (e) => {
 });
 
 // --- XỬ LÝ CHUYỂN TAB CỘNG ĐỒNG ---
-window.openCommunityTab = function(tabId, clickedBtn) {
+window.openCommunityTab = function (tabId, clickedBtn) {
   // Ẩn tất cả tab nội dung
   const contents = document.querySelectorAll('.community-tab-content');
   contents.forEach(content => {

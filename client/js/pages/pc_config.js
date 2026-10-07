@@ -561,6 +561,7 @@ async function handleCheckCompatibility(e) {
     }
   }
 
+
   // Hiển thị khung kết quả & cuộn xuống
   const resultSec = document.getElementById("check-result-section");
   if (resultSec) {
@@ -665,3 +666,4 @@ function parseBenchmarkScore(str) {
   }
   return 6000;
 }
+
