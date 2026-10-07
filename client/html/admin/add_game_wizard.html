@@ -178,11 +178,43 @@
             </div>
 
             <div class="form-group full-width">
-              <label class="form-label">Ảnh bìa game (Cover Image)</label>
-              <div class="dropzone">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label class="form-label">Hình ảnh game (Ảnh bìa & Screenshots)</label>
+                <span class="image-count-badge" id="image-count-text">Đã chọn 0 ảnh</span>
+              </div>
+
+              <!-- Input file ẩn -->
+              <input type="file" id="game-image-input" multiple accept="image/*" style="display: none;" />
+
+              <!-- Vùng kéo thả ảnh -->
+              <div class="dropzone" id="image-dropzone">
                 <i class="bx bx-cloud-upload"></i>
-                <p>Kéo thả ảnh vào đây, hoặc click để chọn file</p>
-                <span>Hỗ trợ định dạng: JPG, PNG (Tối đa 5MB)</span>
+                <p>Kéo thả ảnh vào đây, hoặc click để chọn file từ máy</p>
+                <span>Hỗ trợ định dạng: JPG, PNG, WEBP, GIF (Tối đa 10MB/ảnh) - Có thể chọn nhiều ảnh cùng lúc</span>
+                
+                <div class="dropzone-actions-bar">
+                  <button type="button" class="btn-file-select" id="btn-browse-files">
+                    <i class="bx bx-folder-open"></i> Chọn ảnh từ bộ nhớ
+                  </button>
+                </div>
+              </div>
+
+              <!-- Thêm qua URL -->
+              <div class="image-url-box">
+                <input type="url" class="form-control" id="input-image-url" placeholder="Hoặc dán URL ảnh trực tiếp (https://...)" />
+                <button type="button" class="btn-file-select" id="btn-add-url" style="white-space: nowrap;">
+                  <i class="bx bx-plus"></i> Thêm URL
+                </button>
+              </div>
+
+              <!-- Khung xem trước danh sách ảnh -->
+              <div id="image-preview-wrapper" style="display: none; margin-top: 16px;">
+                <div class="image-preview-header">
+                  <h4>Danh sách ảnh đã chọn (Ảnh 1 là ảnh bìa)</h4>
+                </div>
+                <div class="image-preview-grid" id="image-preview-grid">
+                  <!-- JavaScript sẽ render các ảnh vào đây -->
+                </div>
               </div>
             </div>
           </div>
@@ -494,6 +526,12 @@
       const btnCancel = document.getElementById("btn-cancel");
       const btnFinish = document.getElementById("btn-finish");
 
+      if (btnCancel) {
+        btnCancel.addEventListener("click", () => {
+          window.location.href = "dashboard.html";
+        });
+      }
+
       const marker1 = document.getElementById("step-marker-1");
       const marker2 = document.getElementById("step-marker-2");
       const stepperLine = document.getElementById("stepper-line");
@@ -591,6 +629,152 @@
         marker1.classList.add("active");
       });
 
+      // --- Image Drag & Drop & Upload Logic ---
+      let selectedImageItems = []; // [{ type: 'file', file: File, preview: string }, { type: 'url', url: string, preview: string }]
+
+      const dropzone = document.getElementById("image-dropzone");
+      const imageFileInput = document.getElementById("game-image-input");
+      const btnBrowseFiles = document.getElementById("btn-browse-files");
+      const inputImageUrl = document.getElementById("input-image-url");
+      const btnAddUrl = document.getElementById("btn-add-url");
+      const imagePreviewWrapper = document.getElementById("image-preview-wrapper");
+      const imagePreviewGrid = document.getElementById("image-preview-grid");
+      const imageCountText = document.getElementById("image-count-text");
+
+      // Click to browse files
+      if (dropzone) {
+        dropzone.addEventListener("click", (e) => {
+          if (e.target.closest("button") || e.target.closest("input")) return;
+          imageFileInput.click();
+        });
+      }
+      if (btnBrowseFiles) {
+        btnBrowseFiles.addEventListener("click", (e) => {
+          e.stopPropagation();
+          imageFileInput.click();
+        });
+      }
+
+      if (imageFileInput) {
+        imageFileInput.addEventListener("change", (e) => {
+          handleFiles(e.target.files);
+          imageFileInput.value = "";
+        });
+      }
+
+      // Drag and Drop events
+      if (dropzone) {
+        ["dragenter", "dragover"].forEach((eventName) => {
+          dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.add("dragover");
+          }, false);
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+          dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove("dragover");
+          }, false);
+        });
+
+        dropzone.addEventListener("drop", (e) => {
+          const dt = e.dataTransfer;
+          const files = dt.files;
+          handleFiles(files);
+        });
+      }
+
+      function handleFiles(files) {
+        if (!files || files.length === 0) return;
+        Array.from(files).forEach((file) => {
+          if (!file.type.startsWith("image/")) {
+            alert(`File ${file.name} không phải là hình ảnh hợp lệ!`);
+            return;
+          }
+          if (file.size > 10 * 1024 * 1024) {
+            alert(`File ${file.name} vượt quá dung lượng 10MB!`);
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            selectedImageItems.push({
+              type: "file",
+              file: file,
+              preview: e.target.result
+            });
+            renderImagePreviews();
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Add URL directly
+      if (btnAddUrl) {
+        btnAddUrl.addEventListener("click", () => {
+          const url = inputImageUrl.value.trim();
+          if (!url) return;
+          selectedImageItems.push({
+            type: "url",
+            url: url,
+            preview: url
+          });
+          inputImageUrl.value = "";
+          renderImagePreviews();
+        });
+      }
+
+      if (inputImageUrl) {
+        inputImageUrl.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            btnAddUrl.click();
+          }
+        });
+      }
+
+      function renderImagePreviews() {
+        if (!imagePreviewWrapper || !imagePreviewGrid || !imageCountText) return;
+        if (selectedImageItems.length === 0) {
+          imagePreviewWrapper.style.display = "none";
+          imageCountText.innerText = "Đã chọn 0 ảnh";
+          return;
+        }
+
+        imagePreviewWrapper.style.display = "block";
+        imageCountText.innerText = `Đã chọn ${selectedImageItems.length} ảnh (${selectedImageItems.length > 0 ? "Ảnh 1 là ảnh bìa" : ""})`;
+
+        imagePreviewGrid.innerHTML = selectedImageItems.map((item, index) => {
+          const isCover = index === 0;
+          return `
+            <div class="image-preview-card ${isCover ? "is-cover" : ""}">
+              <img src="${item.preview}" alt="Preview ${index + 1}" />
+              <span class="image-badge-tag ${isCover ? "cover" : "screenshot"}">
+                ${isCover ? "★ Ảnh bìa" : `Ảnh ${index + 1}`}
+              </span>
+              <div class="image-card-actions">
+                ${!isCover ? `<button type="button" class="btn-card-action btn-card-set-cover" onclick="setCoverImage(${index})"><i class='bx bx-star'></i> Đặt làm ảnh bìa</button>` : ""}
+                <button type="button" class="btn-card-action btn-card-remove" onclick="removeImage(${index})"><i class='bx bx-trash'></i> Xóa</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      window.setCoverImage = function(index) {
+        if (index <= 0 || index >= selectedImageItems.length) return;
+        const [target] = selectedImageItems.splice(index, 1);
+        selectedImageItems.unshift(target);
+        renderImagePreviews();
+      };
+
+      window.removeImage = function(index) {
+        selectedImageItems.splice(index, 1);
+        renderImagePreviews();
+      };
+
       // Finish Logic
       btnFinish.addEventListener("click", () => {
         confirmDialog.classList.add("show");
@@ -623,6 +807,48 @@
         }).filter(Boolean);
         const nameTag = tagList.join(", ");
 
+        const baseUrl = typeof API_URL !== "undefined" ? API_URL : "http://localhost:5000/api";
+
+        // Tải các file ảnh local lên Server trước
+        let finalImageUrls = [];
+        const filesToUpload = selectedImageItems.filter((item) => item.type === "file");
+
+        if (filesToUpload.length > 0) {
+          const formData = new FormData();
+          filesToUpload.forEach((item) => {
+            formData.append("images", item.file);
+          });
+
+          try {
+            const uploadRes = await fetch(`${baseUrl}/games/upload-images`, {
+              method: "POST",
+              body: formData,
+            });
+            const uploadResult = await uploadRes.json();
+            if (uploadResult.success && uploadResult.data) {
+              let uploadedIdx = 0;
+              selectedImageItems.forEach((item) => {
+                if (item.type === "file") {
+                  finalImageUrls.push(uploadResult.data[uploadedIdx++]);
+                } else if (item.type === "url") {
+                  finalImageUrls.push(item.url);
+                }
+              });
+            } else {
+              alert(uploadResult.message || "Không thể tải ảnh lên máy chủ!");
+              return;
+            }
+          } catch (uploadErr) {
+            console.error("Lỗi upload file:", uploadErr);
+            alert("Lỗi khi tải file ảnh lên máy chủ: " + uploadErr.message);
+            return;
+          }
+        } else {
+          finalImageUrls = selectedImageItems.map((item) => item.url);
+        }
+
+        const imageString = finalImageUrls.join(" ");
+
         const payload = {
           name: gameName,
           description: description,
@@ -631,10 +857,10 @@
           name_tag: nameTag,
           release_date: releaseDate,
           download_url: downloadUrl,
+          image: imageString
         };
 
         try {
-          const baseUrl = typeof API_URL !== "undefined" ? API_URL : "http://localhost:5000/api";
           const res = await fetch(`${baseUrl}/games/add`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
