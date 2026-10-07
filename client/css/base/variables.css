@@ -13,19 +13,20 @@
 
 :root {
   --main-color: #fa5353;
-  --dark-color: #0b0914;
-  --light-color: #151221;
+  --dark-color: #110e1f;
+  --light-color: #1d192d;
   --text-color: hsl(0, 0%, 92%);
-  --bg-main: #07060c;
-  --bg-modal: #0f0d18;
-  --bg-input: #0a0812;
-  --border-color: #1f1b2e;
-  --border-hover: #312b48;
+  --bg-main: #131022;
+  --bg-modal: #25203b;
+  --bg-card: #25203b;
+  --bg-input: #161324;
+  --border-color: #312a4a;
+  --border-hover: #4c4172;
   --primary: #f43f5e;
   --primary-hover: #e11d48;
   --text-primary: #f0f2f5;
-  --text-secondary: #8c97ab;
-  --text-muted: #5e687e;
+  --text-secondary: #9da8be;
+  --text-muted: #6b7791;
   --danger: #ff4d4f;
   --success: #10b981;
   --radius-sm: 8px;
@@ -34,12 +35,12 @@
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
 
   /* Dynamic Theme Tokens */
-  --header-bg: rgba(11, 9, 20, 0.95);
-  --card-bg: #151221;
-  --dropdown-bg: #100e19;
-  --icon-bg: #161322;
-  --input-bg: #0a0812;
-  --table-hover: rgba(255, 255, 255, 0.04);
+  --header-bg: rgba(29, 25, 45, 0.92);
+  --card-bg: #25203b;
+  --dropdown-bg: #25203b;
+  --icon-bg: #2b2545;
+  --input-bg: #161324;
+  --table-hover: rgba(255, 255, 255, 0.05);
 }
 
 [data-theme="light"] {
@@ -48,7 +49,8 @@
   --text-color: #1e293b;
   --bg-main: #f8fafc;
   --bg-modal: #ffffff;
-  --bg-input: #e2e8f0;
+  --bg-card: #ffffff;
+  --bg-input: #f1f5f9;
   --border-color: #cbd5e1;
   --border-hover: #94a3b8;
   --primary: #fa5353;
@@ -81,9 +83,11 @@ img {
 }
 
 body {
-  background-color: var(--dark-color);
+  background-color: var(--light-color);
   color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .container {
@@ -91,4 +95,3 @@ body {
   width: 100%;
   margin: auto;
 }
-

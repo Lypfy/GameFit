@@ -1,540 +1,806 @@
 <!doctype html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Fit - Chi tiết Game</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/components/cpu-gpu-combobox.css" />
+    <link rel="stylesheet" href="../css/pages/game-details.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="../js/utils/theme.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game Fit - Chi tiết Game</title>
-  <link rel="stylesheet" href="../css/style.css" />
-  <link rel="stylesheet" href="../css/components/cpu-gpu-combobox.css" />
-  <link rel="stylesheet" href="../css/pages/game-details.css" />
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-  <script src="../js/utils/theme.js"></script>
-</head>
-
-<body>
-  <header>
-    <div class="nav container">
-      <a href="home.html" class="logo">Game<span>Fit</span></a>
-      <ul class="nav-links">
-        <li><a href="home.html">Home</a></li>
-        <li><a href="games.html" class="active">Games</a></li>
-        <li><a href="pc_config.html">PC Check</a></li>
-        <li class="admin-only" style="display: none">
-          <a href="admin/dashboard.html">Dashboard</a>
-        </li>
-      </ul>
-      <div class="nav-icon">
-        <div class="search search-poda">
-          <div class="search-glow"></div>
-          <div class="search-dark-border-bg"></div>
-          <div class="search-dark-border-bg"></div>
-          <div class="search-dark-border-bg"></div>
-          <div class="search-white"></div>
-          <div class="search-border"></div>
-          <div class="search-main">
-            <input type="text" placeholder="Tìm kiếm..." class="search-input" />
-            <div class="search-input-mask"></div>
-            <div class="search-pink-mask"></div>
-            <div class="search-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2"
-                stroke-linejoin="round" stroke-linecap="round" fill="none">
-                <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
-                <line stroke="#d6d6e6" y2="16.65" y1="22" x2="16.65" x1="22"></line>
-              </svg>
-            </div>
-          </div>
-        </div>
-        <label class="switch" title="Chuyển đổi giao diện Sáng / Tối">
-          <input type="checkbox" id="theme-toggle" />
-          <span class="slider"></span>
-        </label>
-        <div class="user-box">
-          <span id="user-display-name" class="user-display-name"></span>
-          <i class="bx bx-user" id="user-icon"></i>
-          <div class="user-dropdown" id="user-dropdown">
-            <div class="dropdown-header">
-              <div class="user-avatar">
-                <i class="bx bxs-user-circle"></i>
+  <body>
+    <header>
+      <div class="nav container">
+        <a href="home.html" class="logo">Game<span>Fit</span></a>
+        <ul class="nav-links">
+          <li><a href="home.html">Home</a></li>
+          <li><a href="games.html" class="active">Games</a></li>
+          <li><a href="pc_config.html">PC Check</a></li>
+          <li class="admin-only" style="display: none">
+            <a href="admin/dashboard.html">Dashboard</a>
+          </li>
+        </ul>
+        <div class="nav-icon">
+          <div class="search search-poda">
+            <div class="search-glow"></div>
+            <div class="search-dark-border-bg"></div>
+            <div class="search-dark-border-bg"></div>
+            <div class="search-dark-border-bg"></div>
+            <div class="search-white"></div>
+            <div class="search-border"></div>
+            <div class="search-main">
+              <input
+                type="text"
+                placeholder="Tìm kiếm..."
+                class="search-input"
+              />
+              <div class="search-input-mask"></div>
+              <div class="search-pink-mask"></div>
+              <div class="search-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  fill="none"
+                >
+                  <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
+                  <line
+                    stroke="#d6d6e6"
+                    y2="16.65"
+                    y1="22"
+                    x2="16.65"
+                    x1="22"
+                  ></line>
+                </svg>
               </div>
-              <div class="user-info">
-                <h4 id="dropdown-username">Admin</h4>
-                <span id="dropdown-role" class="role-badge admin">Admin</span>
-              </div>
-            </div>
-            <ul class="dropdown-menu-list">
-              <li class="menu-item">
-                <a href="#" id="btn-my-pc-config">
-                  <i class="bx bx-desktop"></i><span>Cấu hình máy tính</span>
-                </a>
-              </li>
-              <li class="menu-item">
-                <a href="user/wishlist.html">
-                  <i class="bx bx-bookmark-heart"></i><span>My Wishlist</span>
-                </a>
-              </li>
-              <li class="menu-item">
-                <a href="#" id="btn-update-profile">
-                  <i class="bx bx-user-pin"></i><span>Cập nhật thông tin cá nhân</span>
-                </a>
-              </li>
-              <li class="dropdown-divider"></li>
-              <li class="menu-item logout-item">
-                <a href="#" id="btn-logout">
-                  <i class="bx bx-log-out"></i><span>Đăng xuất</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="menu-icon">
-          <div class="line1"></div>
-          <div class="line2"></div>
-          <div class="line3"></div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main class="game-details-container container">
-    <!-- Loading -->
-    <div id="loading-state" style="text-align: center; padding: 5rem 0">
-      <i class="bx bx-loader-alt bx-spin" style="font-size: 3rem; color: var(--main-color)"></i>
-      <p style="margin-top: 1rem; color: #fff">Đang tải thông tin game...</p>
-    </div>
-
-    <!-- Error -->
-    <div id="error-state" style="display: none; text-align: center; padding: 5rem 0">
-      <i class="bx bx-error-circle" style="font-size: 4rem; color: #ff6b6b"></i>
-      <h2 style="margin-top: 1rem; color: #fff" id="error-message">
-        Không tìm thấy thông tin game!
-      </h2>
-      <a href="games.html" class="btn-back">Quay lại danh sách Game</a>
-    </div>
-
-    <!-- Nội dung chính -->
-    <div id="game-content-state" style="display: none">
-      <div class="game-header-banner">
-        <h1 id="gd-title">Tên Game</h1>
-        <p class="gd-subtitle" id="gd-subtitle">A downloadable PC Game</p>
-      </div>
-
-      <div class="steam-top-section">
-        <!-- Left Col: Media -->
-        <div class="steam-media-col">
-          <div class="steam-main-media" id="steam-main-media">
-            <!-- Inject media -->
-          </div>
-          <div class="steam-thumbnails-nav" id="steam-thumbnails">
-            <!-- Inject thumbnails -->
-          </div>
-        </div>
-
-        <!-- Right Col: Info -->
-        <div class="steam-info-col">
-          <img id="gd-cover-img" src="../assets/default-game.png" alt="Cover" class="steam-header-img" loading="lazy" />
-          <div class="steam-game-details">
-            <div class="detail-row">
-              <span class="detail-label">Nhà phát triển:</span>
-              <span class="detail-value" id="gd-dev-name">...</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Nhà phát hành:</span>
-              <span class="detail-value" id="gd-pub-name">...</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Ngày phát hành:</span>
-              <span class="detail-value" id="gd-release-date">...</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Nền tảng:</span>
-              <span class="detail-value" id="gd-platform"><i class="bx bx-windows"></i> PC</span>
             </div>
           </div>
-          <div class="steam-action-buttons">
-            <a href="#" id="gd-download-btn" target="_blank" class="btn-download-now">Download Now</a>
-            <span id="gd-wishlist-container"></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="gd-main-content">
-        <div class="gd-tags-box">
-          <h3>Thể loại</h3>
-          <div id="gd-tags-container" class="gd-tags-wrapper"></div>
-        </div>
-        <div class="gd-description">
-          <h3>Mô tả</h3>
-          <p id="gd-desc-text">Mô tả game...</p>
-        </div>
-        <div class="gd-requirements-box">
-          <h3>Yêu cầu hệ thống</h3>
-          <div id="gd-requirements-list" class="req-grid"></div>
-        </div>
-      </div>
-
-      <!-- Khu vực Cộng Đồng (Tabs) -->
-      <section class="community-section">
-        <div class="tab-buttons-container">
-          <button class="tab-btn active" onclick="openCommunityTab('tab-reviews', this)">
-            <i class="bx bx-star"></i> Đánh giá Game
-          </button>
-          <button class="tab-btn" onclick="openCommunityTab('tab-pc-recommend', this)">
-            <i class="bx bx-desktop"></i> Đề xuất Cấu hình
-          </button>
-        </div>
-
-        <!-- Nội dung Tab 1: Đánh giá -->
-        <div id="tab-reviews" class="community-tab-content active">
-          <section class="review-section" id="review-section" style="margin-top: 0; padding-top: 10px;">
-            <!-- Rating Card -->
-            <div class="rating-card">
-              <div class="rating-card__left">
-                <img id="review-game-thumb" src="../assets/default-game.png" alt="Game Thumbnail" class="rating-thumb" loading="lazy" />
-                <div class="rating-info">
-                  <p class="rating-label">GAME RATING</p>
-                  <div class="star-display" id="star-display"></div>
-                  <div class="rating-score">
-                    <span id="avg-score">0.0</span>
-                    <span class="rating-sep">/ 5</span>
-                  </div>
-                  <p class="review-count">
-                    <i class="bx bx-comment"></i>
-                    <span id="review-count-label">0 Review(s)</span>
-                  </p>
+          <label class="switch" title="Chuyển đổi giao diện Sáng / Tối">
+            <input type="checkbox" id="theme-toggle" />
+            <span class="slider"></span>
+          </label>
+          <div class="user-box">
+            <span id="user-display-name" class="user-display-name"></span>
+            <i class="bx bx-user" id="user-icon"></i>
+            <div class="user-dropdown" id="user-dropdown">
+              <div class="dropdown-header">
+                <div class="user-avatar">
+                  <i class="bx bxs-user-circle"></i>
+                </div>
+                <div class="user-info">
+                  <h4 id="dropdown-username">Admin</h4>
+                  <span id="dropdown-role" class="role-badge admin">Admin</span>
                 </div>
               </div>
-              <div class="rating-card__right">
-                <button class="btn-write-review" id="btn-open-review-modal">
-                  Viết đánh giá
-                </button>
-              </div>
+              <ul class="dropdown-menu-list">
+                <li class="menu-item">
+                  <a href="#" id="btn-my-pc-config">
+                    <i class="bx bx-desktop"></i><span>Cấu hình máy tính</span>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="user/wishlist.html">
+                    <i class="bx bx-bookmark-heart"></i><span>My Wishlist</span>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" id="btn-update-profile">
+                    <i class="bx bx-user-pin"></i
+                    ><span>Cập nhật thông tin cá nhân</span>
+                  </a>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li class="menu-item logout-item">
+                  <a href="#" id="btn-logout">
+                    <i class="bx bx-log-out"></i><span>Đăng xuất</span>
+                  </a>
+                </li>
+              </ul>
             </div>
+          </div>
+          <div class="menu-icon">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+          </div>
+        </div>
+      </div>
+    </header>
 
-            <!-- Comments -->
-            <div class="comments-section">
-              <div class="comments-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                  <i class="bx bx-message-square-dots comments-icon"></i>
-                  <span id="comments-count-label">0 Comments</span>
-                </div>
-                <button id="btn-ai-summarize" style="background: linear-gradient(45deg, #8b5cf6, #3b82f6); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; display: none; align-items: center; gap: 5px;">
-                  <i class='bx bxs-magic-wand'></i> AI Tóm tắt
-                </button>
-              </div>
-              <div id="ai-review-summary" style="display: none; margin-top: 10px; margin-bottom: 15px; padding: 12px; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.5; white-space: pre-wrap;"></div>
-              <div id="comments-list">
-                <div class="comments-empty" id="comments-empty">
-                  <i class="bx bx-message-dots empty-chat-icon"></i>
-                  <p>No comments yet. Be the first to comment on this game!</p>
-                </div>
-              </div>
-            </div>
-          </section>
+    <main class="game-details-container container">
+      <!-- Loading -->
+      <div id="loading-state" style="text-align: center; padding: 5rem 0">
+        <i
+          class="bx bx-loader-alt bx-spin"
+          style="font-size: 3rem; color: var(--main-color)"
+        ></i>
+        <p style="margin-top: 1rem; color: #fff">Đang tải thông tin game...</p>
+      </div>
+
+      <!-- Error -->
+      <div
+        id="error-state"
+        style="display: none; text-align: center; padding: 5rem 0"
+      >
+        <i
+          class="bx bx-error-circle"
+          style="font-size: 4rem; color: #ff6b6b"
+        ></i>
+        <h2 style="margin-top: 1rem; color: #fff" id="error-message">
+          Không tìm thấy thông tin game!
+        </h2>
+        <a href="games.html" class="btn-back">Quay lại danh sách Game</a>
+      </div>
+
+      <!-- Nội dung chính -->
+      <div id="game-content-state" style="display: none">
+        <div class="game-header-banner">
+          <h1 id="gd-title">Tên Game</h1>
+          <p class="gd-subtitle" id="gd-subtitle">A downloadable PC Game</p>
         </div>
 
-        <!-- Nội dung Tab 2: Đề xuất cấu hình -->
-        <div id="tab-pc-recommend" class="community-tab-content" style="display: none;">
-          <div class="pc-recommend-header">
-            <h3><i class="bx bx-server"></i> Cấu hình do cộng đồng GameFit đề xuất</h3>
-            <button class="btn-write-review" id="btn-open-recommend-modal">
-              <i class="bx bx-plus"></i> Đề xuất cấu hình của bạn
+        <div class="steam-top-section">
+          <!-- Left Col: Media -->
+          <div class="steam-media-col">
+            <div class="steam-main-media" id="steam-main-media">
+              <!-- Inject media -->
+            </div>
+            <div class="steam-thumbnails-nav" id="steam-thumbnails">
+              <!-- Inject thumbnails -->
+            </div>
+          </div>
+
+          <!-- Right Col: Info -->
+          <div class="steam-info-col">
+            <img
+              id="gd-cover-img"
+              src="../assets/default-game.png"
+              alt="Cover"
+              class="steam-header-img"
+              loading="lazy"
+            />
+            <div class="steam-game-details">
+              <div class="detail-row">
+                <span class="detail-label">Nhà phát triển:</span>
+                <span class="detail-value" id="gd-dev-name">...</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Nhà phát hành:</span>
+                <span class="detail-value" id="gd-pub-name">...</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Ngày phát hành:</span>
+                <span class="detail-value" id="gd-release-date">...</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Nền tảng:</span>
+                <span class="detail-value" id="gd-platform"
+                  ><i class="bx bx-windows"></i> PC</span
+                >
+              </div>
+            </div>
+            <div class="steam-action-buttons">
+              <a
+                href="#"
+                id="gd-download-btn"
+                target="_blank"
+                class="btn-download-now"
+                >Download Now</a
+              >
+              <span id="gd-wishlist-container"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="gd-main-content">
+          <div class="gd-tags-box">
+            <h3>Thể loại</h3>
+            <div id="gd-tags-container" class="gd-tags-wrapper"></div>
+          </div>
+          <div class="gd-description">
+            <h3>Mô tả</h3>
+            <p id="gd-desc-text">Mô tả game...</p>
+          </div>
+          <div class="gd-requirements-box">
+            <h3>Yêu cầu hệ thống</h3>
+            <div id="gd-requirements-list" class="req-grid"></div>
+          </div>
+        </div>
+
+        <!-- Khu vực Cộng Đồng (Tabs) -->
+        <section class="community-section">
+          <div class="tab-buttons-container">
+            <button
+              class="tab-btn active"
+              onclick="openCommunityTab('tab-reviews', this)"
+            >
+              <i class="bx bx-star"></i> Đánh giá Game
+            </button>
+            <button
+              class="tab-btn"
+              onclick="openCommunityTab('tab-pc-recommend', this)"
+            >
+              <i class="bx bx-desktop"></i> Đề xuất Cấu hình
             </button>
           </div>
-          <div id="pc-recommend-list" class="pc-recommend-list">
-            <div class="comments-empty">
-              <i class="bx bx-desktop empty-chat-icon"></i>
-              <p>Chưa có cấu hình nào được đề xuất. Hãy là người đầu tiên!</p>
+
+          <!-- Nội dung Tab 1: Đánh giá -->
+          <div id="tab-reviews" class="community-tab-content active">
+            <section
+              class="review-section"
+              id="review-section"
+              style="margin-top: 0; padding-top: 10px"
+            >
+              <!-- Rating Card -->
+              <div class="rating-card">
+                <div class="rating-card__left">
+                  <img
+                    id="review-game-thumb"
+                    src="../assets/default-game.png"
+                    alt="Game Thumbnail"
+                    class="rating-thumb"
+                    loading="lazy"
+                  />
+                  <div class="rating-info">
+                    <p class="rating-label">GAME RATING</p>
+                    <div class="star-display" id="star-display"></div>
+                    <div class="rating-score">
+                      <span id="avg-score">0.0</span>
+                      <span class="rating-sep">/ 5</span>
+                    </div>
+                    <p class="review-count">
+                      <i class="bx bx-comment"></i>
+                      <span id="review-count-label">0 Review(s)</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="rating-card__right">
+                  <button class="btn-write-review" id="btn-open-review-modal">
+                    Viết đánh giá
+                  </button>
+                </div>
+              </div>
+
+              <!-- Comments -->
+              <div class="comments-section">
+                <div
+                  class="comments-header"
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  "
+                >
+                  <div>
+                    <i class="bx bx-message-square-dots comments-icon"></i>
+                    <span id="comments-count-label">0 Comments</span>
+                  </div>
+                  <button
+                    id="btn-ai-summarize"
+                    style="
+                      background: linear-gradient(45deg, #8b5cf6, #3b82f6);
+                      color: white;
+                      border: none;
+                      padding: 6px 12px;
+                      border-radius: 6px;
+                      cursor: pointer;
+                      font-size: 13px;
+                      font-weight: 500;
+                      display: none;
+                      align-items: center;
+                      gap: 5px;
+                    "
+                  >
+                    <i class="bx bxs-magic-wand"></i> AI Tóm tắt
+                  </button>
+                </div>
+                <div
+                  id="ai-review-summary"
+                  style="
+                    display: none;
+                    margin-top: 10px;
+                    margin-bottom: 15px;
+                    padding: 12px;
+                    background: var(--light-color);
+                    border: 1px solid var(--border-color);
+                    border-radius: 8px;
+                    color: var(--text-color);
+                    font-size: 14px;
+                    line-height: 1.5;
+                    white-space: pre-wrap;
+                  "
+                ></div>
+                <div id="comments-list">
+                  <div class="comments-empty" id="comments-empty">
+                    <i class="bx bx-message-dots empty-chat-icon"></i>
+                    <p>
+                      No comments yet. Be the first to comment on this game!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Nội dung Tab 2: Đề xuất cấu hình -->
+          <div
+            id="tab-pc-recommend"
+            class="community-tab-content"
+            style="display: none"
+          >
+            <div class="pc-recommend-header">
+              <h3>
+                <i class="bx bx-server"></i> Cấu hình do cộng đồng GameFit đề
+                xuất
+              </h3>
+              <button class="btn-write-review" id="btn-open-recommend-modal">
+                <i class="bx bx-plus"></i> Đề xuất cấu hình của bạn
+              </button>
+            </div>
+            <div id="pc-recommend-list" class="pc-recommend-list">
+              <div class="comments-empty">
+                <i class="bx bx-desktop empty-chat-icon"></i>
+                <p>Chưa có cấu hình nào được đề xuất. Hãy là người đầu tiên!</p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-    </div>
-  </main>
-
-  <!-- Modal Viết / Chỉnh sửa Đánh Giá -->
-  <div class="modal" id="review-modal">
-    <div class="modal-overlay" id="review-modal-overlay"></div>
-    <div class="modal-card review-modal-card">
-      <div class="modal-header">
-        <h3>
-          <i class="bx bx-star"></i>
-          <span id="review-modal-title">Viết đánh giá</span>
-        </h3>
-        <button type="button" class="close-btn" id="close-review-modal">
-          &times;
-        </button>
+        </section>
       </div>
-      <form id="review-form">
-        <div class="form-group">
-          <label>Đánh giá của bạn</label>
-          <div class="star-picker" id="star-picker">
-            <i class="bx bx-star star-pick" data-value="1"></i>
-            <i class="bx bx-star star-pick" data-value="2"></i>
-            <i class="bx bx-star star-pick" data-value="3"></i>
-            <i class="bx bx-star star-pick" data-value="4"></i>
-            <i class="bx bx-star star-pick" data-value="5"></i>
-          </div>
-          <input type="hidden" id="review-rating-value" value="0" />
-        </div>
-        <div class="form-group">
-          <label for="review-comment">Nhận xét</label>
-          <textarea id="review-comment" rows="5" placeholder="Chia sẻ cảm nhận của bạn về game này..."></textarea>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-cancel" id="cancel-review-btn">
-            Hủy
-          </button>
-          <button type="submit" class="btn-save" id="submit-review-btn">
-            Gửi đánh giá
+    </main>
+
+    <!-- Modal Viết / Chỉnh sửa Đánh Giá -->
+    <div class="modal" id="review-modal">
+      <div class="modal-overlay" id="review-modal-overlay"></div>
+      <div class="modal-card review-modal-card">
+        <div class="modal-header">
+          <h3>
+            <i class="bx bx-star"></i>
+            <span id="review-modal-title">Viết đánh giá</span>
+          </h3>
+          <button type="button" class="close-btn" id="close-review-modal">
+            &times;
           </button>
         </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal Báo cáo bình luận vi phạm -->
-  <div class="modal" id="report-modal">
-    <div class="modal-overlay" id="report-modal-overlay"></div>
-    <div class="modal-card modal-compact">
-      <div class="modal-header">
-        <h3>
-          <i class="bx bx-shield-quarter"></i>
-          <span>Báo cáo bình luận</span>
-        </h3>
-        <button type="button" class="close-btn" id="close-report-modal">&times;</button>
-      </div>
-      <form id="report-form">
-        <div class="modal-body" style="padding: 0 0 16px 0;">
-          <input type="hidden" id="report-review-id" value="" />
-          <p class="report-guide-text">
-            Báo cáo bình luận của <strong id="report-target-user" class="report-target-user">Người dùng</strong>:
-          </p>
-
-          <div class="form-group" style="margin-bottom: 14px;">
-            <label class="form-label" style="margin-bottom: 8px;">Chọn lý do vi phạm <span class="required">*</span></label>
-            <div class="report-reasons-list">
-              <label class="report-reason-item">
-                <input type="radio" name="report-reason" value="Ngôn từ xúc phạm, thù hận" checked />
-                <span class="reason-custom-radio"></span>
-                <span class="reason-text">Ngôn từ xúc phạm, thù hận</span>
-              </label>
-              <label class="report-reason-item">
-                <input type="radio" name="report-reason" value="Spam hoặc quảng cáo" />
-                <span class="reason-custom-radio"></span>
-                <span class="reason-text">Spam hoặc quảng cáo</span>
-              </label>
-              <label class="report-reason-item">
-                <input type="radio" name="report-reason" value="Tiết lộ cốt truyện (Spoiler)" />
-                <span class="reason-custom-radio"></span>
-                <span class="reason-text">Tiết lộ cốt truyện (Spoiler)</span>
-              </label>
-              <label class="report-reason-item">
-                <input type="radio" name="report-reason" value="Lý do khác" />
-                <span class="reason-custom-radio"></span>
-                <span class="reason-text">Lý do khác</span>
-              </label>
-            </div>
-          </div>
-
+        <form id="review-form">
           <div class="form-group">
-            <label for="report-detail" class="form-label" style="margin-bottom: 6px;">Chi tiết bổ sung (tùy chọn)</label>
-            <textarea id="report-detail" rows="3" placeholder="Nhập thêm chi tiết nếu cần giải thích rõ hơn..."></textarea>
+            <label>Đánh giá của bạn</label>
+            <div class="star-picker" id="star-picker">
+              <i class="bx bx-star star-pick" data-value="1"></i>
+              <i class="bx bx-star star-pick" data-value="2"></i>
+              <i class="bx bx-star star-pick" data-value="3"></i>
+              <i class="bx bx-star star-pick" data-value="4"></i>
+              <i class="bx bx-star star-pick" data-value="5"></i>
+            </div>
+            <input type="hidden" id="review-rating-value" value="0" />
           </div>
-        </div>
-
-        <div class="modal-footer" style="padding-top: 14px;">
-          <button type="button" class="btn-cancel" id="cancel-report-btn">Hủy</button>
-          <button type="submit" class="btn-save btn-danger" id="submit-report-btn">
-            <i class="bx bx-paper-plane"></i> Gửi báo cáo
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal Đề xuất cấu hình -->
-  <div class="modal" id="recommend-modal">
-    <div class="modal-overlay" id="recommend-modal-overlay"></div>
-    <div class="modal-card modal-compact">
-      <div class="modal-header">
-        <h3>
-          <i class="bx bx-server"></i>
-          <span>Đề xuất cấu hình</span>
-        </h3>
-        <button type="button" class="close-btn" id="close-recommend-modal">&times;</button>
-      </div>
-      <form id="recommend-form">
-        <div class="modal-body" style="padding: 0 0 16px 0;">
-          <div class="form-group" style="margin-bottom: 14px;">
-            <label class="form-label" style="margin-bottom: 8px; color: white;">Chọn máy tính của bạn <span style="color: red">*</span></label>
-            <select id="recommend-pc-select" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #334155; background: #1e293b; color: white; font-size: 14px; outline: none;">
-              <option value="">-- Đang tải... --</option>
-            </select>
-          </div>
-
-          <div class="form-group" style="margin-bottom: 14px;">
-            <label class="form-label" style="margin-bottom: 8px; color: white;">Loại cấu hình <span style="color: red">*</span></label>
-            <select id="recommend-type-select" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #334155; background: #1e293b; color: white; font-size: 14px; outline: none;">
-              <option value="MINIMUM">Tối thiểu (Chơi được, setting thấp)</option>
-              <option value="RECOMMENDED">Đề nghị (Chơi tốt, setting trung bình-cao)</option>
-            </select>
-          </div>
-
           <div class="form-group">
-            <label for="recommend-note" class="form-label" style="margin-bottom: 6px; color: white;">Ghi chú thêm (tùy chọn)</label>
-            <textarea id="recommend-note" rows="3" placeholder="Chia sẻ thêm về trải nghiệm (FPS, setting...) với cấu hình này..." style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #334155; background: #1e293b; color: white; font-family: inherit; font-size: 14px; resize: vertical; outline: none;"></textarea>
+            <label for="review-comment">Nhận xét</label>
+            <textarea
+              id="review-comment"
+              rows="5"
+              placeholder="Chia sẻ cảm nhận của bạn về game này..."
+            ></textarea>
           </div>
-        </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" id="cancel-review-btn">
+              Hủy
+            </button>
+            <button type="submit" class="btn-save" id="submit-review-btn">
+              Gửi đánh giá
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-        <div class="modal-footer" style="padding-top: 14px;">
-          <button type="button" class="btn-cancel" id="cancel-recommend-btn">Hủy</button>
-          <button type="submit" class="btn-save" id="submit-recommend-btn" style="display: flex; align-items: center; gap: 5px;">
-            <i class="bx bx-share"></i> Đăng đề xuất
+    <!-- Modal Báo cáo bình luận vi phạm -->
+    <div class="modal" id="report-modal">
+      <div class="modal-overlay" id="report-modal-overlay"></div>
+      <div class="modal-card modal-compact">
+        <div class="modal-header">
+          <h3>
+            <i class="bx bx-shield-quarter"></i>
+            <span>Báo cáo bình luận</span>
+          </h3>
+          <button type="button" class="close-btn" id="close-report-modal">
+            &times;
           </button>
         </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal Xác nhận Xóa dùng chung (Confirm Delete Modal) -->
-  <div class="modal" id="confirm-delete-modal">
-    <div class="modal-overlay" id="confirm-delete-overlay"></div>
-    <div class="modal-card modal-sm">
-      <div class="modal-header">
-        <button type="button" class="close-btn" id="close-confirm-delete-modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <i class="bx bx-error-circle confirm-icon"></i>
-        <h3 id="confirm-delete-title" class="confirm-title">
-          Xác nhận xóa đánh giá
-        </h3>
-        <p id="confirm-delete-message" class="confirm-message">
-          Bạn có chắc chắn muốn xóa đánh giá của mình không? Thao tác này không thể hoàn tác.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-cancel" id="cancel-confirm-delete-btn">Hủy</button>
-        <button type="button" class="btn-save btn-danger" id="submit-confirm-delete-btn">Xóa ngay</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal My PC Config -->
-  <div class="modal" id="my_pc_config">
-    <div class="modal-overlay" id="pc-config-overlay"></div>
-    <div class="modal-card modal-compact modal-scrollable-form">
-      <div class="modal-header">
-        <h3><i class="bx bx-desktop"></i> Cấu hình máy tính của tôi</h3>
-        <button type="button" class="close-btn" id="close-pc-config-modal">
-          &times;
-        </button>
-      </div>
-      <form id="pc-config-form">
-        <input type="hidden" id="pc-id" />
-        <div class="form-group">
-          <label for="pc-name">Tên máy tính</label>
-          <input type="text" id="pc-name" required placeholder="Nhập tên máy tính..." />
-        </div>
-        <div class="form-group">
-          <label for="pc-os">Hệ điều hành</label>
-          <input type="text" id="pc-os" placeholder="Ví dụ: Windows 10, Windows 11..." />
-        </div>
-        <div class="form-group">
-          <label>CPU <span style="color: red">*</span></label>
-          <div class="hw-combobox" data-hw-type="cpu">
-            <div class="hw-combobox-input-wrap">
-              <input type="text" class="hw-combobox-text" data-hw-search placeholder="Nhập CPU..." autocomplete="off" />
-              <i class="bx bx-chevron-down hw-combobox-icon"></i>
-            </div>
-            <input type="hidden" id="pc-cpu" data-hw-id />
-            <div class="hw-combobox-dropdown"></div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>GPU <span style="color: red">*</span></label>
-          <div class="hw-combobox" data-hw-type="gpu">
-            <div class="hw-combobox-input-wrap">
-              <input type="text" class="hw-combobox-text" data-hw-search placeholder="Nhập GPU..." autocomplete="off" />
-              <i class="bx bx-chevron-down hw-combobox-icon"></i>
-            </div>
-            <input type="hidden" id="pc-gpu" data-hw-id />
-            <div class="hw-combobox-dropdown"></div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="pc-ram">RAM (GB)</label>
-          <input type="number" id="pc-ram" required placeholder="Nhập dung lượng RAM..." />
-        </div>
-        <div class="form-group">
-          <label for="pc-storage">Lưu trữ (GB)</label>
-          <input type="number" id="pc-storage" required placeholder="Nhập dung lượng lưu trữ..." />
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-cancel" id="cancel-pc-config-btn">
-            Hủy
-          </button>
-          <button type="submit" class="btn-save">Lưu cấu hình</button>
-        </div>
-      </form>
-    </div>
-  </div>
-  <!-- Modal Kiểm Tra Cấu Hình (Giao diện chia 2 cột) -->
-  <div class="modal" id="check-config-modal">
-    <div class="modal-overlay" id="check-config-overlay"></div>
-    <div class="modal-card cc-modal-card">
-      <div class="cc-modal-header">
-        <div class="cc-header-title">
-          <i class="bx bx-desktop"></i>
-          <div>
-            <h3>Chọn cấu hình máy tính</h3>
-            <p>
-              So sánh cấu hình máy của bạn với yêu cầu của game để có trải
-              nghiệm tốt nhất.
+        <form id="report-form">
+          <div class="modal-body" style="padding: 0 0 16px 0">
+            <input type="hidden" id="report-review-id" value="" />
+            <p class="report-guide-text">
+              Báo cáo bình luận của
+              <strong id="report-target-user" class="report-target-user"
+                >Người dùng</strong
+              >:
             </p>
-          </div>
-        </div>
-        <button type="button" class="close-btn" id="close-check-config-modal">
-          &times;
-        </button>
-      </div>
 
-      <div class="cc-modal-body">
-        <!-- Cột trái: Yêu cầu hệ thống -->
-        <div class="cc-left-panel">
-          <div class="cc-game-info">
-            <img id="cc-game-img" src="../assets/default-game.png" alt="Game Cover" loading="lazy" />
-            <div class="cc-game-title">
-              <h4 id="cc-game-name">Tên Game</h4>
-              <span class="cc-badge">PC</span>
+            <div class="form-group" style="margin-bottom: 14px">
+              <label class="form-label" style="margin-bottom: 8px"
+                >Chọn lý do vi phạm <span class="required">*</span></label
+              >
+              <div class="report-reasons-list">
+                <label class="report-reason-item">
+                  <input
+                    type="radio"
+                    name="report-reason"
+                    value="Ngôn từ xúc phạm, thù hận"
+                    checked
+                  />
+                  <span class="reason-custom-radio"></span>
+                  <span class="reason-text">Ngôn từ xúc phạm, thù hận</span>
+                </label>
+                <label class="report-reason-item">
+                  <input
+                    type="radio"
+                    name="report-reason"
+                    value="Spam hoặc quảng cáo"
+                  />
+                  <span class="reason-custom-radio"></span>
+                  <span class="reason-text">Spam hoặc quảng cáo</span>
+                </label>
+                <label class="report-reason-item">
+                  <input
+                    type="radio"
+                    name="report-reason"
+                    value="Tiết lộ cốt truyện (Spoiler)"
+                  />
+                  <span class="reason-custom-radio"></span>
+                  <span class="reason-text">Tiết lộ cốt truyện (Spoiler)</span>
+                </label>
+                <label class="report-reason-item">
+                  <input type="radio" name="report-reason" value="Lý do khác" />
+                  <span class="reason-custom-radio"></span>
+                  <span class="reason-text">Lý do khác</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label
+                for="report-detail"
+                class="form-label"
+                style="margin-bottom: 6px"
+                >Chi tiết bổ sung (tùy chọn)</label
+              >
+              <textarea
+                id="report-detail"
+                rows="3"
+                placeholder="Nhập thêm chi tiết nếu cần giải thích rõ hơn..."
+              ></textarea>
             </div>
           </div>
-          <h4 class="cc-panel-title">
-            <i class="bx bx-joystick"></i> Yêu cầu hệ thống
-          </h4>
-          <div id="cc-req-list">
-            <!-- JS sẽ bơm cấu hình tối thiểu/đề xuất vào đây -->
+
+          <div class="modal-footer" style="padding-top: 14px">
+            <button type="button" class="btn-cancel" id="cancel-report-btn">
+              Hủy
+            </button>
+            <button
+              type="submit"
+              class="btn-save btn-danger"
+              id="submit-report-btn"
+            >
+              <i class="bx bx-paper-plane"></i> Gửi báo cáo
+            </button>
           </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Đề xuất cấu hình -->
+    <div class="modal" id="recommend-modal">
+      <div class="modal-overlay" id="recommend-modal-overlay"></div>
+      <div class="modal-card modal-compact">
+        <div class="modal-header">
+          <h3>
+            <i class="bx bx-server"></i>
+            <span>Đề xuất cấu hình</span>
+          </h3>
+          <button type="button" class="close-btn" id="close-recommend-modal">
+            &times;
+          </button>
+        </div>
+        <form id="recommend-form">
+          <div class="modal-body" style="padding: 0 0 16px 0">
+            <div class="form-group" style="margin-bottom: 14px">
+              <label class="form-label" style="margin-bottom: 8px; color: white"
+                >Chọn máy tính của bạn <span style="color: red">*</span></label
+              >
+              <select
+                id="recommend-pc-select"
+                required
+                style="
+                  width: 100%;
+                  padding: 10px;
+                  border-radius: 4px;
+                  border: 1px solid #334155;
+                  background: #1e293b;
+                  color: white;
+                  font-size: 14px;
+                  outline: none;
+                "
+              >
+                <option value="">-- Đang tải... --</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px">
+              <label class="form-label" style="margin-bottom: 8px; color: white"
+                >Loại cấu hình <span style="color: red">*</span></label
+              >
+              <select
+                id="recommend-type-select"
+                required
+                style="
+                  width: 100%;
+                  padding: 10px;
+                  border-radius: 4px;
+                  border: 1px solid #334155;
+                  background: #1e293b;
+                  color: white;
+                  font-size: 14px;
+                  outline: none;
+                "
+              >
+                <option value="MINIMUM">
+                  Tối thiểu (Chơi được, setting thấp)
+                </option>
+                <option value="RECOMMENDED">
+                  Đề nghị (Chơi tốt, setting trung bình-cao)
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label
+                for="recommend-note"
+                class="form-label"
+                style="margin-bottom: 6px; color: white"
+                >Ghi chú thêm (tùy chọn)</label
+              >
+              <textarea
+                id="recommend-note"
+                rows="3"
+                placeholder="Chia sẻ thêm về trải nghiệm (FPS, setting...) với cấu hình này..."
+                style="
+                  width: 100%;
+                  padding: 10px;
+                  border-radius: 4px;
+                  border: 1px solid #334155;
+                  background: #1e293b;
+                  color: white;
+                  font-family: inherit;
+                  font-size: 14px;
+                  resize: vertical;
+                  outline: none;
+                "
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer" style="padding-top: 14px">
+            <button type="button" class="btn-cancel" id="cancel-recommend-btn">
+              Hủy
+            </button>
+            <button
+              type="submit"
+              class="btn-save"
+              id="submit-recommend-btn"
+              style="display: flex; align-items: center; gap: 5px"
+            >
+              <i class="bx bx-share"></i> Đăng đề xuất
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Xác nhận Xóa dùng chung (Confirm Delete Modal) -->
+    <div class="modal" id="confirm-delete-modal">
+      <div class="modal-overlay" id="confirm-delete-overlay"></div>
+      <div class="modal-card modal-sm">
+        <div class="modal-header">
+          <button
+            type="button"
+            class="close-btn"
+            id="close-confirm-delete-modal"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <i class="bx bx-error-circle confirm-icon"></i>
+          <h3 id="confirm-delete-title" class="confirm-title">
+            Xác nhận xóa đánh giá
+          </h3>
+          <p id="confirm-delete-message" class="confirm-message">
+            Bạn có chắc chắn muốn xóa đánh giá của mình không? Thao tác này
+            không thể hoàn tác.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn-cancel"
+            id="cancel-confirm-delete-btn"
+          >
+            Hủy
+          </button>
+          <button
+            type="button"
+            class="btn-save btn-danger"
+            id="submit-confirm-delete-btn"
+          >
+            Xóa ngay
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal My PC Config -->
+    <div class="modal" id="my_pc_config">
+      <div class="modal-overlay" id="pc-config-overlay"></div>
+      <div class="modal-card modal-compact modal-scrollable-form">
+        <div class="modal-header">
+          <h3><i class="bx bx-desktop"></i> Cấu hình máy tính của tôi</h3>
+          <button type="button" class="close-btn" id="close-pc-config-modal">
+            &times;
+          </button>
+        </div>
+        <form id="pc-config-form">
+          <input type="hidden" id="pc-id" />
+          <div class="form-group">
+            <label for="pc-name">Tên máy tính</label>
+            <input
+              type="text"
+              id="pc-name"
+              required
+              placeholder="Nhập tên máy tính..."
+            />
+          </div>
+          <div class="form-group">
+            <label for="pc-os">Hệ điều hành</label>
+            <input
+              type="text"
+              id="pc-os"
+              placeholder="Ví dụ: Windows 10, Windows 11..."
+            />
+          </div>
+          <div class="form-group">
+            <label>CPU <span style="color: red">*</span></label>
+            <div class="hw-combobox" data-hw-type="cpu">
+              <div class="hw-combobox-input-wrap">
+                <input
+                  type="text"
+                  class="hw-combobox-text"
+                  data-hw-search
+                  placeholder="Nhập CPU..."
+                  autocomplete="off"
+                />
+                <i class="bx bx-chevron-down hw-combobox-icon"></i>
+              </div>
+              <input type="hidden" id="pc-cpu" data-hw-id />
+              <div class="hw-combobox-dropdown"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>GPU <span style="color: red">*</span></label>
+            <div class="hw-combobox" data-hw-type="gpu">
+              <div class="hw-combobox-input-wrap">
+                <input
+                  type="text"
+                  class="hw-combobox-text"
+                  data-hw-search
+                  placeholder="Nhập GPU..."
+                  autocomplete="off"
+                />
+                <i class="bx bx-chevron-down hw-combobox-icon"></i>
+              </div>
+              <input type="hidden" id="pc-gpu" data-hw-id />
+              <div class="hw-combobox-dropdown"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="pc-ram">RAM (GB)</label>
+            <input
+              type="number"
+              id="pc-ram"
+              required
+              placeholder="Nhập dung lượng RAM..."
+            />
+          </div>
+          <div class="form-group">
+            <label for="pc-storage">Lưu trữ (GB)</label>
+            <input
+              type="number"
+              id="pc-storage"
+              required
+              placeholder="Nhập dung lượng lưu trữ..."
+            />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" id="cancel-pc-config-btn">
+              Hủy
+            </button>
+            <button type="submit" class="btn-save">Lưu cấu hình</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Modal Kiểm Tra Cấu Hình (Giao diện chia 2 cột) -->
+    <div class="modal" id="check-config-modal">
+      <div class="modal-overlay" id="check-config-overlay"></div>
+      <div class="modal-card cc-modal-card">
+        <div class="cc-modal-header">
+          <div class="cc-header-title">
+            <i class="bx bx-desktop"></i>
+            <div>
+              <h3>Chọn cấu hình máy tính</h3>
+              <p>
+                So sánh cấu hình máy của bạn với yêu cầu của game để có trải
+                nghiệm tốt nhất.
+              </p>
+            </div>
+          </div>
+          <button type="button" class="close-btn" id="close-check-config-modal">
+            &times;
+          </button>
         </div>
 
-        <!-- Cột phải: Danh sách PC -->
-        <div class="cc-right-panel">
-          <div class="cc-right-header">
+        <div class="cc-modal-body">
+          <!-- Cột trái: Yêu cầu hệ thống -->
+          <div class="cc-left-panel">
+            <div class="cc-game-info">
+              <img
+                id="cc-game-img"
+                src="../assets/default-game.png"
+                alt="Game Cover"
+                loading="lazy"
+              />
+              <div class="cc-game-title">
+                <h4 id="cc-game-name">Tên Game</h4>
+                <span class="cc-badge">PC</span>
+              </div>
+            </div>
             <h4 class="cc-panel-title">
-              <i class="bx bx-desktop"></i> Danh sách cấu hình máy tính
+              <i class="bx bx-joystick"></i> Yêu cầu hệ thống
             </h4>
+            <div id="cc-req-list">
+              <!-- JS sẽ bơm cấu hình tối thiểu/đề xuất vào đây -->
+            </div>
           </div>
-          <div id="check-config-list">
-            <!-- JS sẽ bơm danh sách PC của User vào đây -->
+
+          <!-- Cột phải: Danh sách PC -->
+          <div class="cc-right-panel">
+            <div class="cc-right-header">
+              <h4 class="cc-panel-title">
+                <i class="bx bx-desktop"></i> Danh sách cấu hình máy tính
+              </h4>
+            </div>
+            <div id="check-config-list">
+              <!-- JS sẽ bơm danh sách PC của User vào đây -->
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <!-- Modal Thông báo Kết quả -->
-  <div class="modal" id="result-modal">
-    <div class="modal-overlay" id="result-overlay"></div>
-    <div class="modal-card" style="
+    <!-- Modal Thông báo Kết quả -->
+    <div class="modal" id="result-modal">
+      <div class="modal-overlay" id="result-overlay"></div>
+      <div
+        class="modal-card"
+        style="
           max-width: 400px;
           text-align: center;
           padding: 30px;
@@ -542,18 +808,26 @@
           border: 1px solid #334155;
           border-radius: 12px;
           box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        ">
-      <div id="result-icon" style="font-size: 65px; margin-bottom: 10px"></div>
-      <h3 id="result-title" style="margin: 0 0 15px 0; font-size: 22px"></h3>
-      <p id="result-message" style="
+        "
+      >
+        <div
+          id="result-icon"
+          style="font-size: 65px; margin-bottom: 10px"
+        ></div>
+        <h3 id="result-title" style="margin: 0 0 15px 0; font-size: 22px"></h3>
+        <p
+          id="result-message"
+          style="
             color: #cbd5e1;
             line-height: 1.6;
             margin: 0 0 25px 0;
             font-size: 15px;
-          "></p>
-      
+          "
+        ></p>
 
-      <button id="close-result-modal" style="
+        <button
+          id="close-result-modal"
+          style="
             background: #3b82f6;
             color: white;
             border: none;
@@ -563,23 +837,25 @@
             font-weight: bold;
             width: 100%;
             transition: 0.2s;
-          " onmouseover="this.style.background = '#2563eb'" onmouseout="this.style.background = '#3b82f6'">
-        OK, Đã hiểu
-      </button>
+          "
+          onmouseover="this.style.background = '#2563eb'"
+          onmouseout="this.style.background = '#3b82f6'"
+        >
+          OK, Đã hiểu
+        </button>
+      </div>
     </div>
-  </div>
 
-  <div id="home-toast" class="home-toast"></div>
+    <div id="home-toast" class="home-toast"></div>
 
-  <script src="../js/utils/toast.js" defer></script>
-  <script src="../js/utils/auth-storage.js" defer></script>
-  <script src="../js/components/navbar.js" defer></script>
-  <script src="../js/components/user-dropdown.js" defer></script>
-  <script src="../js/components/profile-modal.js" defer></script>
-  <script src="../js/pages/game-details.js" defer></script>
-  <script src="../js/pages/game-reviews.js" defer></script>
-  <script src="../js/components/cpu-gpu-combobox.js" defer></script>
-  <script src="../js/components/pc-config-modal.js" defer></script>
-</body>
-
+    <script src="../js/utils/toast.js" defer></script>
+    <script src="../js/utils/auth-storage.js" defer></script>
+    <script src="../js/components/navbar.js" defer></script>
+    <script src="../js/components/user-dropdown.js" defer></script>
+    <script src="../js/components/profile-modal.js" defer></script>
+    <script src="../js/pages/game-details.js" defer></script>
+    <script src="../js/pages/game-reviews.js" defer></script>
+    <script src="../js/components/cpu-gpu-combobox.js" defer></script>
+    <script src="../js/components/pc-config-modal.js" defer></script>
+  </body>
 </html>

@@ -1,12 +1,12 @@
 :root {
-    --bg-main: #07060c;
-    --bg-sidebar: #0f0d18;
-    --bg-card: #151221;
-    --bg-card-hover: #1b172a;
-    --bg-input: #0a0812;
-    --bg-modal: #0f0d18;
-    --border-color: #1f1b2e;
-    --border-hover: #312b48;
+    --bg-main: #131022;
+    --bg-sidebar: #25203b;
+    --bg-card: #25203b;
+    --bg-card-hover: #2d2646;
+    --bg-input: #161324;
+    --bg-modal: #25203b;
+    --border-color: #312a4a;
+    --border-hover: #4c4172;
     --primary: #f43f5e;
     --primary-hover: #e11d48;
     --text-primary: #f0f2f5;

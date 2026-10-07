@@ -3,12 +3,14 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  background: var(--header-bg);
+  background: var(--light-color);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-color);
   z-index: 100;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .nav {
@@ -84,7 +86,10 @@ header {
   background: var(--icon-bg);
   border-radius: 50%;
   cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.2s ease;
 }
 
 /* ==========================================================================
@@ -124,7 +129,10 @@ header {
   bottom: 0;
   background-color: var(--background);
   border: 1px solid rgba(255, 255, 255, 0.16);
-  transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease,
+    box-shadow 0.3s ease;
   border-radius: 30px;
 }
 
@@ -138,7 +146,10 @@ header {
   bottom: 15%;
   box-shadow: inset 8px -4px 0px 0px var(--moon-color);
   background: var(--background);
-  transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
+  transition:
+    transform 0.5s ease,
+    box-shadow 0.5s ease,
+    background 0.5s ease;
 }
 
 .switch:hover .slider {
