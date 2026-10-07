@@ -75,9 +75,15 @@ function initChatbot() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
         try {
+            const token = localStorage.getItem('token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
             const res = await fetch('/api/ai/chat', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: headers,
                 body: JSON.stringify({ message: text })
             });
             const data = await res.json();
