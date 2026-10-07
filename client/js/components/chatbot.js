@@ -1,9 +1,15 @@
 function initChatbot() {
     // Inject CSS
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '../css/components/chatbot.css';
-    document.head.appendChild(link);
+    const pathname = window.location.pathname.toLowerCase();
+    const isInSubfolder = pathname.includes('/user/') || pathname.includes('/admin/') || pathname.includes('/auth/');
+    const cssPrefix = isInSubfolder ? '../../css/' : '../css/';
+
+    if (!document.querySelector('link[href*="chatbot.css"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = `${cssPrefix}components/chatbot.css`;
+        document.head.appendChild(link);
+    }
 
     // Inject HTML
     const chatbotHTML = `
@@ -69,9 +75,15 @@ function initChatbot() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
         try {
+            const token = localStorage.getItem('token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
             const res = await fetch('/api/ai/chat', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: headers,
                 body: JSON.stringify({ message: text })
             });
             const data = await res.json();

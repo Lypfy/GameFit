@@ -141,7 +141,8 @@ const updateGame = async (req, res) => {
             name,
             name_tag,
             developer,
-            is_active
+            is_active,
+            image
         } = req.body;
 
         if (!game_id) {
@@ -157,7 +158,8 @@ const updateGame = async (req, res) => {
             name: name.trim(),
             name_tag: name_tag ? name_tag.trim() : '',
             developer: developer ? developer.trim() : '',
-            is_active: is_active ? 1 : 0
+            is_active: is_active ? 1 : 0,
+            image: image ? (Array.isArray(image) ? image.join(' ') : image.trim()) : undefined
         };
 
         const result = await gamesService.updateGame(game);
@@ -211,6 +213,31 @@ const deleteGame = async (req, res) => {
     }
 };
 
+const uploadImages = async (req, res) => {
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Không có file ảnh nào được tải lên'
+            });
+        }
+
+        const urls = req.files.map(file => `../assets/uploads/games/${file.filename}`);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Tải ảnh lên thành công',
+            data: urls
+        });
+    } catch (error) {
+        console.error('Error in uploadImages Controller:', error.message);
+        return res.status(500).json({
+            success: false,
+            message: error.message || 'Lỗi server khi tải ảnh lên'
+        });
+    }
+};
+
 const addGame = async (req, res) => {
     try {
         const {
@@ -220,7 +247,8 @@ const addGame = async (req, res) => {
             developer,
             name_tag,
             release_date,
-            download_url
+            download_url,
+            image
         } = req.body;
 
         if (!name || !name.trim()) {
@@ -237,7 +265,8 @@ const addGame = async (req, res) => {
             developer: developer ? developer.trim() : '',
             name_tag: name_tag ? name_tag.trim() : '',
             release_date: release_date || new Date().toISOString().split('T')[0],
-            download_url: download_url ? download_url.trim() : ''
+            download_url: download_url ? download_url.trim() : '',
+            image: image ? (Array.isArray(image) ? image.join(' ') : image.trim()) : ''
         };
 
         const result = await gamesService.addGame(game);
@@ -313,11 +342,13 @@ module.exports = {
     checkGameCompatibility,
     getCompatibilityPercent,
     getGameByTag,
+    uploadImages,
     addGame,
     deleteGame,
     updateGame,
     getCategories,
     getPublishers
 };
+
 
 

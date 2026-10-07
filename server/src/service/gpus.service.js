@@ -7,9 +7,7 @@ const getGpus = async (params = {}) => {
       const gpu_id = parseInt(params, 10);
       const request = new sql.Request();
       request.input("gpu_id", sql.Int, gpu_id);
-      const result = await request.query(
-        "SELECT gpu_id, name, name AS gpu_name, brand, benchmark_score FROM dbo.fn_GetGpus(@gpu_id)"
-      );
+      const result = await request.execute("dbo.sp_GetGpuById");
       return result.recordset;
     }
 
@@ -22,25 +20,11 @@ const getGpus = async (params = {}) => {
     request.input("search", sql.NVarChar(100), search);
     request.input("offset", sql.Int, offset);
     request.input("limit", sql.Int, limit);
-
-    const query = `
-      SELECT gpu_id, name, name AS gpu_name, brand, benchmark_score 
-      FROM dbo.fn_SearchGpus(@search)
-      ORDER BY gpu_id ASC
-      OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY;
-    `;
-    const countQuery = `
-      SELECT COUNT(*) AS totalItems FROM dbo.fn_SearchGpus(@search);
-    `;
-
-    const result = await request.query(query);
-    const countResult = await new sql.Request()
-      .input("search", sql.NVarChar(100), search)
-      .query(countQuery);
-    const totalItems = countResult.recordset[0]?.totalItems || 0;
-
+    const result = await request.execute("dbo.sp_GetGpusPaging");
+    const data = result.recordsets[0] || [];
+    const totalItems = result.recordsets[1]?.[0]?.totalItems || 0;
     return {
-      data: result.recordset || [],
+      data: data,
       pagination: {
         currentPage: page,
         limit: limit,
@@ -83,7 +67,11 @@ const addGpu = async (gpu_id, name, brand, benchmark_score) => {
 
     const result = await request.execute("dbo.sp_addGpus");
 
-    if (result.rowsAffected && result.rowsAffected[0] === 0 && (!result.recordset || result.recordset.length === 0)) {
+    if (
+      result.rowsAffected &&
+      result.rowsAffected[0] === 0 &&
+      (!result.recordset || result.recordset.length === 0)
+    ) {
       return null;
     }
 
@@ -97,9 +85,16 @@ const addGpu = async (gpu_id, name, brand, benchmark_score) => {
 const updateGpu = async (gpu_id, data = {}, brandArg, scoreArg) => {
   try {
     let id = gpu_id;
-    let gName = typeof data === "object" && data !== null ? (data.gpu_name || data.name) : data;
-    let gBrand = typeof data === "object" && data !== null ? data.brand : brandArg;
-    let gScore = typeof data === "object" && data !== null ? data.benchmark_score : scoreArg;
+    let gName =
+      typeof data === "object" && data !== null
+        ? data.gpu_name || data.name
+        : data;
+    let gBrand =
+      typeof data === "object" && data !== null ? data.brand : brandArg;
+    let gScore =
+      typeof data === "object" && data !== null
+        ? data.benchmark_score
+        : scoreArg;
 
     if (typeof gpu_id === "object" && gpu_id !== null) {
       id = gpu_id.gpu_id || gpu_id.id;
@@ -110,16 +105,29 @@ const updateGpu = async (gpu_id, data = {}, brandArg, scoreArg) => {
 
     const request = new sql.Request();
     request.input("gpu_id", sql.Int, parseInt(id, 10));
-    request.input("name", sql.NVarChar(100), typeof gName === "string" ? gName : null);
-    request.input("brand", sql.NVarChar(50), typeof gBrand === "string" ? gBrand : null);
+    request.input(
+      "name",
+      sql.NVarChar(100),
+      typeof gName === "string" ? gName : null,
+    );
+    request.input(
+      "brand",
+      sql.NVarChar(50),
+      typeof gBrand === "string" ? gBrand : null,
+    );
     request.input(
       "benchmark_score",
       sql.Int,
-      gScore !== undefined && gScore !== null && gScore !== "" ? parseInt(gScore, 10) : null
+      gScore !== undefined && gScore !== null && gScore !== ""
+        ? parseInt(gScore, 10)
+        : null,
     );
 
     const result = await request.execute("dbo.sp_updateGpus");
-    return (result.recordset && result.recordset.length > 0) || (result.rowsAffected && result.rowsAffected[0] > 0);
+    return (
+      (result.recordset && result.recordset.length > 0) ||
+      (result.rowsAffected && result.rowsAffected[0] > 0)
+    );
   } catch (error) {
     console.error("Error in updateGpu Service:", error.message);
     throw new Error("Lỗi khi cập nhật GPU: " + error.message);
@@ -143,12 +151,7 @@ const searchGpuByName = async (name) => {
   try {
     const request = new sql.Request();
     request.input("search", sql.NVarChar(100), name || "");
-
-    const query = `
-      SELECT gpu_id, name, brand, benchmark_score
-      FROM dbo.fn_SearchGpus(@search)
-    `;
-    const result = await request.query(query);
+    const result = await request.execute("dbo.sp_SearchGpusByName");
     return result.recordset || [];
   } catch (error) {
     console.error("Error in searchGpuByName Service:", error.message);

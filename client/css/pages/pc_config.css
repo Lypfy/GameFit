@@ -180,14 +180,19 @@
 select.pc-input {
   width: 100%;
   padding: 11px 14px;
-  background: var(--light-color) !important;
+  background: var(--input-bg, var(--bg-input, var(--light-color)));
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  color: var(--text-color, var(--text-primary));
+  color: var(--text-primary, var(--text-color));
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
-  box-sizing: border-box;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+
+select.pc-input option {
+  background-color: var(--card-bg, #161324);
+  color: var(--text-primary, #ffffff);
+  padding: 8px;
 }
 
 .pc-input:focus,

@@ -167,6 +167,50 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  padding-right: 4px;
+}
+
+/* Custom Scrollbar cho danh sách Thể loại, Nhà phát hành & Body */
+.chip-list,
+.filter-modal-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-hover, rgba(255, 255, 255, 0.22)) transparent;
+}
+
+.chip-list::-webkit-scrollbar,
+.filter-modal-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.chip-list::-webkit-scrollbar-track,
+.filter-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chip-list::-webkit-scrollbar-thumb,
+.filter-modal-body::-webkit-scrollbar-thumb {
+  background: var(--border-hover, rgba(255, 255, 255, 0.22));
+  border-radius: 10px;
+}
+
+.chip-list::-webkit-scrollbar-thumb:hover,
+.filter-modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--main-color, #fa5353);
+}
+
+[data-theme="light"] .chip-list,
+[data-theme="light"] .filter-modal-body {
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+[data-theme="light"] .chip-list::-webkit-scrollbar-thumb,
+[data-theme="light"] .filter-modal-body::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+[data-theme="light"] .chip-list::-webkit-scrollbar-thumb:hover,
+[data-theme="light"] .filter-modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--main-color, #fa5353);
 }
 
 .filter-chip {

@@ -233,6 +233,7 @@ const addGame = async (game) => {
       game.release_date ? new Date(game.release_date) : new Date(),
     );
     request.input("download_url", sql.VarChar(500), game.download_url || "");
+    request.input("image", sql.NVarChar(sql.MAX), game.image || "");
 
     const result = await request.execute("sp_addGame");
 
@@ -264,6 +265,18 @@ const updateGame = async (game) => {
       request.input("is_active", sql.Bit, isActive);
 
       const result = await request.execute("sp_updateGame");
+
+      if (game.image !== undefined) {
+        try {
+          const reqImg = pool.request();
+          reqImg.input("game_id", sql.Int, validId);
+          reqImg.input("image", sql.NVarChar(sql.MAX), game.image);
+          await reqImg.query("UPDATE Games SET image = @image WHERE game_id = @game_id");
+        } catch (imgErr) {
+          console.warn("Lỗi khi cập nhật ảnh game:", imgErr.message);
+        }
+      }
+
       return {
         success: true,
         data: result.recordset || [],
@@ -282,6 +295,18 @@ const updateGame = async (game) => {
         SET name = @name, developer = @developer, is_active = @is_active 
         WHERE game_id = @game_id
       `);
+
+      if (game.image !== undefined) {
+        try {
+          const reqImg = pool.request();
+          reqImg.input("game_id", sql.Int, validId);
+          reqImg.input("image", sql.NVarChar(sql.MAX), game.image);
+          await reqImg.query("UPDATE Games SET image = @image WHERE game_id = @game_id");
+        } catch (imgErr) {
+          console.warn("Lỗi khi cập nhật ảnh game (direct query):", imgErr.message);
+        }
+      }
+
 
       if (tagStr !== undefined && tagStr !== null) {
         try {

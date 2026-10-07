@@ -470,6 +470,113 @@ async function handleCheckCompatibility(e) {
     );
   }
 
+  // 4. Phân tích chi tiết từng linh kiện (CPU, GPU, RAM, Storage) để xác định chính xác linh kiện cần nâng cấp
+  const minCpuName = minReqObj?.cpu_name || minReqObj?.cpu || "Intel Core i5-8400";
+  const minGpuName = minReqObj?.gpu_name || minReqObj?.gpu || "GTX 1060 6GB";
+  const minRam = parseInt(minReqObj?.ram) || 8;
+  const minStorage = parseInt(minReqObj?.storage) || 50;
+
+  const recCpuName = recReqObj?.cpu_name || recReqObj?.cpu || "Intel Core i7-10700K";
+  const recGpuName = recReqObj?.gpu_name || recReqObj?.gpu || "RTX 3060 12GB";
+  const recRam = parseInt(recReqObj?.ram) || 16;
+  const recStorage = parseInt(recReqObj?.storage) || 70;
+
+  const userCpuScore = parseBenchmarkScore(cpuText);
+  const minCpuScore = parseBenchmarkScore(minCpuName) || 4000;
+  const recCpuScore = parseBenchmarkScore(recCpuName) || 8000;
+
+  const userGpuScore = parseBenchmarkScore(gpuText);
+  const minGpuScore = parseBenchmarkScore(minGpuName) || 5000;
+  const recGpuScore = parseBenchmarkScore(recGpuName) || 12000;
+
+  const userRamNum = parseInt(ram) || 0;
+  const userStorageNum = parseInt(storage) || 0;
+
+  const failedMinComponents = [];
+  const failedRecComponents = [];
+
+  // 1. Kiểm tra CPU
+  const cpuEl = document.getElementById("my-cpu-val");
+  if (userCpuScore < minCpuScore) {
+    if (cpuEl) cpuEl.innerHTML = `${cpuText} <span style="color: var(--danger, #ff4d4f); font-weight: 700; font-size: 0.85em;">(Không đạt)</span>`;
+    failedMinComponents.push({
+      type: "CPU",
+      userVal: cpuText,
+      minVal: minCpuName,
+      html: `Cần nâng cấp <strong>CPU</strong>: Máy bạn dùng <strong>${cpuText}</strong> &rarr; Yêu cầu tối thiểu: <strong>${minCpuName}</strong>.`
+    });
+  } else if (userCpuScore < recCpuScore) {
+    if (cpuEl) cpuEl.innerHTML = `${cpuText} <span style="color: #f59e0b; font-weight: 700; font-size: 0.85em;">(Đạt tối thiểu)</span>`;
+    failedRecComponents.push({
+      type: "CPU",
+      userVal: cpuText,
+      recVal: recCpuName,
+      html: `Nên nâng cấp <strong>CPU</strong> lên <strong>${recCpuName}</strong> để hiệu năng tốt hơn.`
+    });
+  } else {
+    if (cpuEl) cpuEl.innerHTML = `${cpuText} <span style="color: var(--success, #10b981); font-weight: 700; font-size: 0.85em;">(Đạt khuyến nghị)</span>`;
+  }
+
+  // 2. Kiểm tra GPU
+  const gpuEl = document.getElementById("my-gpu-val");
+  if (userGpuScore < minGpuScore) {
+    if (gpuEl) gpuEl.innerHTML = `${gpuText} <span style="color: var(--danger, #ff4d4f); font-weight: 700; font-size: 0.85em;">(Không đạt)</span>`;
+    failedMinComponents.push({
+      type: "GPU",
+      userVal: gpuText,
+      minVal: minGpuName,
+      html: `Cần nâng cấp <strong>Card đồ họa (GPU)</strong>: Máy bạn dùng <strong>${gpuText}</strong> &rarr; Yêu cầu tối thiểu: <strong>${minGpuName}</strong>.`
+    });
+  } else if (userGpuScore < recGpuScore) {
+    if (gpuEl) gpuEl.innerHTML = `${gpuText} <span style="color: #f59e0b; font-weight: 700; font-size: 0.85em;">(Đạt tối thiểu)</span>`;
+    failedRecComponents.push({
+      type: "GPU",
+      userVal: gpuText,
+      recVal: recGpuName,
+      html: `Nên nâng cấp <strong>GPU</strong> lên <strong>${recGpuName}</strong> để đạt FPS mượt mà hơn.`
+    });
+  } else {
+    if (gpuEl) gpuEl.innerHTML = `${gpuText} <span style="color: var(--success, #10b981); font-weight: 700; font-size: 0.85em;">(Đạt khuyến nghị)</span>`;
+  }
+
+  // 3. Kiểm tra RAM
+  const ramEl = document.getElementById("my-ram-val");
+  if (userRamNum < minRam) {
+    if (ramEl) ramEl.innerHTML = `${userRamNum} GB <span style="color: var(--danger, #ff4d4f); font-weight: 700; font-size: 0.85em;">(Không đạt)</span>`;
+    failedMinComponents.push({
+      type: "RAM",
+      userVal: `${userRamNum} GB`,
+      minVal: `${minRam} GB`,
+      html: `Cần nâng cấp <strong>RAM</strong>: Máy bạn có <strong>${userRamNum} GB</strong> &rarr; Yêu cầu tối thiểu: <strong>${minRam} GB</strong>.`
+    });
+  } else if (userRamNum < recRam) {
+    if (ramEl) ramEl.innerHTML = `${userRamNum} GB <span style="color: #f59e0b; font-weight: 700; font-size: 0.85em;">(Đạt tối thiểu)</span>`;
+    failedRecComponents.push({
+      type: "RAM",
+      userVal: `${userRamNum} GB`,
+      recVal: `${recRam} GB`,
+      html: `Nên nâng cấp <strong>RAM</strong> lên <strong>${recRam} GB</strong> để thoải mái đa nhiệm.`
+    });
+  } else {
+    if (ramEl) ramEl.innerHTML = `${userRamNum} GB <span style="color: var(--success, #10b981); font-weight: 700; font-size: 0.85em;">(Đạt khuyến nghị)</span>`;
+  }
+
+  // 4. Kiểm tra Storage
+  const storageEl = document.getElementById("my-storage-val");
+  if (userStorageNum < minStorage) {
+    if (storageEl) storageEl.innerHTML = `${userStorageNum} GB <span style="color: var(--danger, #ff4d4f); font-weight: 700; font-size: 0.85em;">(Không đủ)</span>`;
+    failedMinComponents.push({
+      type: "Storage",
+      userVal: `${userStorageNum} GB`,
+      minVal: `${minStorage} GB`,
+      html: `Cần bổ sung <strong>Dung lượng ổ cứng</strong>: Hiện có <strong>${userStorageNum} GB</strong> &rarr; Yêu cầu tối thiểu: <strong>${minStorage} GB</strong>.`
+    });
+  } else if (userStorageNum < recStorage) {
+    if (storageEl) storageEl.innerHTML = `${userStorageNum} GB <span style="color: #f59e0b; font-weight: 700; font-size: 0.85em;">(Đạt tối thiểu)</span>`;
+  } else {
+    if (storageEl) storageEl.innerHTML = `${userStorageNum} GB <span style="color: var(--success, #10b981); font-weight: 700; font-size: 0.85em;">(Đủ dung lượng)</span>`;
+  }
+
   // Cập nhật Biểu đồ tròn, Badge & Nhận xét chi tiết
   const chartDonut = document.getElementById("res-circle-chart");
   const chartNumber = document.getElementById("res-percent-number");
@@ -522,16 +629,30 @@ async function handleCheckCompatibility(e) {
     }
 
     if (commentsList) {
-      commentsList.innerHTML = `
+      let commentsHtml = `
         <div class="res-comment-item warn">
           <i class="bx bx-error-circle"></i>
-          <span>CPU <strong>${cpuText}</strong>, GPU <strong>${gpuText}</strong>, RAM <strong>${ram}GB</strong> của bạn đảm bảo mức tối thiểu nhưng có thể sẽ bị giật lag khi chơi ở thiết lập cấu hình cao.</span>
-        </div>
-        <div class="res-comment-item warn">
-          <i class="bx bx-info-circle"></i>
-          <span>Khuyên bạn nên giảm thiết lập đồ họa xuống mức Low/Medium để tốc độ khung hình (FPS) ổn định hơn.</span>
+          <span>Cấu hình máy của bạn đáp ứng được mức tối thiểu nhưng có thể sẽ bị giật lag khi chơi ở thiết lập cao.</span>
         </div>
       `;
+      if (failedRecComponents.length > 0) {
+        failedRecComponents.forEach(comp => {
+          commentsHtml += `
+            <div class="res-comment-item warn">
+              <i class="bx bx-info-circle"></i>
+              <span>${comp.html}</span>
+            </div>
+          `;
+        });
+      } else {
+        commentsHtml += `
+          <div class="res-comment-item warn">
+            <i class="bx bx-info-circle"></i>
+            <span>Khuyên bạn nên giảm thiết lập đồ họa xuống mức Low/Medium để tốc độ khung hình (FPS) ổn định hơn.</span>
+          </div>
+        `;
+      }
+      commentsList.innerHTML = commentsHtml;
     }
   } else {
     // 3. MÀU ĐỎ: KHÔNG ĐẠT CẤU HÌNH TỐI THIỂU
@@ -548,19 +669,34 @@ async function handleCheckCompatibility(e) {
     }
 
     if (commentsList) {
-      commentsList.innerHTML = `
+      let commentsHtml = `
         <div class="res-comment-item danger" style="color: var(--danger, #ff4d4f);">
           <i class="bx bx-x-circle"></i>
           <span>Thiết bị của bạn không đáp ứng được cấu hình tối thiểu của trò chơi này.</span>
         </div>
-        <div class="res-comment-item warn">
-          <i class="bx bx-error-circle"></i>
-          <span>Cần nâng cấp CPU, GPU hoặc RAM <strong>${ram}GB</strong> để có thể khởi chạy và chơi game tốt hơn.</span>
-        </div>
       `;
+
+      if (failedMinComponents.length > 0) {
+        failedMinComponents.forEach(comp => {
+          commentsHtml += `
+            <div class="res-comment-item warn">
+              <i class="bx bx-error-circle"></i>
+              <span>${comp.html}</span>
+            </div>
+          `;
+        });
+      } else {
+        commentsHtml += `
+          <div class="res-comment-item warn">
+            <i class="bx bx-error-circle"></i>
+            <span>Cần nâng cấp CPU, GPU hoặc RAM để đáp ứng cấu hình tối thiểu của trò chơi.</span>
+          </div>
+        `;
+      }
+
+      commentsList.innerHTML = commentsHtml;
     }
   }
-
 
   // Hiển thị khung kết quả & cuộn xuống
   const resultSec = document.getElementById("check-result-section");

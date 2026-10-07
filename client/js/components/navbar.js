@@ -176,7 +176,9 @@ function initNavbarLiveSearch() {
 
 // Khởi tạo Chatbot AI toàn cục
 (function initGlobalChatbot() {
-  const isInSub = window.location.pathname.toLowerCase().includes('/user/') || window.location.pathname.toLowerCase().includes('/admin/');
+  const isInSub = window.location.pathname.toLowerCase().includes('/user/') || 
+                  window.location.pathname.toLowerCase().includes('/admin/') || 
+                  window.location.pathname.toLowerCase().includes('/auth/');
   const jsPrefix = isInSub ? '../../js/' : '../js/';
   const chatbotScript = document.createElement('script');
   chatbotScript.src = `${jsPrefix}components/chatbot.js`;

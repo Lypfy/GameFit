@@ -185,12 +185,23 @@ document.addEventListener("DOMContentLoaded", function () {
       if (typeof showToast === "function") {
         showToast("Đã đăng xuất tài khoản!");
       }
-      // If logging out from admin dashboard, redirect to home page
-      if (window.location.pathname.includes("/admin/")) {
+      const currentPath = window.location.pathname.toLowerCase();
+      const isProtectedPage =
+        currentPath.includes("/admin/") ||
+        currentPath.includes("/user/") ||
+        currentPath.includes("wishlist") ||
+        currentPath.includes("pc_config") ||
+        currentPath.includes("dashboard");
+      if (isProtectedPage) {
+        const homePath =
+          currentPath.includes("/admin/") || currentPath.includes("/user/")
+            ? "../home.html"
+            : "home.html";
         setTimeout(() => {
-          window.location.href = "../home.html";
+          window.location.href = homePath;
         }, 500);
-      } else if (window.location.pathname.includes("game-details")) {
+        return;
+      } else {
         setTimeout(() => {
           window.location.reload();
         }, 500);
