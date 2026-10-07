@@ -27,10 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Check login
   const currentUser = getCurrentUser();
   if (!currentUser) {
-    showToast("Vui lòng đăng nhập để xem cấu hình!", true);
-    setTimeout(() => {
-      window.location.href = "../auth/login_register.html";
-    }, 1500);
+    window.location.href = "../auth/login_register.html";
     return;
   }
 
@@ -42,8 +39,8 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       const result = await response.json();
 
@@ -76,20 +73,22 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    configsGrid.innerHTML = userConfigs.map(config => `
+    configsGrid.innerHTML = userConfigs
+      .map(
+        (config) => `
       <div class="config-card">
         <div class="config-header">
           <div class="config-title">
             <div class="config-icon"><i class="bx bx-desktop"></i></div>
             <div class="config-name-badge">
-              <h3 style="font-size: 18px; margin-bottom: 0;">${config.pc_name || 'Máy tính'}</h3>
+              <h3 style="font-size: 18px; margin-bottom: 0;">${config.pc_name || "Máy tính"}</h3>
             </div>
           </div>
         </div>
         <div class="config-details">
           <div class="detail-row">
             <div class="detail-label">OS:</div>
-            <div class="detail-value">${config.os || 'N/A'}</div>
+            <div class="detail-value">${config.os || "N/A"}</div>
           </div>
           <div class="detail-row">
             <div class="detail-label">CPU:</div>
@@ -101,11 +100,11 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
           <div class="detail-row">
             <div class="detail-label">RAM:</div>
-            <div class="detail-value">${config.ram ? config.ram + 'GB' : 'N/A'}</div>
+            <div class="detail-value">${config.ram ? config.ram + "GB" : "N/A"}</div>
           </div>
           <div class="detail-row">
             <div class="detail-label">Storage:</div>
-            <div class="detail-value">${config.storage ? config.storage + 'GB' : 'N/A'}</div>
+            <div class="detail-value">${config.storage ? config.storage + "GB" : "N/A"}</div>
           </div>
         </div>
         <div class="config-actions">
@@ -117,12 +116,14 @@ document.addEventListener("DOMContentLoaded", function () {
           </button>
         </div>
       </div>
-    `).join('');
+    `,
+      )
+      .join("");
   }
 
   // Make functions global so inline onclick works
   window.editConfig = function (pcId) {
-    const config = userConfigs.find(c => c.pc_id === pcId);
+    const config = userConfigs.find((c) => c.pc_id === pcId);
     if (!config) return;
 
     pcIdInput.value = config.pc_id;
@@ -136,10 +137,18 @@ document.addEventListener("DOMContentLoaded", function () {
     if (pcGpuIdInput) pcGpuIdInput.value = config.gpu_id || "";
 
     // Populate combobox visible text with cpu_name / gpu_name
-    const cpuTextInput = pcCpuIdInput?.closest('.hw-combobox')?.querySelector('[data-hw-search]');
-    const gpuTextInput = pcGpuIdInput?.closest('.hw-combobox')?.querySelector('[data-hw-search]');
-    if (cpuTextInput) cpuTextInput.value = config.cpu_name || (config.cpu_id ? `CPU ID: ${config.cpu_id}` : '');
-    if (gpuTextInput) gpuTextInput.value = config.gpu_name || (config.gpu_id ? `GPU ID: ${config.gpu_id}` : '');
+    const cpuTextInput = pcCpuIdInput
+      ?.closest(".hw-combobox")
+      ?.querySelector("[data-hw-search]");
+    const gpuTextInput = pcGpuIdInput
+      ?.closest(".hw-combobox")
+      ?.querySelector("[data-hw-search]");
+    if (cpuTextInput)
+      cpuTextInput.value =
+        config.cpu_name || (config.cpu_id ? `CPU ID: ${config.cpu_id}` : "");
+    if (gpuTextInput)
+      gpuTextInput.value =
+        config.gpu_name || (config.gpu_id ? `GPU ID: ${config.gpu_id}` : "");
 
     pcConfigModal.classList.add("active");
   };
@@ -153,9 +162,9 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ user_id: currentUser.user_id, pc_id: pcId })
+        body: JSON.stringify({ user_id: currentUser.user_id, pc_id: pcId }),
       });
       const result = await response.json();
 
@@ -179,8 +188,12 @@ document.addEventListener("DOMContentLoaded", function () {
     pcConfigForm.reset();
     pcIdInput.value = "";
     // Clear combobox text fields
-    const cpuText = pcCpuIdInput?.closest('.hw-combobox')?.querySelector('[data-hw-search]');
-    const gpuText = pcGpuIdInput?.closest('.hw-combobox')?.querySelector('[data-hw-search]');
+    const cpuText = pcCpuIdInput
+      ?.closest(".hw-combobox")
+      ?.querySelector("[data-hw-search]");
+    const gpuText = pcGpuIdInput
+      ?.closest(".hw-combobox")
+      ?.querySelector("[data-hw-search]");
     if (cpuText) cpuText.value = "";
     if (gpuText) gpuText.value = "";
     pcConfigModal.classList.add("active");
@@ -230,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
         method: method,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(pcData),
       });
@@ -238,7 +251,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const result = await response.json();
 
       if (result.success) {
-        showToast(pcId ? "Cập nhật thành công!" : "Tạo cấu hình mới thành công!");
+        showToast(
+          pcId ? "Cập nhật thành công!" : "Tạo cấu hình mới thành công!",
+        );
         hideModal();
         loadConfigs();
       } else {

@@ -1,6 +1,15 @@
 <!doctype html>
 <html lang="vi">
   <head>
+    <script>
+      (function () {
+        const token = localStorage.getItem("token");
+        const userStr = localStorage.getItem("currentUser");
+        if (!token || !userStr) {
+          window.location.href = "../auth/login_register.html";
+        }
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game Fit - Games</title>

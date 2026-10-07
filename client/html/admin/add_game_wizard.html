@@ -1,6 +1,25 @@
 <!doctype html>
 <html lang="vi">
   <head>
+    <script>
+      (function () {
+        const token = localStorage.getItem("token");
+        const userStr = localStorage.getItem("currentUser");
+        let user = null;
+        if (userStr) {
+          try {
+            user = JSON.parse(userStr);
+          } catch (e) {}
+        }
+        if (
+          !token ||
+          !user ||
+          (user.role !== "Admin" && user.role !== "admin")
+        ) {
+          window.location.href = "../home.html";
+        }
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thêm game mới - Admin GameFit</title>
@@ -178,22 +197,46 @@
             </div>
 
             <div class="form-group full-width">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <label class="form-label">Hình ảnh game (Ảnh bìa & Screenshots)</label>
-                <span class="image-count-badge" id="image-count-text">Đã chọn 0 ảnh</span>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 6px;
+                "
+              >
+                <label class="form-label"
+                  >Hình ảnh game (Ảnh bìa & Screenshots)</label
+                >
+                <span class="image-count-badge" id="image-count-text"
+                  >Đã chọn 0 ảnh</span
+                >
               </div>
 
               <!-- Input file ẩn -->
-              <input type="file" id="game-image-input" multiple accept="image/*" style="display: none;" />
+              <input
+                type="file"
+                id="game-image-input"
+                multiple
+                accept="image/*"
+                style="display: none"
+              />
 
               <!-- Vùng kéo thả ảnh -->
               <div class="dropzone" id="image-dropzone">
                 <i class="bx bx-cloud-upload"></i>
                 <p>Kéo thả ảnh vào đây, hoặc click để chọn file từ máy</p>
-                <span>Hỗ trợ định dạng: JPG, PNG, WEBP, GIF (Tối đa 10MB/ảnh) - Có thể chọn nhiều ảnh cùng lúc</span>
-                
+                <span
+                  >Hỗ trợ định dạng: JPG, PNG, WEBP, GIF (Tối đa 10MB/ảnh) - Có
+                  thể chọn nhiều ảnh cùng lúc</span
+                >
+
                 <div class="dropzone-actions-bar">
-                  <button type="button" class="btn-file-select" id="btn-browse-files">
+                  <button
+                    type="button"
+                    class="btn-file-select"
+                    id="btn-browse-files"
+                  >
                     <i class="bx bx-folder-open"></i> Chọn ảnh từ bộ nhớ
                   </button>
                 </div>
@@ -201,14 +244,27 @@
 
               <!-- Thêm qua URL -->
               <div class="image-url-box">
-                <input type="url" class="form-control" id="input-image-url" placeholder="Hoặc dán URL ảnh trực tiếp (https://...)" />
-                <button type="button" class="btn-file-select" id="btn-add-url" style="white-space: nowrap;">
+                <input
+                  type="url"
+                  class="form-control"
+                  id="input-image-url"
+                  placeholder="Hoặc dán URL ảnh trực tiếp (https://...)"
+                />
+                <button
+                  type="button"
+                  class="btn-file-select"
+                  id="btn-add-url"
+                  style="white-space: nowrap"
+                >
                   <i class="bx bx-plus"></i> Thêm URL
                 </button>
               </div>
 
               <!-- Khung xem trước danh sách ảnh -->
-              <div id="image-preview-wrapper" style="display: none; margin-top: 16px;">
+              <div
+                id="image-preview-wrapper"
+                style="display: none; margin-top: 16px"
+              >
                 <div class="image-preview-header">
                   <h4>Danh sách ảnh đã chọn (Ảnh 1 là ảnh bìa)</h4>
                 </div>
@@ -456,10 +512,17 @@
 
       <!-- Footer -->
       <div class="wizard-footer">
-        <div class="footer-left" style="display: flex; gap: 12px; align-items: center;">
+        <div
+          class="footer-left"
+          style="display: flex; gap: 12px; align-items: center"
+        >
           <!-- Step 1 Left -->
           <button class="btn btn-secondary" id="btn-cancel">Hủy</button>
-          <button class="btn btn-secondary" id="btn-import-excel" style="display: flex; align-items: center; gap: 6px;">
+          <button
+            class="btn btn-secondary"
+            id="btn-import-excel"
+            style="display: flex; align-items: center; gap: 6px"
+          >
             <i class="bx bx-import"></i> Import Excel
           </button>
           <!-- Step 2 Left -->
@@ -510,7 +573,10 @@
           Black Myth: Wukong đã được thêm vào hệ thống.
         </div>
         <div class="dialog-actions">
-          <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">
+          <button
+            class="btn btn-primary"
+            onclick="window.location.href = 'dashboard.html'"
+          >
             Về trang Dashboard
           </button>
         </div>
@@ -637,7 +703,9 @@
       const btnBrowseFiles = document.getElementById("btn-browse-files");
       const inputImageUrl = document.getElementById("input-image-url");
       const btnAddUrl = document.getElementById("btn-add-url");
-      const imagePreviewWrapper = document.getElementById("image-preview-wrapper");
+      const imagePreviewWrapper = document.getElementById(
+        "image-preview-wrapper",
+      );
       const imagePreviewGrid = document.getElementById("image-preview-grid");
       const imageCountText = document.getElementById("image-count-text");
 
@@ -665,19 +733,27 @@
       // Drag and Drop events
       if (dropzone) {
         ["dragenter", "dragover"].forEach((eventName) => {
-          dropzone.addEventListener(eventName, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropzone.classList.add("dragover");
-          }, false);
+          dropzone.addEventListener(
+            eventName,
+            (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              dropzone.classList.add("dragover");
+            },
+            false,
+          );
         });
 
         ["dragleave", "drop"].forEach((eventName) => {
-          dropzone.addEventListener(eventName, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropzone.classList.remove("dragover");
-          }, false);
+          dropzone.addEventListener(
+            eventName,
+            (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              dropzone.classList.remove("dragover");
+            },
+            false,
+          );
         });
 
         dropzone.addEventListener("drop", (e) => {
@@ -703,7 +779,7 @@
             selectedImageItems.push({
               type: "file",
               file: file,
-              preview: e.target.result
+              preview: e.target.result,
             });
             renderImagePreviews();
           };
@@ -719,7 +795,7 @@
           selectedImageItems.push({
             type: "url",
             url: url,
-            preview: url
+            preview: url,
           });
           inputImageUrl.value = "";
           renderImagePreviews();
@@ -736,7 +812,8 @@
       }
 
       function renderImagePreviews() {
-        if (!imagePreviewWrapper || !imagePreviewGrid || !imageCountText) return;
+        if (!imagePreviewWrapper || !imagePreviewGrid || !imageCountText)
+          return;
         if (selectedImageItems.length === 0) {
           imagePreviewWrapper.style.display = "none";
           imageCountText.innerText = "Đã chọn 0 ảnh";
@@ -746,9 +823,10 @@
         imagePreviewWrapper.style.display = "block";
         imageCountText.innerText = `Đã chọn ${selectedImageItems.length} ảnh (${selectedImageItems.length > 0 ? "Ảnh 1 là ảnh bìa" : ""})`;
 
-        imagePreviewGrid.innerHTML = selectedImageItems.map((item, index) => {
-          const isCover = index === 0;
-          return `
+        imagePreviewGrid.innerHTML = selectedImageItems
+          .map((item, index) => {
+            const isCover = index === 0;
+            return `
             <div class="image-preview-card ${isCover ? "is-cover" : ""}">
               <img src="${item.preview}" alt="Preview ${index + 1}" />
               <span class="image-badge-tag ${isCover ? "cover" : "screenshot"}">
@@ -760,17 +838,18 @@
               </div>
             </div>
           `;
-        }).join("");
+          })
+          .join("");
       }
 
-      window.setCoverImage = function(index) {
+      window.setCoverImage = function (index) {
         if (index <= 0 || index >= selectedImageItems.length) return;
         const [target] = selectedImageItems.splice(index, 1);
         selectedImageItems.unshift(target);
         renderImagePreviews();
       };
 
-      window.removeImage = function(index) {
+      window.removeImage = function (index) {
         selectedImageItems.splice(index, 1);
         renderImagePreviews();
       };
@@ -788,30 +867,47 @@
         confirmDialog.classList.remove("show");
 
         const gameName = gameNameInput.value.trim();
-        const developer = document.getElementById("game-developer")?.value.trim() || "";
-        const publisher = document.getElementById("game-publisher")?.value.trim() || "";
-        const downloadUrl = document.getElementById("game-download-url")?.value.trim() || "";
-        const description = document.getElementById("game-description")?.value.trim() || "";
+        const developer =
+          document.getElementById("game-developer")?.value.trim() || "";
+        const publisher =
+          document.getElementById("game-publisher")?.value.trim() || "";
+        const downloadUrl =
+          document.getElementById("game-download-url")?.value.trim() || "";
+        const description =
+          document.getElementById("game-description")?.value.trim() || "";
 
-        const day = (document.getElementById("release-day")?.value || "1").padStart(2, "0");
-        const month = (document.getElementById("release-month")?.value || "1").padStart(2, "0");
-        const year = document.getElementById("release-year")?.value || new Date().getFullYear();
+        const day = (
+          document.getElementById("release-day")?.value || "1"
+        ).padStart(2, "0");
+        const month = (
+          document.getElementById("release-month")?.value || "1"
+        ).padStart(2, "0");
+        const year =
+          document.getElementById("release-year")?.value ||
+          new Date().getFullYear();
         const releaseDate = `${year}-${month}-${day}`;
 
         const tagElements = document.querySelectorAll("#genre-container .tag");
-        const tagList = Array.from(tagElements).map((t) => {
-          const clone = t.cloneNode(true);
-          const removeIcon = clone.querySelector(".tag-remove");
-          if (removeIcon) removeIcon.remove();
-          return clone.textContent.trim();
-        }).filter(Boolean);
+        const tagList = Array.from(tagElements)
+          .map((t) => {
+            const clone = t.cloneNode(true);
+            const removeIcon = clone.querySelector(".tag-remove");
+            if (removeIcon) removeIcon.remove();
+            return clone.textContent.trim();
+          })
+          .filter(Boolean);
         const nameTag = tagList.join(", ");
 
-        const baseUrl = typeof API_URL !== "undefined" ? API_URL : "http://localhost:5000/api";
+        const baseUrl =
+          typeof API_URL !== "undefined"
+            ? API_URL
+            : "http://localhost:5000/api";
 
         // Tải các file ảnh local lên Server trước
         let finalImageUrls = [];
-        const filesToUpload = selectedImageItems.filter((item) => item.type === "file");
+        const filesToUpload = selectedImageItems.filter(
+          (item) => item.type === "file",
+        );
 
         if (filesToUpload.length > 0) {
           const formData = new FormData();
@@ -857,7 +953,7 @@
           name_tag: nameTag,
           release_date: releaseDate,
           download_url: downloadUrl,
-          image: imageString
+          image: imageString,
         };
 
         try {
@@ -881,7 +977,9 @@
           }
         } catch (err) {
           console.error("Lỗi khi thêm game:", err);
-          alert("Lỗi khi thêm game: " + (err.message || "Không thể kết nối server"));
+          alert(
+            "Lỗi khi thêm game: " + (err.message || "Không thể kết nối server"),
+          );
         }
       });
 
