@@ -175,11 +175,9 @@ const resetPassword = async (email, otp, newPassword) => {
 
     // 3. Cập nhật vào DB
     const request = new sql.Request();
-    request.input("password", hashedPassword);
-    request.input("email", email);
-    await request.query(
-      "UPDATE Users SET password = @password WHERE email = @email",
-    );
+    request.input("password", sql.VarChar, hashedPassword);
+    request.input("email", sql.VarChar, email);
+    await request.execute("sp_ResetPassword");
 
     // 4. Xóa OTP khỏi bộ nhớ để tránh dùng lại
     otpCache.delete(email);

@@ -10,7 +10,7 @@ function initChatbot() {
         <div class="ai-chatbot-widget">
             <div class="chatbot-window" id="chatbot-window">
                 <div class="chatbot-header">
-                    <h3><i class='bx bxs-bot'></i> GameFit AI Guide</h3>
+                    <h3><img src="../assets/jett.jpg" alt="Jett" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"> GameFit AI Guide</h3>
                     <button class="chatbot-close" id="chatbot-close">&times;</button>
                 </div>
                 <div class="chatbot-messages" id="chatbot-messages">
@@ -23,7 +23,7 @@ function initChatbot() {
                 </div>
             </div>
             <button class="chatbot-btn" id="chatbot-btn" title="Trợ lý AI Hướng Dẫn">
-                <i class='bx bxs-message-dots'></i>
+                <img src="../assets/jett.jpg" alt="Jett Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
             </button>
         </div>
     `;
