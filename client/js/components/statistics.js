@@ -10,7 +10,7 @@ let selectedExportFormat = "xlsx";
 
 // Biến trạng thái toàn cục cho Tab Thể loại
 let currentGenreMetric = "games"; // 'games' | 'wishlist' | 'rating'
-let currentGenreSort = "desc";    // 'desc' | 'asc' | 'alpha'
+let currentGenreSort = "desc"; // 'desc' | 'asc' | 'alpha'
 let genreSearchQuery = "";
 let genreDataCache = null;
 
@@ -69,7 +69,9 @@ function initStatistics(parent = document) {
       }
 
       // Tự động đồng bộ dropdown phạm vi xuất theo tab đang xem (nếu không chọn 'all')
-      const scopeSelect = root.querySelector("#export-scope-select") || document.querySelector("#export-scope-select");
+      const scopeSelect =
+        root.querySelector("#export-scope-select") ||
+        document.querySelector("#export-scope-select");
       if (scopeSelect && scopeSelect.value !== "all") {
         scopeSelect.value = tabId;
       }
@@ -258,9 +260,12 @@ function renderGeneralTab(root) {
   const activeElem = root.querySelector("#stat-general-active");
   const inactiveElem = root.querySelector("#stat-general-inactive");
 
-  if (totalElem) totalElem.textContent = (totals?.total_games || 0).toLocaleString();
-  if (activeElem) activeElem.textContent = (totals?.active_games || 0).toLocaleString();
-  if (inactiveElem) inactiveElem.textContent = (totals?.inactive_games || 0).toLocaleString();
+  if (totalElem)
+    totalElem.textContent = (totals?.total_games || 0).toLocaleString();
+  if (activeElem)
+    activeElem.textContent = (totals?.active_games || 0).toLocaleString();
+  if (inactiveElem)
+    inactiveElem.textContent = (totals?.inactive_games || 0).toLocaleString();
 
   // 2. Render Biểu đồ đường biến động phát hành game theo năm (Timeline)
   renderGeneralTrendChart(root, timeline || []);
@@ -299,7 +304,10 @@ function renderGeneralTrendChart(root, timeline) {
 
   const n = timeline.length;
   const points = timeline.map((d, idx) => {
-    const x = n > 1 ? padLeft + (idx / (n - 1)) * usableWidth : padLeft + usableWidth / 2;
+    const x =
+      n > 1
+        ? padLeft + (idx / (n - 1)) * usableWidth
+        : padLeft + usableWidth / 2;
     const y = padTop + usableHeight - (d.count / yCeil) * usableHeight;
     return {
       x: Math.round(x * 10) / 10,
@@ -329,7 +337,7 @@ function renderGeneralTrendChart(root, timeline) {
           <!-- Nhãn năm bên dưới trục hoành -->
           <text x="${p.x}" y="${padTop + usableHeight + 20}" fill="#9da4b0" font-size="11.5" font-weight="500" text-anchor="middle">${p.year}</text>
         </g>
-      `
+      `,
     )
     .join("");
 
@@ -413,7 +421,10 @@ function renderRecentGamesTable(root) {
     if (!recentGameSearchQuery) return true;
     const name = (g.name || "").toLowerCase();
     const genres = (g.genres || "").toLowerCase();
-    return name.includes(recentGameSearchQuery) || genres.includes(recentGameSearchQuery);
+    return (
+      name.includes(recentGameSearchQuery) ||
+      genres.includes(recentGameSearchQuery)
+    );
   });
 
   if (filtered.length === 0) {
@@ -423,14 +434,18 @@ function renderRecentGamesTable(root) {
 
   tableBody.innerHTML = filtered
     .map((game) => {
-      const imgUrl = game.image ? game.image.split(' ')[0] : "../../img/placeholder.jpg";
-      const tagBadges = (game.genres || "")
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean)
-        .slice(0, 3)
-        .map((t) => `<span class="genre-badge">${escapeHtml(t)}</span>`)
-        .join("") || `<span style="color: var(--text-muted); font-size: 0.8rem;">Chưa phân loại</span>`;
+      const imgUrl = game.image
+        ? game.image.split(" ")[0]
+        : "../../img/placeholder.jpg";
+      const tagBadges =
+        (game.genres || "")
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
+          .slice(0, 3)
+          .map((t) => `<span class="genre-badge">${escapeHtml(t)}</span>`)
+          .join("") ||
+        `<span style="color: var(--text-muted); font-size: 0.8rem;">Chưa phân loại</span>`;
 
       const statusBadge = game.is_active
         ? `<span class="status-badge active"><i class='bx bx-check'></i> Hoạt động</span>`
@@ -441,7 +456,7 @@ function renderRecentGamesTable(root) {
           <td>
             <div class="game-cell">
               <img src="${imgUrl}" alt="${escapeHtml(game.name)}" class="game-thumb" onerror="this.src='https://placehold.co/100x60/211f34/ffffff?text=Game'" />
-              <span style="font-weight: 600; color: #ffffff;">${escapeHtml(game.name)}</span>
+              <span style="font-weight: 600; color: var(--text-color);">${escapeHtml(game.name)}</span>
             </div>
           </td>
           <td>
@@ -504,7 +519,7 @@ function renderGenreTab(root) {
   let filteredGenres = [...genres];
   if (genreSearchQuery) {
     filteredGenres = filteredGenres.filter((g) =>
-      g.genre_name.toLowerCase().includes(genreSearchQuery)
+      g.genre_name.toLowerCase().includes(genreSearchQuery),
     );
   }
 
@@ -544,16 +559,19 @@ function renderGenreTab(root) {
   });
 
   // Sắp xếp desc để tái sử dụng cho Top Item và Top Distribution
-  const sortedByVal = [...genres].sort((a, b) => (b[valKey] || 0) - (a[valKey] || 0));
+  const sortedByVal = [...genres].sort(
+    (a, b) => (b[valKey] || 0) - (a[valKey] || 0),
+  );
   const topItem = sortedByVal[0] || {};
   const topDistribution = sortedByVal.slice(0, 6);
 
   // 4. Render Khối Tổng quan (Genre Summary Box)
   if (summaryBox) {
     const topVal = topItem[valKey] || 0;
-    const topPct = currentGenreMetric === "rating"
-      ? `${topVal} / 5 ⭐`
-      : `${Math.round((topVal / totalForPercent) * 100)}%`;
+    const topPct =
+      currentGenreMetric === "rating"
+        ? `${topVal} / 5 ⭐`
+        : `${Math.round((topVal / totalForPercent) * 100)}%`;
 
     let summaryMetricText = "Tổng số game";
     let summaryMetricVal = totals.total_games;
@@ -602,7 +620,10 @@ function renderGenreTab(root) {
             barPct = Math.min(100, Math.round((val / totalForPercent) * 100));
           }
 
-          const displayVal = currentGenreMetric === "rating" ? `${val} ⭐` : val.toLocaleString();
+          const displayVal =
+            currentGenreMetric === "rating"
+              ? `${val} ⭐`
+              : val.toLocaleString();
 
           return `
             <div class="dist-item">
@@ -649,7 +670,7 @@ function renderGenreTab(root) {
         return `
           <tr>
             <td style="color: var(--text-muted); font-size: 0.85rem;">${rank}</td>
-            <td style="font-weight: 600; color: #ffffff;">${escapeHtml(item.genre_name)}</td>
+            <td style="font-weight: 600; color: var(--text-color);">${escapeHtml(item.genre_name)}</td>
             <td>${formattedVal}</td>
             <td style="text-align: right; color: var(--text-primary); font-weight: 500;">${pctText}</td>
           </tr>
@@ -683,9 +704,18 @@ async function loadWishlistStatistics(root) {
 
     const { summary } = wishlistDataCache;
     if (summary) {
-      if (statTotal) statTotal.textContent = (summary.total_wishlist_items || 0).toLocaleString();
-      if (statGames) statGames.textContent = (summary.total_games_in_wishlist || 0).toLocaleString();
-      if (statUsers) statUsers.textContent = (summary.total_users_with_wishlist || 0).toLocaleString();
+      if (statTotal)
+        statTotal.textContent = (
+          summary.total_wishlist_items || 0
+        ).toLocaleString();
+      if (statGames)
+        statGames.textContent = (
+          summary.total_games_in_wishlist || 0
+        ).toLocaleString();
+      if (statUsers)
+        statUsers.textContent = (
+          summary.total_users_with_wishlist || 0
+        ).toLocaleString();
     }
 
     renderWishlistTable(root);
@@ -735,18 +765,22 @@ function renderWishlistTable(root) {
     .map((game, index) => {
       const rank = index + 1;
       const rankClass = rank <= 3 ? `rank-${rank}` : "";
-      const imgUrl = game.image ? game.image.split(' ')[0] : "../../img/placeholder.jpg";
+      const imgUrl = game.image
+        ? game.image.split(" ")[0]
+        : "../../img/placeholder.jpg";
       const releaseDate = game.release_date
         ? new Date(game.release_date).toLocaleDateString("vi-VN")
         : "Chưa rõ";
 
-      const tagBadges = (game.genres || "")
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((t) => `<span class="genre-badge">${escapeHtml(t)}</span>`)
-        .join("") || `<span style="color: var(--text-muted); font-size: 0.8rem;">Chưa có</span>`;
+      const tagBadges =
+        (game.genres || "")
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((t) => `<span class="genre-badge">${escapeHtml(t)}</span>`)
+          .join("") ||
+        `<span style="color: var(--text-muted); font-size: 0.8rem;">Chưa có</span>`;
 
       return `
         <tr>
@@ -756,7 +790,7 @@ function renderWishlistTable(root) {
           <td>
             <div class="game-cell">
               <img src="${imgUrl}" alt="${escapeHtml(game.name)}" class="game-thumb" onerror="this.src='https://placehold.co/100x60/211f34/ffffff?text=Game'" />
-              <span style="font-weight: 600; color: #ffffff;">${escapeHtml(game.name)}</span>
+              <span style="font-weight: 600; color: var(--text-color);">${escapeHtml(game.name)}</span>
             </div>
           </td>
           <td>
@@ -829,15 +863,19 @@ function renderReviewTable(root) {
     .map((game, index) => {
       const rank = index + 1;
       const rankClass = rank <= 3 ? `rank-${rank}` : "";
-      const imgUrl = game.image ? game.image.split(' ')[0] : "../../img/placeholder.jpg";
+      const imgUrl = game.image
+        ? game.image.split(" ")[0]
+        : "../../img/placeholder.jpg";
 
-      const tagBadges = (game.genres || "")
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((t) => `<span class="genre-badge">${escapeHtml(t)}</span>`)
-        .join("") || `<span style="color: var(--text-muted); font-size: 0.8rem;">Chưa có</span>`;
+      const tagBadges =
+        (game.genres || "")
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((t) => `<span class="genre-badge">${escapeHtml(t)}</span>`)
+          .join("") ||
+        `<span style="color: var(--text-muted); font-size: 0.8rem;">Chưa có</span>`;
 
       return `
         <tr>
@@ -847,7 +885,7 @@ function renderReviewTable(root) {
           <td>
             <div class="game-cell">
               <img src="${imgUrl}" alt="${escapeHtml(game.name)}" class="game-thumb" onerror="this.src='https://placehold.co/100x60/211f34/ffffff?text=Game'" />
-              <span style="font-weight: 600; color: #ffffff;">${escapeHtml(game.name)}</span>
+              <span style="font-weight: 600; color: var(--text-color);">${escapeHtml(game.name)}</span>
             </div>
           </td>
           <td>
@@ -892,8 +930,10 @@ async function loadHardwareStatistics(root) {
 
       if (!result.success || !result.data) {
         const msg = result.message || "Không thể tải dữ liệu Phần cứng.";
-        if (topCpusBody) topCpusBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger); padding: 1.5rem;">${escapeHtml(msg)}</td></tr>`;
-        if (topGpusBody) topGpusBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger); padding: 1.5rem;">${escapeHtml(msg)}</td></tr>`;
+        if (topCpusBody)
+          topCpusBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger); padding: 1.5rem;">${escapeHtml(msg)}</td></tr>`;
+        if (topGpusBody)
+          topGpusBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger); padding: 1.5rem;">${escapeHtml(msg)}</td></tr>`;
         return;
       }
       hardwareDataCache = result.data;
@@ -906,28 +946,45 @@ async function loadHardwareStatistics(root) {
     const topGpus = hardwareDataCache.topGpus || [];
     const ramDistribution = hardwareDataCache.ramDistribution || [];
 
-    if (statCpus) statCpus.textContent = (totals.total_cpus || 0).toLocaleString();
-    if (statGpus) statGpus.textContent = (totals.total_gpus || 0).toLocaleString();
-    if (statUserPcs) statUserPcs.textContent = (totals.total_user_pcs || 0).toLocaleString();
+    if (statCpus)
+      statCpus.textContent = (totals.total_cpus || 0).toLocaleString();
+    if (statGpus)
+      statGpus.textContent = (totals.total_gpus || 0).toLocaleString();
+    if (statUserPcs)
+      statUserPcs.textContent = (totals.total_user_pcs || 0).toLocaleString();
 
     if (gpuDonutContainer) {
-      renderGpuMarketShare(gpuDonutContainer, gpuMarketShare, totals.total_gpus || 0);
+      renderGpuMarketShare(
+        gpuDonutContainer,
+        gpuMarketShare,
+        totals.total_gpus || 0,
+      );
     }
 
     if (cpuDonutContainer) {
-      renderCpuMarketShare(cpuDonutContainer, cpuMarketShare, totals.total_cpus || 0);
+      renderCpuMarketShare(
+        cpuDonutContainer,
+        cpuMarketShare,
+        totals.total_cpus || 0,
+      );
     }
 
     if (ramListContainer) {
-      renderRamDistribution(ramListContainer, ramDistribution, totals.total_user_pcs || 0);
+      renderRamDistribution(
+        ramListContainer,
+        ramDistribution,
+        totals.total_user_pcs || 0,
+      );
     }
 
     renderHardwareCpuTable(r);
     renderHardwareGpuTable(r);
   } catch (err) {
     console.error("Lỗi khi tải dữ liệu Hardware:", err);
-    if (topCpusBody) topCpusBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger); padding: 1.5rem;">Lỗi kết nối máy chủ khi lấy dữ liệu CPU.</td></tr>`;
-    if (topGpusBody) topGpusBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger); padding: 1.5rem;">Lỗi kết nối máy chủ khi lấy dữ liệu GPU.</td></tr>`;
+    if (topCpusBody)
+      topCpusBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger); padding: 1.5rem;">Lỗi kết nối máy chủ khi lấy dữ liệu CPU.</td></tr>`;
+    if (topGpusBody)
+      topGpusBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger); padding: 1.5rem;">Lỗi kết nối máy chủ khi lấy dữ liệu GPU.</td></tr>`;
   }
 }
 
@@ -948,22 +1005,24 @@ function renderGpuMarketShare(container, marketShare, totalGpus) {
     Other: "#64748b",
   };
 
-  const total = totalGpus || marketShare.reduce((sum, item) => sum + item.count, 0) || 1;
+  const total =
+    totalGpus || marketShare.reduce((sum, item) => sum + item.count, 0) || 1;
 
   let currentPercent = 0;
   const gradientStops = [];
 
-  const legendItemsHtml = marketShare.map((item) => {
-    const brand = item.brand || "Other";
-    const color = brandColors[brand] || brandColors.Other;
-    const pct = ((item.count / total) * 100);
-    const start = currentPercent.toFixed(1);
-    currentPercent += pct;
-    const end = currentPercent.toFixed(1);
+  const legendItemsHtml = marketShare
+    .map((item) => {
+      const brand = item.brand || "Other";
+      const color = brandColors[brand] || brandColors.Other;
+      const pct = (item.count / total) * 100;
+      const start = currentPercent.toFixed(1);
+      currentPercent += pct;
+      const end = currentPercent.toFixed(1);
 
-    gradientStops.push(`${color} ${start}% ${end}%`);
+      gradientStops.push(`${color} ${start}% ${end}%`);
 
-    return `
+      return `
       <div class="legend-item">
         <div class="legend-color">
           <div class="color-dot" style="background-color: ${color};"></div>
@@ -972,7 +1031,8 @@ function renderGpuMarketShare(container, marketShare, totalGpus) {
         <span style="font-weight: 600;">${pct.toFixed(1)}% <small style="color: var(--text-muted); font-size: 0.75rem;">(${item.count.toLocaleString()})</small></span>
       </div>
     `;
-  }).join("");
+    })
+    .join("");
 
   const conicStyle = `conic-gradient(${gradientStops.join(", ")})`;
 
@@ -1004,22 +1064,24 @@ function renderCpuMarketShare(container, marketShare, totalCpus) {
     Other: "#64748b",
   };
 
-  const total = totalCpus || marketShare.reduce((sum, item) => sum + item.count, 0) || 1;
+  const total =
+    totalCpus || marketShare.reduce((sum, item) => sum + item.count, 0) || 1;
 
   let currentPercent = 0;
   const gradientStops = [];
 
-  const legendItemsHtml = marketShare.map((item) => {
-    const brand = item.brand || "Other";
-    const color = brandColors[brand] || brandColors.Other;
-    const pct = ((item.count / total) * 100);
-    const start = currentPercent.toFixed(1);
-    currentPercent += pct;
-    const end = currentPercent.toFixed(1);
+  const legendItemsHtml = marketShare
+    .map((item) => {
+      const brand = item.brand || "Other";
+      const color = brandColors[brand] || brandColors.Other;
+      const pct = (item.count / total) * 100;
+      const start = currentPercent.toFixed(1);
+      currentPercent += pct;
+      const end = currentPercent.toFixed(1);
 
-    gradientStops.push(`${color} ${start}% ${end}%`);
+      gradientStops.push(`${color} ${start}% ${end}%`);
 
-    return `
+      return `
       <div class="legend-item">
         <div class="legend-color">
           <div class="color-dot" style="background-color: ${color};"></div>
@@ -1028,7 +1090,8 @@ function renderCpuMarketShare(container, marketShare, totalCpus) {
         <span style="font-weight: 600;">${pct.toFixed(1)}% <small style="color: var(--text-muted); font-size: 0.75rem;">(${item.count.toLocaleString()})</small></span>
       </div>
     `;
-  }).join("");
+    })
+    .join("");
 
   const conicStyle = `conic-gradient(${gradientStops.join(", ")})`;
 
@@ -1054,11 +1117,15 @@ function renderRamDistribution(container, ramDistribution, totalUserPcs) {
     return;
   }
 
-  const total = totalUserPcs || ramDistribution.reduce((sum, item) => sum + item.count, 0) || 1;
+  const total =
+    totalUserPcs ||
+    ramDistribution.reduce((sum, item) => sum + item.count, 0) ||
+    1;
 
-  container.innerHTML = ramDistribution.map((item) => {
-    const pct = Math.round((item.count / total) * 100);
-    return `
+  container.innerHTML = ramDistribution
+    .map((item) => {
+      const pct = Math.round((item.count / total) * 100);
+      return `
       <div class="dist-item">
         <span class="dist-label">${escapeHtml(item.ram_tier)}</span>
         <div class="dist-bar-wrapper">
@@ -1067,7 +1134,8 @@ function renderRamDistribution(container, ramDistribution, totalUserPcs) {
         <span class="dist-val">${pct}%</span>
       </div>
     `;
-  }).join("");
+    })
+    .join("");
 }
 
 /**
@@ -1121,25 +1189,28 @@ function renderHardwareCpuTable(root) {
     return;
   }
 
-  topCpusBody.innerHTML = filtered.map((hw, idx) => {
-    const rank = idx + 1;
-    const rankClass = rank <= 3 ? `rank-${rank}` : "";
-    const brandLower = (hw.brand || "").toLowerCase();
-    const brandClass = brandLower.includes("intel")
-      ? "intel"
-      : brandLower.includes("amd")
-        ? "amd"
-        : "other";
+  topCpusBody.innerHTML = filtered
+    .map((hw, idx) => {
+      const rank = idx + 1;
+      const rankClass = rank <= 3 ? `rank-${rank}` : "";
+      const brandLower = (hw.brand || "").toLowerCase();
+      const brandClass = brandLower.includes("intel")
+        ? "intel"
+        : brandLower.includes("amd")
+          ? "amd"
+          : "other";
 
-    const benchScoreVal = Number(hw.benchmark_score) || 0;
-    const benchScore = hw.benchmark_score ? benchScoreVal.toLocaleString() : "N/A";
-    const benchTier = getBenchmarkTierClass(benchScoreVal);
-    const userCount = hw.user_count || 1;
+      const benchScoreVal = Number(hw.benchmark_score) || 0;
+      const benchScore = hw.benchmark_score
+        ? benchScoreVal.toLocaleString()
+        : "N/A";
+      const benchTier = getBenchmarkTierClass(benchScoreVal);
+      const userCount = hw.user_count || 1;
 
-    return `
+      return `
       <tr>
         <td><div class="rank-badge ${rankClass}">${rank}</div></td>
-        <td style="font-weight: 500; color: #ffffff;" title="${escapeHtml(hw.name)}">${escapeHtml(hw.name)}</td>
+        <td style="font-weight: 500; color: var(--text-color);" title="${escapeHtml(hw.name)}">${escapeHtml(hw.name)}</td>
         <td><span class="brand-badge ${brandClass}">${escapeHtml(hw.brand || "Khác")}</span></td>
         <td style="text-align: right;">
           <span class="benchmark-badge ${benchTier}">
@@ -1150,7 +1221,8 @@ function renderHardwareCpuTable(root) {
         <td style="text-align: right; font-weight: 600; color: var(--text-primary);">${userCount}</td>
       </tr>
     `;
-  }).join("");
+    })
+    .join("");
 }
 
 /**
@@ -1204,27 +1276,30 @@ function renderHardwareGpuTable(root) {
     return;
   }
 
-  topGpusBody.innerHTML = filtered.map((hw, idx) => {
-    const rank = idx + 1;
-    const rankClass = rank <= 3 ? `rank-${rank}` : "";
-    const brandLower = (hw.brand || "").toLowerCase();
-    const brandClass = brandLower.includes("nvidia")
-      ? "nvidia"
-      : brandLower.includes("amd")
-        ? "amd"
-        : brandLower.includes("intel")
-          ? "intel"
-          : "other";
+  topGpusBody.innerHTML = filtered
+    .map((hw, idx) => {
+      const rank = idx + 1;
+      const rankClass = rank <= 3 ? `rank-${rank}` : "";
+      const brandLower = (hw.brand || "").toLowerCase();
+      const brandClass = brandLower.includes("nvidia")
+        ? "nvidia"
+        : brandLower.includes("amd")
+          ? "amd"
+          : brandLower.includes("intel")
+            ? "intel"
+            : "other";
 
-    const benchScoreVal = Number(hw.benchmark_score) || 0;
-    const benchScore = hw.benchmark_score ? benchScoreVal.toLocaleString() : "N/A";
-    const benchTier = getBenchmarkTierClass(benchScoreVal);
-    const userCount = hw.user_count || 1;
+      const benchScoreVal = Number(hw.benchmark_score) || 0;
+      const benchScore = hw.benchmark_score
+        ? benchScoreVal.toLocaleString()
+        : "N/A";
+      const benchTier = getBenchmarkTierClass(benchScoreVal);
+      const userCount = hw.user_count || 1;
 
-    return `
+      return `
       <tr>
         <td><div class="rank-badge ${rankClass}">${rank}</div></td>
-        <td style="font-weight: 500; color: #ffffff;" title="${escapeHtml(hw.name)}">${escapeHtml(hw.name)}</td>
+        <td style="font-weight: 500; color: var(--text-color);" title="${escapeHtml(hw.name)}">${escapeHtml(hw.name)}</td>
         <td><span class="brand-badge ${brandClass}">${escapeHtml(hw.brand || "Khác")}</span></td>
         <td style="text-align: right;">
           <span class="benchmark-badge ${benchTier}">
@@ -1235,7 +1310,8 @@ function renderHardwareGpuTable(root) {
         <td style="text-align: right; font-weight: 600; color: var(--text-primary);">${userCount}</td>
       </tr>
     `;
-  }).join("");
+    })
+    .join("");
 }
 
 /**
@@ -1290,7 +1366,9 @@ function escapeHtml(str) {
  */
 function initExportModule(root) {
   const openModalBtn = root.querySelector("#btn-open-export-modal");
-  let modal = root.querySelector("#export-stats-modal") || document.querySelector("#export-stats-modal");
+  let modal =
+    root.querySelector("#export-stats-modal") ||
+    document.querySelector("#export-stats-modal");
   if (!openModalBtn || !modal) return;
 
   // Di chuyển modal ra ngoài document.body để luôn canh giữa chính xác toàn màn hình (không bị ảnh hưởng bởi backdrop-filter của container cha)
@@ -1314,7 +1392,7 @@ function initExportModule(root) {
       "tab-2": "Tab 2: Thể loại",
       "tab-3": "Tab 3: Wishlist & Đánh giá",
       "tab-4": "Tab 4: Phần cứng",
-      "all": "Tất cả tab",
+      all: "Tất cả tab",
     };
 
     if (targetBadge) {
@@ -1386,7 +1464,7 @@ async function ensureDataLoadedForScope(scope) {
       promises.push(
         fetchApi("/api/statistics/general").then((res) => {
           if (res.success && res.data) generalDataCache = res.data;
-        })
+        }),
       );
     }
   }
@@ -1395,7 +1473,7 @@ async function ensureDataLoadedForScope(scope) {
       promises.push(
         fetchApi("/api/statistics/genres").then((res) => {
           if (res.success && res.data) genreDataCache = res.data;
-        })
+        }),
       );
     }
   }
@@ -1404,7 +1482,7 @@ async function ensureDataLoadedForScope(scope) {
       promises.push(
         fetchApi("/api/statistics/wishlist").then((res) => {
           if (res.success && res.data) wishlistDataCache = res.data;
-        })
+        }),
       );
     }
   }
@@ -1413,7 +1491,7 @@ async function ensureDataLoadedForScope(scope) {
       promises.push(
         fetchApi("/api/statistics/hardware").then((res) => {
           if (res.success && res.data) hardwareDataCache = res.data;
-        })
+        }),
       );
     }
   }
@@ -1458,16 +1536,34 @@ function collectExportDatasets(scope) {
         const totalGames = totals.total_games || 0;
         const activeGames = totals.active_games || 0;
         const inactiveGames = totals.inactive_games || 0;
-        const activePct = totalGames > 0 ? ((activeGames / totalGames) * 100).toFixed(1) : "100.0";
-        const inactivePct = totalGames > 0 ? ((inactiveGames / totalGames) * 100).toFixed(1) : "0.0";
+        const activePct =
+          totalGames > 0
+            ? ((activeGames / totalGames) * 100).toFixed(1)
+            : "100.0";
+        const inactivePct =
+          totalGames > 0
+            ? ((inactiveGames / totalGames) * 100).toFixed(1)
+            : "0.0";
 
         result.push({
           name: "Thống kê chung",
           title: "BÁO CÁO THỐNG KÊ CHUNG - TỔNG QUAN HỆ THỐNG",
           data: [
-            { "Chỉ số": "Tổng số game", "Giá trị": totalGames, "Tỷ lệ %": "100%" },
-            { "Chỉ số": "Game đang hoạt động", "Giá trị": activeGames, "Tỷ lệ %": `${activePct}%` },
-            { "Chỉ số": "Game ngừng hoạt động", "Giá trị": inactiveGames, "Tỷ lệ %": `${inactivePct}%` },
+            {
+              "Chỉ số": "Tổng số game",
+              "Giá trị": totalGames,
+              "Tỷ lệ %": "100%",
+            },
+            {
+              "Chỉ số": "Game đang hoạt động",
+              "Giá trị": activeGames,
+              "Tỷ lệ %": `${activePct}%`,
+            },
+            {
+              "Chỉ số": "Game ngừng hoạt động",
+              "Giá trị": inactiveGames,
+              "Tỷ lệ %": `${inactivePct}%`,
+            },
           ],
         });
       }
@@ -1486,7 +1582,7 @@ function collectExportDatasets(scope) {
           name: "Game thêm gần đây",
           title: "DANH SÁCH GAME ĐƯỢC THÊM GẦN ĐÂY",
           data: recentGames.map((g, idx) => ({
-            "STT": idx + 1,
+            STT: idx + 1,
             "Mã game": g.game_id,
             "Tên game": g.name,
             "Thể loại": g.genres || "Chưa có",
@@ -1501,21 +1597,47 @@ function collectExportDatasets(scope) {
   // Tab 2: Thể loại
   if (scope === "all" || scope === "tab-2") {
     if (genreDataCache && genreDataCache.genres) {
-      const totalGames = genreDataCache.totals?.total_games || (genreDataCache.genres.reduce((s, g) => s + (g.game_count || 0), 0) || 1);
-      const totalWishlists = genreDataCache.totals?.total_wishlists || (genreDataCache.genres.reduce((s, g) => s + (g.wishlist_count || 0), 0) || 1);
+      const totalGames =
+        genreDataCache.totals?.total_games ||
+        genreDataCache.genres.reduce((s, g) => s + (g.game_count || 0), 0) ||
+        1;
+      const totalWishlists =
+        genreDataCache.totals?.total_wishlists ||
+        genreDataCache.genres.reduce(
+          (s, g) => s + (g.wishlist_count || 0),
+          0,
+        ) ||
+        1;
 
       if (genreDataCache.totals) {
         const topGenre = genreDataCache.genres[0] || {};
-        const topPct = topGenre.game_count ? `${((topGenre.game_count / totalGames) * 100).toFixed(1)}%` : "0%";
+        const topPct = topGenre.game_count
+          ? `${((topGenre.game_count / totalGames) * 100).toFixed(1)}%`
+          : "0%";
 
         result.push({
           name: "Tổng quan thể loại",
           title: "TỔNG QUAN PHÂN BỔ THỂ LOẠI GAME",
           data: [
-            { "Chỉ số": "Tổng số game", "Giá trị": genreDataCache.totals.total_games || 0 },
-            { "Chỉ số": "Tổng số thể loại", "Giá trị": genreDataCache.totals.total_genres || genreDataCache.genres.length || 0 },
-            { "Chỉ số": "Tổng lượt Wishlist", "Giá trị": genreDataCache.totals.total_wishlists || 0 },
-            { "Chỉ số": "Thể loại dẫn đầu", "Giá trị": topGenre.genre_name || "N/A" },
+            {
+              "Chỉ số": "Tổng số game",
+              "Giá trị": genreDataCache.totals.total_games || 0,
+            },
+            {
+              "Chỉ số": "Tổng số thể loại",
+              "Giá trị":
+                genreDataCache.totals.total_genres ||
+                genreDataCache.genres.length ||
+                0,
+            },
+            {
+              "Chỉ số": "Tổng lượt Wishlist",
+              "Giá trị": genreDataCache.totals.total_wishlists || 0,
+            },
+            {
+              "Chỉ số": "Thể loại dẫn đầu",
+              "Giá trị": topGenre.genre_name || "N/A",
+            },
             { "Chỉ số": "Tỷ lệ dẫn đầu", "Giá trị": topPct },
           ],
         });
@@ -1525,7 +1647,7 @@ function collectExportDatasets(scope) {
         name: "Thống kê thể loại",
         title: "PHÂN BỔ THỐNG KÊ THEO THỂ LOẠI GAME",
         data: genreDataCache.genres.map((g, idx) => ({
-          "STT": idx + 1,
+          STT: idx + 1,
           "Mã thể loại": g.tag_id,
           "Tên thể loại": g.genre_name,
           "Số lượng game": g.game_count || 0,
@@ -1547,9 +1669,19 @@ function collectExportDatasets(scope) {
           name: "Tổng quan Wishlist",
           title: "TỔNG QUAN WISHLIST & ĐÁNH GIÁ",
           data: [
-            { "Chỉ số": "Tổng lượt Wishlist", "Giá trị": wishlistDataCache.summary.total_wishlist_items || 0 },
-            { "Chỉ số": "Số game trong Wishlist", "Giá trị": wishlistDataCache.summary.total_games_in_wishlist || 0 },
-            { "Chỉ số": "Người dùng đã Wishlist", "Giá trị": wishlistDataCache.summary.total_users_with_wishlist || 0 },
+            {
+              "Chỉ số": "Tổng lượt Wishlist",
+              "Giá trị": wishlistDataCache.summary.total_wishlist_items || 0,
+            },
+            {
+              "Chỉ số": "Số game trong Wishlist",
+              "Giá trị": wishlistDataCache.summary.total_games_in_wishlist || 0,
+            },
+            {
+              "Chỉ số": "Người dùng đã Wishlist",
+              "Giá trị":
+                wishlistDataCache.summary.total_users_with_wishlist || 0,
+            },
           ],
         });
       }
@@ -1558,7 +1690,7 @@ function collectExportDatasets(scope) {
           name: "Top Wishlist",
           title: "TOP GAME ĐƯỢC THÊM VÀO WISHLIST NHIỀU NHẤT",
           data: wishlistDataCache.topGames.map((g, idx) => ({
-            "Hạng": idx + 1,
+            Hạng: idx + 1,
             "Mã game": g.game_id,
             "Tên game": g.name,
             "Thể loại": g.genres || "Chưa có",
@@ -1566,12 +1698,15 @@ function collectExportDatasets(scope) {
           })),
         });
       }
-      if (wishlistDataCache.topReviewedGames && wishlistDataCache.topReviewedGames.length > 0) {
+      if (
+        wishlistDataCache.topReviewedGames &&
+        wishlistDataCache.topReviewedGames.length > 0
+      ) {
         result.push({
           name: "Top Đánh giá",
           title: "TOP GAME ĐƯỢC ĐÁNH GIÁ NHIỀU NHẤT",
           data: wishlistDataCache.topReviewedGames.map((g, idx) => ({
-            "Hạng": idx + 1,
+            Hạng: idx + 1,
             "Mã game": g.game_id,
             "Tên game": g.name,
             "Thể loại": g.genres || "Chưa có",
@@ -1591,9 +1726,18 @@ function collectExportDatasets(scope) {
           name: "Tổng quan phần cứng",
           title: "TỔNG QUAN KHO PHẦN CỨNG & CẤU HÌNH NGƯỜI DÙNG",
           data: [
-            { "Chỉ số": "Tổng số CPU trong kho", "Giá trị": hardwareDataCache.totals.total_cpus || 0 },
-            { "Chỉ số": "Tổng số GPU trong kho", "Giá trị": hardwareDataCache.totals.total_gpus || 0 },
-            { "Chỉ số": "Số cấu hình PC đã lưu", "Giá trị": hardwareDataCache.totals.total_user_pcs || 0 },
+            {
+              "Chỉ số": "Tổng số CPU trong kho",
+              "Giá trị": hardwareDataCache.totals.total_cpus || 0,
+            },
+            {
+              "Chỉ số": "Tổng số GPU trong kho",
+              "Giá trị": hardwareDataCache.totals.total_gpus || 0,
+            },
+            {
+              "Chỉ số": "Số cấu hình PC đã lưu",
+              "Giá trị": hardwareDataCache.totals.total_user_pcs || 0,
+            },
           ],
         });
       }
@@ -1602,9 +1746,9 @@ function collectExportDatasets(scope) {
           name: "Top CPU",
           title: "DANH SÁCH CPU PHỔ BIẾN & HIỆU NĂNG BENCHMARK",
           data: hardwareDataCache.topCpus.map((c, idx) => ({
-            "Hạng": idx + 1,
+            Hạng: idx + 1,
             "Tên CPU": c.name,
-            "Hãng": c.brand || "Khác",
+            Hãng: c.brand || "Khác",
             "Điểm Benchmark": c.benchmark_score || "N/A",
             "Số máy sử dụng": c.user_count || 1,
           })),
@@ -1615,21 +1759,33 @@ function collectExportDatasets(scope) {
           name: "Top GPU",
           title: "DANH SÁCH GPU PHỔ BIẾN & HIỆU NĂNG BENCHMARK",
           data: hardwareDataCache.topGpus.map((g, idx) => ({
-            "Hạng": idx + 1,
+            Hạng: idx + 1,
             "Tên GPU": g.name,
-            "Hãng": g.brand || "Khác",
+            Hãng: g.brand || "Khác",
             "Điểm Benchmark": g.benchmark_score || "N/A",
             "Số máy sử dụng": g.user_count || 1,
           })),
         });
       }
-      if (hardwareDataCache.cpuMarketShare && hardwareDataCache.cpuMarketShare.length > 0) {
-        const totalCpus = hardwareDataCache.totals?.total_cpus || hardwareDataCache.cpuMarketShare.reduce((s, c) => s + (c.count || 0), 0) || 1;
+      if (
+        hardwareDataCache.cpuMarketShare &&
+        hardwareDataCache.cpuMarketShare.length > 0
+      ) {
+        const totalCpus =
+          hardwareDataCache.totals?.total_cpus ||
+          hardwareDataCache.cpuMarketShare.reduce(
+            (s, c) => s + (c.count || 0),
+            0,
+          ) ||
+          1;
         result.push({
           name: "Thị phần CPU",
           title: "THỊ PHẦN THƯƠNG HIỆU CPU",
           data: hardwareDataCache.cpuMarketShare.map((c) => {
-            const pct = c.percentage !== undefined ? c.percentage : Number(((c.count / totalCpus) * 100).toFixed(1));
+            const pct =
+              c.percentage !== undefined
+                ? c.percentage
+                : Number(((c.count / totalCpus) * 100).toFixed(1));
             return {
               "Hãng CPU": c.brand,
               "Số máy": c.count,
@@ -1638,13 +1794,25 @@ function collectExportDatasets(scope) {
           }),
         });
       }
-      if (hardwareDataCache.gpuMarketShare && hardwareDataCache.gpuMarketShare.length > 0) {
-        const totalGpus = hardwareDataCache.totals?.total_gpus || hardwareDataCache.gpuMarketShare.reduce((s, g) => s + (g.count || 0), 0) || 1;
+      if (
+        hardwareDataCache.gpuMarketShare &&
+        hardwareDataCache.gpuMarketShare.length > 0
+      ) {
+        const totalGpus =
+          hardwareDataCache.totals?.total_gpus ||
+          hardwareDataCache.gpuMarketShare.reduce(
+            (s, g) => s + (g.count || 0),
+            0,
+          ) ||
+          1;
         result.push({
           name: "Thị phần GPU",
           title: "THỊ PHẦN THƯƠNG HIỆU GPU",
           data: hardwareDataCache.gpuMarketShare.map((g) => {
-            const pct = g.percentage !== undefined ? g.percentage : Number(((g.count / totalGpus) * 100).toFixed(1));
+            const pct =
+              g.percentage !== undefined
+                ? g.percentage
+                : Number(((g.count / totalGpus) * 100).toFixed(1));
             return {
               "Hãng GPU": g.brand,
               "Số máy": g.count,
@@ -1653,13 +1821,25 @@ function collectExportDatasets(scope) {
           }),
         });
       }
-      if (hardwareDataCache.ramDistribution && hardwareDataCache.ramDistribution.length > 0) {
-        const totalPcs = hardwareDataCache.totals?.total_user_pcs || hardwareDataCache.ramDistribution.reduce((s, r) => s + (r.count || 0), 0) || 1;
+      if (
+        hardwareDataCache.ramDistribution &&
+        hardwareDataCache.ramDistribution.length > 0
+      ) {
+        const totalPcs =
+          hardwareDataCache.totals?.total_user_pcs ||
+          hardwareDataCache.ramDistribution.reduce(
+            (s, r) => s + (r.count || 0),
+            0,
+          ) ||
+          1;
         result.push({
           name: "Phân bố RAM",
           title: "PHÂN BỐ DUNG LƯỢNG BỘ NHỚ RAM",
           data: hardwareDataCache.ramDistribution.map((r) => {
-            const pct = r.percentage !== undefined ? r.percentage : Number(((r.count / totalPcs) * 100).toFixed(1));
+            const pct =
+              r.percentage !== undefined
+                ? r.percentage
+                : Number(((r.count / totalPcs) * 100).toFixed(1));
             return {
               "Dung lượng RAM": r.ram_tier || r.ram_group || "N/A",
               "Số máy": r.count,
@@ -1682,9 +1862,11 @@ async function exportToExcel(datasets, scope, dateStr) {
     // Tải động SheetJS nếu chưa có sẵn
     await new Promise((resolve, reject) => {
       const script = document.createElement("script");
-      script.src = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+      script.src =
+        "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
       script.onload = resolve;
-      script.onerror = () => reject(new Error("Không thể tải thư viện SheetJS (xlsx)"));
+      script.onerror = () =>
+        reject(new Error("Không thể tải thư viện SheetJS (xlsx)"));
       document.head.appendChild(script);
     });
   }
@@ -1710,7 +1892,7 @@ async function exportToExcel(datasets, scope, dateStr) {
     "tab-2": "TheLoai",
     "tab-3": "Wishlist_DanhGia",
     "tab-4": "PhanCung",
-    "all": "ToanBo_HeThong",
+    all: "ToanBo_HeThong",
   };
   const fileName = `GameFit_ThongKe_${scopeNames[scope] || "BaoCao"}_${dateStr}.xlsx`;
   window.XLSX.writeFile(wb, fileName);
@@ -1739,13 +1921,17 @@ function downloadCsv(filename, dataArray) {
   const rows = dataArray.map((row) =>
     headers
       .map((header) => {
-        let val = row[header] !== undefined && row[header] !== null ? String(row[header]) : "";
+        let val =
+          row[header] !== undefined && row[header] !== null
+            ? String(row[header])
+            : "";
         val = val.replace(/"/g, '""');
         return `"${val}"`;
       })
-      .join(",")
+      .join(","),
   );
-  const csvContent = "\uFEFF" + [headers.map((h) => `"${h}"`).join(","), ...rows].join("\r\n");
+  const csvContent =
+    "\uFEFF" + [headers.map((h) => `"${h}"`).join(","), ...rows].join("\r\n");
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -1766,7 +1952,7 @@ function exportToPdf(datasets, scope) {
     "tab-2": "Tab 2: Thống Kê Thể Loại",
     "tab-3": "Tab 3: Wishlist & Đánh Giá",
     "tab-4": "Tab 4: Thống Kê Phần Cứng",
-    "all": "Toàn Bộ Hệ Thống (4 Tab)",
+    all: "Toàn Bộ Hệ Thống (4 Tab)",
   };
 
   const scopeTitle = scopeNames[scope] || "Báo Cáo Thống Kê";
@@ -1776,11 +1962,16 @@ function exportToPdf(datasets, scope) {
     .map((ds) => {
       if (!ds.data || ds.data.length === 0) return "";
       const headers = Object.keys(ds.data[0]);
-      const headerRow = headers.map((h) => `<th>${escapeHtml(h)}</th>`).join("");
+      const headerRow = headers
+        .map((h) => `<th>${escapeHtml(h)}</th>`)
+        .join("");
       const bodyRows = ds.data
         .map((row) => {
           const cells = headers
-            .map((h) => `<td>${escapeHtml(String(row[h] !== undefined && row[h] !== null ? row[h] : ""))}</td>`)
+            .map(
+              (h) =>
+                `<td>${escapeHtml(String(row[h] !== undefined && row[h] !== null ? row[h] : ""))}</td>`,
+            )
             .join("");
           return `<tr>${cells}</tr>`;
         })

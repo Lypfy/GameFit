@@ -22,7 +22,9 @@
   top: 0;
   z-index: 20;
   box-shadow: var(--shadow-lg);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .filter-bar.hidden {
@@ -219,7 +221,7 @@
   gap: 12px;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border-color);
   flex-wrap: wrap;
 }
 
@@ -338,7 +340,9 @@
   z-index: 999999;
   opacity: 1;
   visibility: visible;
-  transition: opacity 0.25s ease, visibility 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease;
 }
 
 .export-modal-backdrop.hidden {
@@ -377,7 +381,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border-color);
   background: rgba(255, 255, 255, 0.02);
 }
 
@@ -543,7 +547,7 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 14px 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--border-color);
   background: rgba(255, 255, 255, 0.02);
 }
 
@@ -616,15 +620,12 @@
 }
 
 .stat-card {
-  background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 1.25rem 1.5rem;
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: var(--shadow-lg);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .stat-icon {
@@ -672,15 +673,18 @@
   margin-bottom: 1.5rem;
 }
 
-.chart-card,
-.table-card {
-  background-color: var(--card-bg);
+.chart-card {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   width: 100%;
-  box-shadow: var(--shadow-lg);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  max-height: none !important;
+  overflow: visible !important;
+  overflow-y: visible !important;
+}
+.table-card {
+  padding: 1.5rem;
+  width: 100%;
   max-height: none !important;
   overflow: visible !important;
   overflow-y: visible !important;
@@ -808,12 +812,13 @@
 }
 
 .genre-badge {
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: var(--input-bg, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
   color: var(--text-primary);
   padding: 3px 8px;
   border-radius: 16px;
   font-size: 0.75rem;
+  display: inline-block;
 }
 
 /* Genre Overview (Tab 2) */
@@ -836,7 +841,7 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .summary-row:last-child {
@@ -886,7 +891,7 @@
 .data-table td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .data-table th {
@@ -1165,7 +1170,9 @@
 }
 
 .trend-dot {
-  transition: r 0.2s ease, fill 0.2s ease;
+  transition:
+    r 0.2s ease,
+    fill 0.2s ease;
   cursor: pointer;
 }
 
@@ -1176,7 +1183,6 @@
 
 /* Responsive Breakpoints */
 @media (max-width: 1024px) {
-
   .charts-grid,
   .genre-overview-grid,
   .hardware-charts-grid,

@@ -27,7 +27,9 @@
   border-radius: 16px;
   padding: 1.75rem;
   box-shadow: var(--shadow-lg);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 /* Admin function tab */
@@ -328,6 +330,23 @@
   color: #3498db;
 }
 
+/* Genre / Tag Badges in Game Management */
+.genre-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.genre-badge {
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 3px 8px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  display: inline-block;
+}
+
 /* Utilities */
 .text-highlight {
   font-weight: 600;
@@ -620,13 +639,14 @@
   outline: none;
   font-family: inherit;
   font-size: 0.88rem;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 .table-filter-select:focus {
   border-color: var(--main-color);
 }
-
 
 .violation-count-badge {
   color: #fa5353;
