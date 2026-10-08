@@ -36,7 +36,9 @@
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 2rem;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 @media (min-width: 1024px) {
@@ -81,7 +83,9 @@
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  transition: background 0.2s, opacity 0.2s;
+  transition:
+    background 0.2s,
+    opacity 0.2s;
   border-radius: 4px;
   opacity: 0.7;
 }
@@ -262,7 +266,7 @@
   white-space: pre-line;
 }
 
-/* Description & Tags Section */
+/* Mô tả & Thẻ Thể loại */
 .gd-tags-box {
   margin-top: 0;
   margin-bottom: 2rem;
@@ -300,7 +304,7 @@
   transform: translateY(-2px);
 }
 
-/* System Requirements */
+/* Yêu cầu Cấu hình Hệ thống */
 .gd-requirements-box {
   margin-top: 3rem;
 }
@@ -365,7 +369,7 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* === REVIEW / RATING SECTION === */
+/* === VÙNG ĐÁNH GIÁ & BÌNH LUẬN === */
 
 .review-section {
   margin-top: 3rem;
@@ -374,7 +378,7 @@
   gap: 1.5rem;
 }
 
-/* Rating Card */
+/* Thẻ Điểm Đánh giá */
 .rating-card {
   display: flex;
   align-items: center;
@@ -483,8 +487,7 @@
   background: #e03e4e;
 }
 
-
-/* Comments Section */
+/* Danh sách Bình luận */
 .comments-section {
   background: rgba(20, 18, 30, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.07);
@@ -508,7 +511,7 @@
   color: #ff4757;
 }
 
-/* Empty State */
+/* Trạng thái Trống */
 .comments-empty {
   display: flex;
   flex-direction: column;
@@ -527,7 +530,7 @@
   font-size: 0.9rem;
 }
 
-/* Review Card */
+/* Thẻ Đánh giá */
 .review-card {
   display: flex;
   gap: 1rem;
@@ -700,7 +703,7 @@
   transform: translateY(0);
 }
 
-/* Report Modal Custom Content */
+/* Nội dung Modal Báo cáo */
 .report-guide-text {
   font-size: 0.88rem;
   color: var(--text-secondary, #94a3b8);
@@ -752,12 +755,12 @@
   transition: all 0.2s ease;
 }
 
-.report-reason-item input[type="radio"]:checked+.reason-custom-radio {
+.report-reason-item input[type="radio"]:checked + .reason-custom-radio {
   border-color: var(--main-color, #fa5353);
 }
 
-.report-reason-item input[type="radio"]:checked+.reason-custom-radio::after {
-  content: '';
+.report-reason-item input[type="radio"]:checked + .reason-custom-radio::after {
+  content: "";
   position: absolute;
   top: 3px;
   left: 3px;
@@ -783,7 +786,7 @@
   line-height: 1.65;
 }
 
-/* Review Modal */
+/* Modal Đánh giá */
 .review-modal-card {
   max-width: 480px;
   width: 100%;
@@ -812,7 +815,7 @@
   color: var(--text-muted, #5e687e);
 }
 
-/* Star Picker */
+/* Bộ Chọn Sao Đánh giá */
 .star-picker {
   display: flex;
   gap: 6px;
@@ -849,9 +852,11 @@
   align-items: flex-start;
   padding: 20px 25px;
   border-bottom: 1px solid #ff4757;
-  background: linear-gradient(90deg,
-      rgba(255, 71, 87, 0.1) 0%,
-      rgba(15, 23, 42, 0) 50%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 71, 87, 0.1) 0%,
+    rgba(15, 23, 42, 0) 50%
+  );
 }
 
 .cc-header-title {
@@ -942,7 +947,7 @@
   margin-bottom: 12px;
 }
 
-.cc-req-item>i {
+.cc-req-item > i {
   font-size: 24px;
   color: #94a3b8;
 }
@@ -1309,7 +1314,7 @@
   border-color: #cbd5e1;
 }
 
-/* Light Mode Overrides for Check Config Modal */
+/* Ghi đè Light Mode cho Modal Kiểm tra Cấu hình */
 [data-theme="light"] .cc-modal-card {
   background: #ffffff !important;
   color: #0f172a !important;
@@ -1454,6 +1459,7 @@
 }
 
 /* === CARD �? XU?T C?U H?NH === */
+/* === CARD ĐỀ XUẤT CẤU HÌNH === */
 .pc-rec-card {
   display: flex;
   flex-direction: column;
@@ -1627,7 +1633,6 @@
   background: rgba(239, 68, 68, 0.15);
   color: #ff6b6b;
 }
-
 
 /* Sửa lỗi khối Đề xuất cấu hình bị đen trên nền trắng */
 [data-theme="light"] .pc-recommend-list {

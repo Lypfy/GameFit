@@ -249,7 +249,7 @@ async function loadGeneralStatistics(root) {
 }
 
 /**
- * Render toàn bộ nội dung Tab 1: KPI Cards, Trend Line Chart, Status Donut, Recent Games Table
+ * Hiển thị nội dung Tab 1 (Tổng quan): Thẻ chỉ số, Biểu đồ đường phát hành, Biểu đồ tròn trạng thái, Bảng game mới
  */
 function renderGeneralTab(root) {
   if (!generalDataCache) return;
@@ -278,7 +278,7 @@ function renderGeneralTab(root) {
 }
 
 /**
- * Render Biểu đồ đường biến động số lượng game theo năm (SVG Timeline sinh động)
+ * Vẽ biểu đồ đường số lượng game theo năm (Dạng đường SVG mượt mà)
  */
 function renderGeneralTrendChart(root, timeline) {
   const container = root.querySelector("#general-trend-chart");
@@ -595,7 +595,7 @@ function renderGenreTab(root) {
       </div>
       <div class="summary-row">
         <span>Thể loại dẫn đầu</span>
-        <strong style="color: #ffffff;">${escapeHtml(topItem.genre_name || "N/A")}</strong>
+        <strong style="color: var(--text-primary);">${escapeHtml(topItem.genre_name || "N/A")}</strong>
       </div>
       <div class="summary-row">
         <span>Tỷ lệ dẫn đầu</span>

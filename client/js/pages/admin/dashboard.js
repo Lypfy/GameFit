@@ -95,7 +95,7 @@ function renderGamesTable(games) {
             <button title="Sửa thông tin" class="btn-action btn-edit btn-edit-game" data-id="${gameId}">
               <i class="bx bx-edit"></i>
             </button>
-            <button title="Cập nhật cấu hình" class="btn-action btn-config btn-config-game" data-id="${gameId}" style="color: #818cf8;">
+            <button title="Cập nhật cấu hình" class="btn-action btn-config btn-config-game" data-id="${gameId}">
               <i class="bx bx-cog"></i>
             </button>
             <button title="Xóa" class="btn-action btn-delete btn-delete-game" data-id="${gameId}">
@@ -758,7 +758,7 @@ function initTagActions() {
 
         // Đưa input vào ô tên
         nameTd.innerHTML = `
-          <input type="text" class="tag-inline-input tag-edit-input" value="${currentName}" data-original="${currentName}" style="width: 100%; box-sizing: border-box;" />
+          <input type="text" class="tag-inline-input tag-edit-input" value="${currentName}" data-original="${currentName}" />
         `;
 
         // Đổi nút thao tác thành Lưu và Hủy
@@ -2229,7 +2229,7 @@ async function loadViolationsData() {
   if (!token) return;
 
   try {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: rgba(255,255,255,0.6); padding: 16px;"><i class='bx bx-loader-alt bx-spin'></i> Đang tải danh sách báo cáo...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="table-empty-row"><i class='bx bx-loader-alt bx-spin'></i> Đang tải danh sách báo cáo...</td></tr>`;
 
     const queryParams = new URLSearchParams();
     if (statusFilter && statusFilter !== "ALL") queryParams.append("status", statusFilter);
@@ -2274,7 +2274,7 @@ function renderViolationsTable(reports) {
   if (!tbody) return;
 
   if (!reports || reports.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: rgba(255,255,255,0.5); padding: 24px;">Không có báo cáo vi phạm nào phù hợp với bộ lọc</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="table-empty-row">Không có báo cáo vi phạm nào phù hợp với bộ lọc</td></tr>`;
     return;
   }
 

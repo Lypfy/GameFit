@@ -1,4 +1,4 @@
-/* Admin dashboard style */
+/* Giao diện Bảng điều khiển Admin */
 .dashboard {
   margin-top: 1rem;
   margin-bottom: 4rem;
@@ -503,6 +503,97 @@
   overflow: visible !important;
   overflow-y: visible !important;
   padding-top: 1.5rem !important;
+}
+
+/* Thành phần phân trang bảng dữ liệu */
+.table-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0 !important;
+  border-top: 1px solid var(--border-color);
+}
+
+.table-pagination .pagination-info {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.table-pagination .pagination-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.table-pagination .btn-action {
+  padding: 6px 12px;
+  height: auto;
+  width: auto;
+}
+
+/* Nút cập nhật cấu hình game */
+.btn-action.btn-config,
+.btn-action.btn-config-game {
+  color: #818cf8;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+}
+
+.btn-action.btn-config:hover,
+.btn-action.btn-config-game:hover {
+  background: var(--border-color);
+  color: #a5b4fc;
+}
+
+/* Ô nhập chỉnh sửa thể loại trực tiếp */
+.tag-edit-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Dấu sao đỏ báo trường bắt buộc */
+.required-star {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+/* Tùy chỉnh khoảng cách & thẻ giao diện */
+.heading-spaced {
+  margin-bottom: 1rem;
+}
+
+.user-lock-info-card {
+  margin-bottom: 1rem;
+}
+
+.form-group-spaced {
+  margin-top: 15px;
+}
+
+.modal-footer-spaced {
+  margin-top: 20px;
+}
+
+.text-muted-sm {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: block;
+}
+
+.text-muted-lg {
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.table-empty-row {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 1.5rem !important;
+}
+
+.table-error-row {
+  text-align: center;
+  color: #ef4444;
+  padding: 1rem !important;
 }
 
 /* Table Header Actions & Search Box */

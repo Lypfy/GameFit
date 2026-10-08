@@ -1,11 +1,10 @@
-/* Statistics Page Styles - Optimized & Integrated with GameFit Design System */
+/* Định dạng Trang Thống kê Admin GameFit */
 .page-container {
   padding: 0;
   width: 100%;
 }
 
-/* Filter Bar */
-/* Filter Bar */
+/* Thanh bộ lọc (Filter Bar) */
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
@@ -967,7 +966,7 @@
   color: #ffffff;
 }
 
-/* Wishlist & Hardware Specific Enhancements */
+/* Tùy chỉnh riêng cho Tab Wishlist & Phần cứng */
 .stat-icon.warning {
   background-color: rgba(255, 193, 7, 0.15);
   color: #ffc107;
@@ -1011,7 +1010,7 @@
   border: 1px solid rgba(255, 193, 7, 0.25);
 }
 
-/* Benchmark Badge - Phân cấp hiệu năng 4 Tiers (Idea 1) */
+/* Phân cấp hiệu năng Benchmark Score (4 Mức) */
 .benchmark-badge {
   display: inline-flex;
   align-items: center;
@@ -1154,7 +1153,7 @@
   border: 1px solid rgba(241, 196, 15, 0.3);
 }
 
-/* Trend Chart Enhancements */
+/* Điểm mốc biểu đồ đường phát hành */
 .trend-chart-container {
   width: 100%;
   position: relative;
