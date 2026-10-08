@@ -140,7 +140,8 @@
   transition: all 0.2s;
 }
 
-.thumbnail-item:hover, .thumbnail-item.active {
+.thumbnail-item:hover,
+.thumbnail-item.active {
   opacity: 1;
   border-color: #fff;
 }
@@ -751,11 +752,11 @@
   transition: all 0.2s ease;
 }
 
-.report-reason-item input[type="radio"]:checked + .reason-custom-radio {
+.report-reason-item input[type="radio"]:checked+.reason-custom-radio {
   border-color: var(--main-color, #fa5353);
 }
 
-.report-reason-item input[type="radio"]:checked + .reason-custom-radio::after {
+.report-reason-item input[type="radio"]:checked+.reason-custom-radio::after {
   content: '';
   position: absolute;
   top: 3px;
@@ -848,11 +849,9 @@
   align-items: flex-start;
   padding: 20px 25px;
   border-bottom: 1px solid #ff4757;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 71, 87, 0.1) 0%,
-    rgba(15, 23, 42, 0) 50%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 71, 87, 0.1) 0%,
+      rgba(15, 23, 42, 0) 50%);
 }
 
 .cc-header-title {
@@ -943,7 +942,7 @@
   margin-bottom: 12px;
 }
 
-.cc-req-item > i {
+.cc-req-item>i {
   font-size: 24px;
   color: #94a3b8;
 }
@@ -1443,11 +1442,18 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* === CARD �? XU?T C?U H?NH === */
+/* === CARD �? XU?T C?U H?NH === */
 .pc-rec-card {
   display: flex;
   flex-direction: column;
@@ -1620,4 +1626,28 @@
 .btn-delete-rec:hover {
   background: rgba(239, 68, 68, 0.15);
   color: #ff6b6b;
+}
+
+
+/* Sửa lỗi khối Đề xuất cấu hình bị đen trên nền trắng */
+[data-theme="light"] .pc-recommend-list {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .empty-chat-icon {
+  color: #cbd5e1;
+}
+
+[data-theme="light"] .comments-empty p {
+  color: #64748b;
+}
+
+[data-theme="light"] .pc-rec-card {
+  border-bottom-color: #f1f5f9;
+}
+
+[data-theme="light"] .pc-rec-card:hover {
+  background: #f8fafc;
 }
