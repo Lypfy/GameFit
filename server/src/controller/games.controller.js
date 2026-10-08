@@ -115,13 +115,13 @@ const checkGameCompatibility = async (req, res) => {
 
 const getGameByTag = async (req, res) => {
     try {
-        const { tag_id } = req.params;
+        const { tag_name } = req.params;
 
-        if (!tag_id || isNaN(tag_id)) {
-            return res.status(400).json({ success: false, message: 'Thiếu hoặc tag_id không hợp lệ' });
+        if (!tag_name || tag_name.trim() === '') {
+            return res.status(400).json({ success: false, message: 'Thiếu hoặc tag_name không hợp lệ' });
         }
 
-        const result = await gamesService.getGameByTag(tag_id);
+        const result = await gamesService.getGameByTag(tag_name);
 
         return res.status(200).json({
             success: true,

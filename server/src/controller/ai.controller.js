@@ -66,8 +66,8 @@ const getChatbotDbContext = async (message, userId = null) => {
                 dbContextText += `\n[DANH SÁCH GAME THEO THỂ LOẠI TÌM THẤY TRONG CSDL]:\n`;
                 for (const tag of matchedTags.slice(0, 2)) {
                     const tagGamesRes = await pool.request()
-                        .input("tag_id", sql.Int, tag.tag_id)
-                        .query("SELECT * FROM dbo.fn_GetGamesByTag(@tag_id)");
+                        .input("tag_name", sql.NVarChar(255), tag.name)
+                        .query("SELECT * FROM dbo.fn_GetGamesByTag(@tag_name)");
                     const tagGames = (tagGamesRes.recordset || []).slice(0, 5);
                     dbContextText += `- Thể loại "${tag.name}": ${tagGames.map(g => g.name).join(", ")}\n`;
                 }

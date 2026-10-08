@@ -197,14 +197,14 @@ const checkGameCompatibility = async (user_id, pc_id, game_id, type) => {
   }
 };
 
-const getGameByTag = async (tag_id) => {
+const getGameByTag = async (tag_name) => {
   try {
     const pool = await sql.connect();
     const request = pool.request();
-    request.input("tag_id", sql.Int, tag_id);
+    request.input("tag_name", sql.NVarChar(50), tag_name);
 
     const result = await request.query(
-      "SELECT * FROM dbo.fn_GetGamesByTag(@tag_id)",
+      "SELECT * FROM dbo.fn_GetGamesByTag(@tag_name)",
     );
 
     return {

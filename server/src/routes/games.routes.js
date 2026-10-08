@@ -39,7 +39,7 @@ const upload = multer({
 
 // Cache trang home và danh sách game (14 ngày = 1209600 giây)
 router.get('/', cacheMiddleware(1209600), gamesController.getGames);
-router.get('/tag/:tag_id', cacheMiddleware(1209600), gamesController.getGameByTag);
+router.get('/tag/:tag_name', cacheMiddleware(1209600), gamesController.getGameByTag);
 
 router.get('/categories', gamesController.getCategories);
 router.get('/publishers', gamesController.getPublishers);
