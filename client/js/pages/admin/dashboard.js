@@ -92,8 +92,11 @@ function renderGamesTable(games) {
           <td>${game.developer || game.publisher || "-"}</td>
           <td>${statusHtml}</td>
           <td class="text-right">
-            <button title="Sửa" class="btn-action btn-edit btn-edit-game" data-id="${gameId}">
+            <button title="Sửa thông tin" class="btn-action btn-edit btn-edit-game" data-id="${gameId}">
               <i class="bx bx-edit"></i>
+            </button>
+            <button title="Cập nhật cấu hình" class="btn-action btn-config btn-config-game" data-id="${gameId}" style="color: #818cf8;">
+              <i class="bx bx-cog"></i>
             </button>
             <button title="Xóa" class="btn-action btn-delete btn-delete-game" data-id="${gameId}">
               <i class="bx bx-trash"></i>
@@ -268,11 +271,155 @@ function initGameActions() {
     });
   }
 
-  // Delegated Click trên bảng Game cho nút Sửa & Xóa
+  // --- Modal Cập nhật Cấu hình Game ---
+  const configModal = document.getElementById("game-config-modal");
+  const configForm = document.getElementById("game-config-form");
+  const closeConfigModal = document.getElementById("close-game-config-modal");
+  const cancelConfigBtn = document.getElementById("cancel-game-config-btn");
+  const configOverlay = document.getElementById("game-config-overlay");
+  const btnOpenConfigFromEdit = document.getElementById("btn-open-config-from-edit");
+
+  function hideConfigModal() {
+    if (configModal) configModal.classList.remove("active");
+    if (configForm) configForm.reset();
+  }
+
+  if (closeConfigModal) closeConfigModal.addEventListener("click", hideConfigModal);
+  if (cancelConfigBtn) cancelConfigBtn.addEventListener("click", hideConfigModal);
+  if (configOverlay) configOverlay.addEventListener("click", hideConfigModal);
+
+  async function openGameConfigModal(gameId) {
+    if (!gameId) return;
+    const targetGame = allAdminGames.find(
+      (g) => (g.game_id || g.id).toString() === gameId.toString()
+    );
+
+    document.getElementById("config-game-id").value = gameId;
+    const titleEl = document.getElementById("config-game-target-name");
+    if (titleEl) {
+      titleEl.textContent = targetGame ? `${targetGame.name} (#G-${String(gameId).padStart(3, "0")})` : `#G-${gameId}`;
+    }
+
+    // Clear previous input values
+    const fields = [
+      "config-min-os", "config-min-cpu", "config-min-gpu", "config-min-ram", "config-min-storage",
+      "config-rec-os", "config-rec-cpu", "config-rec-gpu", "config-rec-ram", "config-rec-storage"
+    ];
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+
+    if (configModal) configModal.classList.add("active");
+
+    // Lấy thông tin cấu hình hiện tại của game
+    try {
+      const res = await fetch(`/api/games/${gameId}/game_requirement`);
+      const result = await res.json();
+      if (result.success && Array.isArray(result.data)) {
+        result.data.forEach((req) => {
+          const typeUpper = (req.type || "").toUpperCase();
+          if (typeUpper === "MINIMUM" || req.type === "Cấu hình tối thiểu") {
+            const elOs = document.getElementById("config-min-os");
+            const elCpu = document.getElementById("config-min-cpu");
+            const elGpu = document.getElementById("config-min-gpu");
+            const elRam = document.getElementById("config-min-ram");
+            const elStorage = document.getElementById("config-min-storage");
+            if (elOs) elOs.value = req.os || "";
+            if (elCpu) elCpu.value = req.cpu_name || "";
+            if (elGpu) elGpu.value = req.gpu_name || "";
+            if (elRam) elRam.value = req.ram || "";
+            if (elStorage) elStorage.value = req.storage || "";
+          } else if (typeUpper === "RECOMMENDED" || req.type === "Cấu hình đề xuất") {
+            const elOs = document.getElementById("config-rec-os");
+            const elCpu = document.getElementById("config-rec-cpu");
+            const elGpu = document.getElementById("config-rec-gpu");
+            const elRam = document.getElementById("config-rec-ram");
+            const elStorage = document.getElementById("config-rec-storage");
+            if (elOs) elOs.value = req.os || "";
+            if (elCpu) elCpu.value = req.cpu_name || "";
+            if (elGpu) elGpu.value = req.gpu_name || "";
+            if (elRam) elRam.value = req.ram || "";
+            if (elStorage) elStorage.value = req.storage || "";
+          }
+        });
+      }
+    } catch (err) {
+      console.error("Lỗi khi lấy thông tin cấu hình game:", err);
+    }
+  }
+
+  if (btnOpenConfigFromEdit) {
+    btnOpenConfigFromEdit.addEventListener("click", function () {
+      const gameId = document.getElementById("edit-game-id").value;
+      if (gameId) {
+        hideEditModal();
+        openGameConfigModal(gameId);
+      }
+    });
+  }
+
+  if (configForm) {
+    configForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const gameId = document.getElementById("config-game-id").value;
+      const saveBtn = document.getElementById("save-game-config-btn");
+
+      const payload = {
+        game_id: parseInt(gameId, 10),
+        minimum: {
+          os: (document.getElementById("config-min-os")?.value || "").trim(),
+          cpu_name: (document.getElementById("config-min-cpu")?.value || "").trim(),
+          gpu_name: (document.getElementById("config-min-gpu")?.value || "").trim(),
+          ram: parseInt(document.getElementById("config-min-ram")?.value, 10) || 0,
+          storage: parseInt(document.getElementById("config-min-storage")?.value, 10) || 0,
+        },
+        recommended: {
+          os: (document.getElementById("config-rec-os")?.value || "").trim(),
+          cpu_name: (document.getElementById("config-rec-cpu")?.value || "").trim(),
+          gpu_name: (document.getElementById("config-rec-gpu")?.value || "").trim(),
+          ram: parseInt(document.getElementById("config-rec-ram")?.value, 10) || 0,
+          storage: parseInt(document.getElementById("config-rec-storage")?.value, 10) || 0,
+        },
+      };
+
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Đang lưu...';
+      }
+
+      try {
+        const res = await fetch("/api/games/update-requirement", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const result = await res.json();
+        if (result.success) {
+          showToast("Cập nhật thông tin cấu hình game thành công!");
+          hideConfigModal();
+          loadGamesData();
+        } else {
+          showToast(result.message || "Cập nhật cấu hình thất bại!", true);
+        }
+      } catch (err) {
+        console.error("Lỗi khi cập nhật cấu hình game:", err);
+        showToast("Lỗi kết nối khi cập nhật cấu hình game!", true);
+      } finally {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = '<i class="bx bx-save"></i> Lưu cấu hình';
+        }
+      }
+    });
+  }
+
+  // Delegated Click trên bảng Game cho nút Sửa, Cấu hình & Xóa
   const gamesTbody = document.getElementById("games-table-body");
   if (gamesTbody) {
     gamesTbody.addEventListener("click", function (e) {
       const btnEdit = e.target.closest(".btn-edit-game");
+      const btnConfig = e.target.closest(".btn-config-game");
       const btnDelete = e.target.closest(".btn-delete-game");
 
       if (btnEdit) {
@@ -295,6 +442,11 @@ function initGameActions() {
               : "0";
           if (editModal) editModal.classList.add("active");
         }
+      }
+
+      if (btnConfig) {
+        const gameId = btnConfig.getAttribute("data-id");
+        openGameConfigModal(gameId);
       }
 
       if (btnDelete) {

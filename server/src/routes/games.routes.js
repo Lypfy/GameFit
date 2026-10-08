@@ -56,6 +56,7 @@ router.post('/upload-images', upload.array('images', 20), gamesController.upload
 // Các API thay đổi dữ liệu sẽ tự động dọn dẹp Cache
 router.post('/add', clearGamesCache, gamesController.addGame);
 router.post('/update', clearGamesCache, gamesController.updateGame);
+router.post('/update-requirement', clearGamesCache, gamesController.updateGameRequirement);
 router.post('/delete', clearGamesCache, gamesController.deleteGame);
 
 module.exports = router;

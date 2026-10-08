@@ -473,6 +473,181 @@ const sortGamesByRating = async () => {
   }
 };
 
+const updateGameRequirement = async (game_id, minimum, recommended) => {
+  try {
+    const pool = await sql.connect();
+    const validId = parseInt(game_id, 10);
+    if (isNaN(validId) || !validId) {
+      throw new Error("Mã game không hợp lệ");
+    }
+
+    const itemsToUpdate = [
+      { type: "MINIMUM", data: minimum },
+      { type: "RECOMMENDED", data: recommended }
+    ];
+
+    const tablesToTry = ["Game_requirement", "Game_Requirements", "GameRequirements"];
+
+    for (const item of itemsToUpdate) {
+      if (!item.data) continue;
+      const { os, cpu_name, gpu_name, ram, storage } = item.data;
+
+      // Thử gọi Stored Procedure sp_UpdateGameRequirement nếu đã cài trong CSDL SQL Server
+      try {
+        const spReq = pool.request();
+        spReq.input("game_id", sql.Int, validId);
+        spReq.input("type", sql.VarChar(50), item.type);
+        spReq.input("os", sql.NVarChar(100), os ? os.trim() : "");
+        spReq.input("cpu_name", sql.NVarChar(255), cpu_name ? cpu_name.trim() : "");
+        spReq.input("gpu_name", sql.NVarChar(255), gpu_name ? gpu_name.trim() : "");
+        spReq.input("ram", sql.Int, parseInt(ram, 10) || 0);
+        spReq.input("storage", sql.Int, parseInt(storage, 10) || 0);
+
+        const spRes = await spReq.execute("dbo.sp_UpdateGameRequirement");
+        if (spRes.recordset?.[0] && spRes.recordset[0].success === 0) {
+          console.warn("dbo.sp_UpdateGameRequirement thông báo:", spRes.recordset[0].message);
+        } else {
+          continue; // Đã chạy thành công qua Stored Procedure
+        }
+      } catch (spErr) {
+        console.warn("Chạy sp_UpdateGameRequirement thất bại, chuyển sang query trực tiếp:", spErr.message);
+      }
+
+      // 1. Tìm cpu_id từ CPUs table dựa trên cpu_name nếu có
+      let cpu_id = null;
+      if (cpu_name && cpu_name.trim()) {
+        try {
+          const reqCpu = pool.request();
+          reqCpu.input("searchCpu", sql.NVarChar(100), cpu_name.trim());
+          const cpuRes = await reqCpu.query(`
+            SELECT TOP 1 cpu_id FROM CPUs 
+            WHERE LOWER(name) = LOWER(@searchCpu) 
+               OR LOWER(cpu_name) = LOWER(@searchCpu) 
+               OR name LIKE '%' + @searchCpu + '%' 
+               OR cpu_name LIKE '%' + @searchCpu + '%'
+          `);
+          if (cpuRes.recordset?.[0]?.cpu_id) {
+            cpu_id = cpuRes.recordset[0].cpu_id;
+          }
+        } catch (e) { }
+      }
+
+      // 2. Tìm gpu_id từ GPUs table dựa trên gpu_name nếu có
+      let gpu_id = null;
+      if (gpu_name && gpu_name.trim()) {
+        try {
+          const reqGpu = pool.request();
+          reqGpu.input("searchGpu", sql.NVarChar(100), gpu_name.trim());
+          const gpuRes = await reqGpu.query(`
+            SELECT TOP 1 gpu_id FROM GPUs 
+            WHERE LOWER(name) = LOWER(@searchGpu) 
+               OR LOWER(gpu_name) = LOWER(@searchGpu) 
+               OR name LIKE '%' + @searchGpu + '%' 
+               OR gpu_name LIKE '%' + @searchGpu + '%'
+          `);
+          if (gpuRes.recordset?.[0]?.gpu_id) {
+            gpu_id = gpuRes.recordset[0].gpu_id;
+          }
+        } catch (e) { }
+      }
+
+      const ramVal = parseInt(ram, 10) || 0;
+      const storageVal = parseInt(storage, 10) || 0;
+      const osVal = os ? os.trim() : "";
+
+      for (const table of tablesToTry) {
+        try {
+          const checkReq = pool.request();
+          checkReq.input("game_id", sql.Int, validId);
+          checkReq.input("type", sql.VarChar(50), item.type);
+          const existRes = await checkReq.query(`
+            SELECT COUNT(*) AS cnt FROM ${table} 
+            WHERE game_id = @game_id AND (UPPER(type) = UPPER(@type) OR type = @type)
+          `);
+
+          const exists = existRes.recordset?.[0]?.cnt > 0;
+
+          if (exists) {
+            const updReq = pool.request();
+            updReq.input("game_id", sql.Int, validId);
+            updReq.input("type", sql.VarChar(50), item.type);
+            updReq.input("os", sql.NVarChar(100), osVal);
+            updReq.input("ram", sql.Int, ramVal);
+            updReq.input("storage", sql.Int, storageVal);
+            if (cpu_id) updReq.input("cpu_id", sql.Int, cpu_id);
+            if (gpu_id) updReq.input("gpu_id", sql.Int, gpu_id);
+
+            let setFields = ["os = @os", "ram = @ram", "storage = @storage"];
+            if (cpu_id) setFields.push("cpu_id = @cpu_id");
+            if (gpu_id) setFields.push("gpu_id = @gpu_id");
+
+            await updReq.query(`
+              UPDATE ${table}
+              SET ${setFields.join(", ")}
+              WHERE game_id = @game_id AND (UPPER(type) = UPPER(@type) OR type = @type)
+            `);
+
+            // Check if cpu_name / gpu_name text columns exist and update them as well
+            try {
+              const textUpd = pool.request();
+              textUpd.input("game_id", sql.Int, validId);
+              textUpd.input("type", sql.VarChar(50), item.type);
+              textUpd.input("cpu_name", sql.NVarChar(255), cpu_name ? cpu_name.trim() : "");
+              textUpd.input("gpu_name", sql.NVarChar(255), gpu_name ? gpu_name.trim() : "");
+              await textUpd.query(`
+                UPDATE ${table}
+                SET cpu_name = @cpu_name, gpu_name = @gpu_name
+                WHERE game_id = @game_id AND (UPPER(type) = UPPER(@type) OR type = @type)
+              `);
+            } catch (tErr) { }
+
+            break;
+          } else {
+            const insReq = pool.request();
+            insReq.input("game_id", sql.Int, validId);
+            insReq.input("type", sql.VarChar(50), item.type);
+            insReq.input("os", sql.NVarChar(100), osVal);
+            insReq.input("ram", sql.Int, ramVal);
+            insReq.input("storage", sql.Int, storageVal);
+            if (cpu_id) insReq.input("cpu_id", sql.Int, cpu_id);
+            if (gpu_id) insReq.input("gpu_id", sql.Int, gpu_id);
+
+            await insReq.query(`
+              INSERT INTO ${table} (game_id, type, os, ram, storage ${cpu_id ? ', cpu_id' : ''} ${gpu_id ? ', gpu_id' : ''})
+              VALUES (@game_id, @type, @os, @ram, @storage ${cpu_id ? ', @cpu_id' : ''} ${gpu_id ? ', @gpu_id' : ''})
+            `);
+
+            try {
+              const textUpd = pool.request();
+              textUpd.input("game_id", sql.Int, validId);
+              textUpd.input("type", sql.VarChar(50), item.type);
+              textUpd.input("cpu_name", sql.NVarChar(255), cpu_name ? cpu_name.trim() : "");
+              textUpd.input("gpu_name", sql.NVarChar(255), gpu_name ? gpu_name.trim() : "");
+              await textUpd.query(`
+                UPDATE ${table}
+                SET cpu_name = @cpu_name, gpu_name = @gpu_name
+                WHERE game_id = @game_id AND (UPPER(type) = UPPER(@type) OR type = @type)
+              `);
+            } catch (tErr) { }
+
+            break;
+          }
+        } catch (tblErr) {
+          // Thử tên bảng kế tiếp
+        }
+      }
+    }
+
+    return {
+      success: true,
+      message: "Cập nhật thông tin cấu hình game thành công"
+    };
+  } catch (error) {
+    console.error("Lỗi khi cập nhật cấu hình game:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   getGames,
   getFullGameDetail,
@@ -483,8 +658,10 @@ module.exports = {
   addGame,
   updateGame,
   deleteGame,
+  updateGameRequirement,
   getAllCategories,
   getAllPublishers,
   sortGamesByName,
   sortGamesByRating
 };
+

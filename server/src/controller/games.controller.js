@@ -335,6 +335,29 @@ const getPublishers = async (req, res) => {
     }
 };
 
+const updateGameRequirement = async (req, res) => {
+    try {
+        const { game_id, minimum, recommended } = req.body;
+
+        if (!game_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu game_id hợp lệ' });
+        }
+
+        const result = await gamesService.updateGameRequirement(game_id, minimum, recommended);
+
+        return res.status(200).json({
+            success: true,
+            message: result.message || 'Cập nhật thông tin cấu hình game thành công'
+        });
+    } catch (error) {
+        console.error('Error in updateGameRequirement Controller:', error.message);
+        return res.status(500).json({
+            success: false,
+            message: error.message || 'Lỗi server khi cập nhật cấu hình game'
+        });
+    }
+};
+
 module.exports = {
     getGames,
     getFullGameDetail,
@@ -346,9 +369,11 @@ module.exports = {
     addGame,
     deleteGame,
     updateGame,
+    updateGameRequirement,
     getCategories,
     getPublishers
 };
+
 
 
 
