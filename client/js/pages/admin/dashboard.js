@@ -310,7 +310,12 @@ function initGameActions() {
       if (el) el.value = "";
     });
 
-    if (configModal) configModal.classList.add("active");
+    if (configModal) {
+      configModal.classList.add("active");
+      if (typeof initAllHwComboboxes === "function") {
+        initAllHwComboboxes(configModal);
+      }
+    }
 
     // Lấy thông tin cấu hình hiện tại của game
     try {

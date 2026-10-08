@@ -1057,13 +1057,13 @@
           </div>
           <div class="form-group">
             <label for="pc-os">Hệ điều hành</label>
-              <select id="pc-os" class="form-control">
-                <option value="">-- Chọn Hệ điều hành --</option>
-                <option value="Windows 10 32-bit">Windows 10 32-bit</option>
-                <option value="Windows 10 64-bit">Windows 10 64-bit</option>
-                <option value="Windows 11 32-bit">Windows 11 32-bit</option>
-                <option value="Windows 11 64-bit">Windows 11 64-bit</option>
-              </select>
+            <select id="pc-os" class="form-control">
+              <option value="">-- Chọn Hệ điều hành --</option>
+              <option value="Windows 10 32-bit">Windows 10 32-bit</option>
+              <option value="Windows 10 64-bit">Windows 10 64-bit</option>
+              <option value="Windows 11 32-bit">Windows 11 32-bit</option>
+              <option value="Windows 11 64-bit">Windows 11 64-bit</option>
+            </select>
           </div>
           <div class="form-group">
             <label>CPU <span style="color: red">*</span></label>
@@ -1579,12 +1579,21 @@
               <option value="0">Ngừng hỗ trợ</option>
             </select>
           </div>
-          <div class="form-group" style="margin-top: 15px;">
+          <div class="form-group" style="margin-top: 15px">
             <button
               type="button"
               class="btn-save"
               id="btn-open-config-from-edit"
-              style="width: 100%; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; justify-content: center; display: flex; align-items: center; gap: 8px; font-weight: 500;"
+              style="
+                width: 100%;
+                background: linear-gradient(135deg, #6366f1, #4f46e5);
+                color: #fff;
+                justify-content: center;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 500;
+              "
             >
               <i class="bx bx-cog"></i> Cập nhật thông tin cấu hình game
             </button>
@@ -1611,72 +1620,258 @@
         </div>
         <form id="game-config-form">
           <input type="hidden" id="config-game-id" />
-          <div class="config-modal-target-info" style="margin-bottom: 20px; padding: 12px 16px; background: rgba(99, 102, 241, 0.12); border-left: 4px solid #6366f1; border-radius: 8px;">
-            <span style="font-size: 13px; color: #94a3b8; display: block;">Đang cấu hình cho game:</span>
-            <strong id="config-game-target-name" style="font-size: 16px; color: #f8fafc;">-</strong>
+          <div
+            class="config-modal-target-info"
+            style="
+              margin-bottom: 20px;
+              padding: 12px 16px;
+              background: rgba(99, 102, 241, 0.12);
+              border-left: 4px solid #6366f1;
+              border-radius: 8px;
+            "
+          >
+            <span style="font-size: 13px; color: #94a3b8; display: block"
+              >Đang cấu hình cho game:</span
+            >
+            <strong
+              id="config-game-target-name"
+              style="font-size: 16px; color: #f8fafc"
+              >-</strong
+            >
           </div>
 
-          <div class="config-sections-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+          <div
+            class="config-sections-grid"
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+              gap: 20px;
+            "
+          >
             <!-- Cấu hình Tối thiểu -->
-            <div class="config-box" style="background: rgba(30, 41, 59, 0.6); padding: 18px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.08);">
-              <h4 style="margin-top: 0; margin-bottom: 14px; color: #f59e0b; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600;">
+            <div
+              class="config-box"
+              style="
+                background: rgba(30, 41, 59, 0.6);
+                padding: 18px;
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+              "
+            >
+              <h4
+                style="
+                  margin-top: 0;
+                  margin-bottom: 14px;
+                  color: #f59e0b;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  font-size: 15px;
+                  font-weight: 600;
+                "
+              >
                 <i class="bx bx-tachometer"></i> Cấu hình Tối thiểu (MINIMUM)
               </h4>
               <div class="form-group">
                 <label for="config-min-os">Hệ điều hành (OS)</label>
-                <input type="text" id="config-min-os" placeholder="Ví dụ: Windows 10 64-bit" />
+                <select
+                  id="config-min-os"
+                  class="form-control"
+                  style="
+                    width: 100%;
+                    padding: 10px 14px;
+                    background: rgba(15, 23, 42, 0.8);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 8px;
+                    color: #fff;
+                  "
+                >
+                  <option value="">-- Chọn Hệ điều hành --</option>
+                  <option value="Windows 10 32-bit">Windows 10 32-bit</option>
+                  <option value="Windows 10 64-bit">Windows 10 64-bit</option>
+                  <option value="Windows 11 32-bit">Windows 11 32-bit</option>
+                  <option value="Windows 11 64-bit">Windows 11 64-bit</option>
+                </select>
               </div>
               <div class="form-group">
-                <label for="config-min-cpu">Bộ xử lý (CPU)</label>
-                <input type="text" id="config-min-cpu" placeholder="Ví dụ: Intel Core i5-8400 / AMD Ryzen 5 2600" />
+                <label>Bộ xử lý (CPU)</label>
+                <div class="hw-combobox" data-hw-type="cpu">
+                  <div class="hw-combobox-input-wrap">
+                    <input
+                      type="text"
+                      id="config-min-cpu"
+                      class="hw-combobox-text form-control"
+                      data-hw-search
+                      placeholder="Nhập tên CPU..."
+                      autocomplete="off"
+                    />
+                    <i class="bx bx-chevron-down hw-combobox-icon"></i>
+                  </div>
+                  <input type="hidden" id="config-min-cpu-id" data-hw-id />
+                  <div class="hw-combobox-dropdown"></div>
+                </div>
               </div>
               <div class="form-group">
-                <label for="config-min-gpu">Card đồ họa (GPU)</label>
-                <input type="text" id="config-min-gpu" placeholder="Ví dụ: NVIDIA GeForce GTX 1060 / AMD RX 580" />
+                <label>Card đồ họa (GPU)</label>
+                <div class="hw-combobox" data-hw-type="gpu">
+                  <div class="hw-combobox-input-wrap">
+                    <input
+                      type="text"
+                      id="config-min-gpu"
+                      class="hw-combobox-text form-control"
+                      data-hw-search
+                      placeholder="Nhập tên GPU..."
+                      autocomplete="off"
+                    />
+                    <i class="bx bx-chevron-down hw-combobox-icon"></i>
+                  </div>
+                  <input type="hidden" id="config-min-gpu-id" data-hw-id />
+                  <div class="hw-combobox-dropdown"></div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="config-min-ram">RAM (GB)</label>
-                <input type="number" id="config-min-ram" min="1" max="512" placeholder="Ví dụ: 8" />
+                <input
+                  type="number"
+                  id="config-min-ram"
+                  min="1"
+                  max="512"
+                  placeholder="Ví dụ: 8"
+                />
               </div>
               <div class="form-group">
                 <label for="config-min-storage">Dung lượng ổ cứng (GB)</label>
-                <input type="number" id="config-min-storage" min="1" max="2000" placeholder="Ví dụ: 50" />
+                <input
+                  type="number"
+                  id="config-min-storage"
+                  min="1"
+                  max="2000"
+                  placeholder="Ví dụ: 50"
+                />
               </div>
             </div>
 
             <!-- Cấu hình Đề xuất -->
-            <div class="config-box" style="background: rgba(30, 41, 59, 0.6); padding: 18px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.08);">
-              <h4 style="margin-top: 0; margin-bottom: 14px; color: #10b981; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600;">
+            <div
+              class="config-box"
+              style="
+                background: rgba(30, 41, 59, 0.6);
+                padding: 18px;
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+              "
+            >
+              <h4
+                style="
+                  margin-top: 0;
+                  margin-bottom: 14px;
+                  color: #10b981;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  font-size: 15px;
+                  font-weight: 600;
+                "
+              >
                 <i class="bx bx-bolt-circle"></i> Cấu hình Đề xuất (RECOMMENDED)
               </h4>
               <div class="form-group">
                 <label for="config-rec-os">Hệ điều hành (OS)</label>
-                <input type="text" id="config-rec-os" placeholder="Ví dụ: Windows 10/11 64-bit" />
+                <select
+                  id="config-rec-os"
+                  class="form-control"
+                  style="
+                    width: 100%;
+                    padding: 10px 14px;
+                    background: rgba(15, 23, 42, 0.8);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 8px;
+                    color: #fff;
+                  "
+                >
+                  <option value="">-- Chọn Hệ điều hành --</option>
+                  <option value="Windows 10 32-bit">Windows 10 32-bit</option>
+                  <option value="Windows 10 64-bit">Windows 10 64-bit</option>
+                  <option value="Windows 11 32-bit">Windows 11 32-bit</option>
+                  <option value="Windows 11 64-bit">Windows 11 64-bit</option>
+                </select>
               </div>
               <div class="form-group">
-                <label for="config-rec-cpu">Bộ xử lý (CPU)</label>
-                <input type="text" id="config-rec-cpu" placeholder="Ví dụ: Intel Core i7-10700K / AMD Ryzen 7 3700X" />
+                <label>Bộ xử lý (CPU)</label>
+                <div class="hw-combobox" data-hw-type="cpu">
+                  <div class="hw-combobox-input-wrap">
+                    <input
+                      type="text"
+                      id="config-rec-cpu"
+                      class="hw-combobox-text form-control"
+                      data-hw-search
+                      placeholder="Nhập tên CPU..."
+                      autocomplete="off"
+                    />
+                    <i class="bx bx-chevron-down hw-combobox-icon"></i>
+                  </div>
+                  <input type="hidden" id="config-rec-cpu-id" data-hw-id />
+                  <div class="hw-combobox-dropdown"></div>
+                </div>
               </div>
               <div class="form-group">
-                <label for="config-rec-gpu">Card đồ họa (GPU)</label>
-                <input type="text" id="config-rec-gpu" placeholder="Ví dụ: NVIDIA GeForce RTX 3070 / AMD RX 6700 XT" />
+                <label>Card đồ họa (GPU)</label>
+                <div class="hw-combobox" data-hw-type="gpu">
+                  <div class="hw-combobox-input-wrap">
+                    <input
+                      type="text"
+                      id="config-rec-gpu"
+                      class="hw-combobox-text form-control"
+                      data-hw-search
+                      placeholder="Nhập tên GPU..."
+                      autocomplete="off"
+                    />
+                    <i class="bx bx-chevron-down hw-combobox-icon"></i>
+                  </div>
+                  <input type="hidden" id="config-rec-gpu-id" data-hw-id />
+                  <div class="hw-combobox-dropdown"></div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="config-rec-ram">RAM (GB)</label>
-                <input type="number" id="config-rec-ram" min="1" max="512" placeholder="Ví dụ: 16" />
+                <input
+                  type="number"
+                  id="config-rec-ram"
+                  min="1"
+                  max="512"
+                  placeholder="Ví dụ: 16"
+                />
               </div>
               <div class="form-group">
                 <label for="config-rec-storage">Dung lượng ổ cứng (GB)</label>
-                <input type="number" id="config-rec-storage" min="1" max="2000" placeholder="Ví dụ: 50" />
+                <input
+                  type="number"
+                  id="config-rec-storage"
+                  min="1"
+                  max="2000"
+                  placeholder="Ví dụ: 50"
+                />
               </div>
             </div>
           </div>
 
-          <div class="modal-footer" style="margin-top: 20px;">
-            <button type="button" class="btn-cancel" id="cancel-game-config-btn">
+          <div class="modal-footer" style="margin-top: 20px">
+            <button
+              type="button"
+              class="btn-cancel"
+              id="cancel-game-config-btn"
+            >
               Hủy
             </button>
-            <button type="submit" class="btn-save" id="save-game-config-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff;">
+            <button
+              type="submit"
+              class="btn-save"
+              id="save-game-config-btn"
+              style="
+                background: linear-gradient(135deg, #10b981, #059669);
+                color: #fff;
+              "
+            >
               <i class="bx bx-save"></i> Lưu cấu hình
             </button>
           </div>
