@@ -130,10 +130,24 @@ const deleteCPU = async (cpu_id) => {
 
 const searchCPUByName = async (cpu_name) => {
   try {
+    const searchVal = cpu_name ? cpu_name.trim() : "";
     const request = new sql.Request();
-    request.input("search", sql.NVarChar(100), cpu_name || "");
-    const result = await request.execute("dbo.sp_SearchCpusByName");
-    return result.recordset || [];
+    request.input("search", sql.NVarChar(100), searchVal);
+    try {
+      const result = await request.execute("dbo.sp_SearchCpusByName");
+      if (result.recordset && result.recordset.length > 0) {
+        return result.recordset;
+      }
+    } catch (spErr) {
+      console.warn("sp_SearchCpusByName SP failed, trying direct query:", spErr.message);
+    }
+
+    const req2 = new sql.Request();
+    req2.input("search", sql.NVarChar(100), `%${searchVal}%`);
+    const res2 = await req2.query(
+      "SELECT TOP 50 cpu_id, name, brand, benchmark_score FROM CPUs WHERE name LIKE @search OR brand LIKE @search OR @search = '%%' ORDER BY benchmark_score DESC, cpu_id ASC"
+    );
+    return res2.recordset || [];
   } catch (error) {
     console.error("Error in searchCPUByName Service:", error.message);
     throw new Error("Lỗi khi tìm kiếm CPU theo tên");

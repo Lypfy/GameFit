@@ -157,13 +157,7 @@ const deleteCPU = async (req, res) => {
 
 const searchCPUByName = async (req, res) => {
   try {
-    const name = req.query.name;
-    if (!name) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Vui lòng cung cấp tên CPU" });
-    }
-
+    const name = req.query.name || "";
     const result = await cpusService.searchCPUByName(name);
 
     return res.status(200).json({

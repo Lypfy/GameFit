@@ -37,6 +37,7 @@
     const textInput = container.querySelector("[data-hw-search]");
     const idInput   = container.querySelector("[data-hw-id]");
     const dropdown  = container.querySelector(".hw-combobox-dropdown");
+    const iconEl    = container.querySelector(".hw-combobox-icon");
 
     if (!textInput || !idInput || !dropdown) return;
 
@@ -64,20 +65,24 @@
 
       const icon = type === "cpu" ? "bx-chip" : "bx-tv";
       dropdown.innerHTML = items
-        .map(
-          (item) => `
+        .map((item) => {
+          const itemId = type === "cpu" ? (item.cpu_id || item.id) : (item.gpu_id || item.id);
+          const itemName = item.name || item.cpu_name || item.gpu_name || "";
+          const itemBrand = item.brand || "";
+          const safeName = itemName.replace(/"/g, '&quot;');
+          return `
           <div class="hw-combobox-item" 
-               data-id="${type === 'cpu' ? item.cpu_id : item.gpu_id}" 
-               data-name="${item.name || ''}">
+               data-id="${itemId || ''}" 
+               data-name="${safeName}">
             <div class="hw-combobox-item-icon">
               <i class="bx ${icon}"></i>
             </div>
             <div class="hw-combobox-item-info">
-              <div class="hw-combobox-item-name">${item.name || ''}</div>
-              <div class="hw-combobox-item-brand">${item.brand || ""}</div>
+              <div class="hw-combobox-item-name">${itemName}</div>
+              <div class="hw-combobox-item-brand">${itemBrand}</div>
             </div>
-          </div>`
-        )
+          </div>`;
+        })
         .join("");
 
       // bind click on each item
@@ -91,20 +96,16 @@
     }
 
     function selectItem(id, name) {
-      idInput.value   = id;
-      textInput.value = name;
+      idInput.value   = id || "";
+      textInput.value = name || "";
       closeDropdown();
       if (typeof onSelect === "function") onSelect(id, name);
     }
 
     // ── API call ─────────────────────────────────────────
     async function search(query) {
-      if (!query || query.trim() === "") {
-        setStatus('<i class="bx bx-info-circle"></i> Nhập tên để tìm kiếm');
-        return;
-      }
-
-      setStatus('<i class="bx bx-loader-alt bx-spin"></i> Đang tìm...');
+      const q = query ? query.trim() : "";
+      setStatus('<i class="bx bx-loader-alt bx-spin"></i> Đang tải danh sách...');
 
       if (abortCtrl) abortCtrl.abort();
       abortCtrl = new AbortController();
@@ -112,19 +113,20 @@
       try {
         const endpoint =
           type === "cpu"
-            ? `/api/cpus/search?name=${encodeURIComponent(query)}`
-            : `/api/gpus/search?name=${encodeURIComponent(query)}`;
+            ? `/api/cpus/search?name=${encodeURIComponent(q)}`
+            : `/api/gpus/search?name=${encodeURIComponent(q)}`;
 
         const res  = await fetch(endpoint, { signal: abortCtrl.signal });
         const json = await res.json();
 
-        if (json.success) {
+        if (json.success && Array.isArray(json.data)) {
           renderItems(json.data);
         } else {
           setStatus('<i class="bx bx-error"></i> Lỗi tải dữ liệu');
         }
       } catch (err) {
         if (err.name !== "AbortError") {
+          console.error("Lỗi search hardware:", err);
           setStatus('<i class="bx bx-error"></i> Lỗi kết nối');
         }
       }
@@ -135,15 +137,29 @@
     // ── events ───────────────────────────────────────────
     textInput.addEventListener("focus", () => {
       openDropdown();
-      if (textInput.value.trim()) {
+      search(textInput.value.trim());
+    });
+
+    textInput.addEventListener("click", () => {
+      if (!container.classList.contains("open")) {
+        openDropdown();
         search(textInput.value.trim());
-      } else {
-        setStatus('<i class="bx bx-info-circle"></i> Nhập tên để tìm kiếm');
       }
     });
 
+    if (iconEl) {
+      iconEl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (container.classList.contains("open")) {
+          closeDropdown();
+        } else {
+          textInput.focus();
+        }
+      });
+    }
+
     textInput.addEventListener("input", () => {
-      // Clear stored id when user modifies text
+      // Clear stored id when user modifies text manually
       idInput.value = "";
       currentQuery  = textInput.value.trim();
       openDropdown();
@@ -198,7 +214,8 @@
     root = root || document;
     root.querySelectorAll(".hw-combobox[data-hw-type]").forEach((el) => {
       const type = el.dataset.hwType;
-      if (type === "cpu" || type === "gpu") {
+      if ((type === "cpu" || type === "gpu") && !el.dataset.initialized) {
+        el.dataset.initialized = "true";
         initHwCombobox(el, type);
       }
     });

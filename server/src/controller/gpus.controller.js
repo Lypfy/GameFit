@@ -122,11 +122,7 @@ const deleteGPU = async (req, res) => {
 
 const searchGpuByName = async (req, res) => {
     try {
-        const name = req.query.name;
-        if (!name) {
-            return res.status(400).json({ success: false, message: 'Vui lòng cung cấp tên GPU' });
-        }
-        
+        const name = req.query.name || "";
         const result = await gpusService.searchGpuByName(name);
         
         return res.status(200).json({

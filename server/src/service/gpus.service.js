@@ -149,10 +149,24 @@ const deleteGpu = async (gpu_id) => {
 
 const searchGpuByName = async (name) => {
   try {
+    const searchVal = name ? name.trim() : "";
     const request = new sql.Request();
-    request.input("search", sql.NVarChar(100), name || "");
-    const result = await request.execute("dbo.sp_SearchGpusByName");
-    return result.recordset || [];
+    request.input("search", sql.NVarChar(100), searchVal);
+    try {
+      const result = await request.execute("dbo.sp_SearchGpusByName");
+      if (result.recordset && result.recordset.length > 0) {
+        return result.recordset;
+      }
+    } catch (spErr) {
+      console.warn("sp_SearchGpusByName SP failed, trying direct query:", spErr.message);
+    }
+
+    const req2 = new sql.Request();
+    req2.input("search", sql.NVarChar(100), `%${searchVal}%`);
+    const res2 = await req2.query(
+      "SELECT TOP 50 gpu_id, name, brand, benchmark_score FROM GPUs WHERE name LIKE @search OR brand LIKE @search OR @search = '%%' ORDER BY benchmark_score DESC, gpu_id ASC"
+    );
+    return res2.recordset || [];
   } catch (error) {
     console.error("Error in searchGpuByName Service:", error.message);
     throw new Error("Lỗi khi tìm kiếm GPU theo tên");
