@@ -7,7 +7,14 @@ const getWishlistGames = async (user_id) => {
 
         // Fetch games in user's wishlist using the provided SQL function
         const result = await request.query(`SELECT * FROM dbo.fn_GetGamesFromWishlist(@user_id)`);
-        return { data: result.recordset };
+        const data = (result.recordset || []).map((row) => ({
+            ...row,
+            name: row.name || row.game_name,
+            game_name: row.game_name || row.name,
+            rating: row.rating !== undefined ? row.rating : (row.average_rating !== undefined ? row.average_rating : 0),
+            average_rating: row.average_rating !== undefined ? row.average_rating : row.rating,
+        }));
+        return { data };
     }
     catch (error) {
         console.log('Error in getWishlistGames Service: ', error.message);

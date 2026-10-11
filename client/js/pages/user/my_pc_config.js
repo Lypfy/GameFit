@@ -219,12 +219,17 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    const rawCpuId = pcCpuIdInput?.value;
+    const cpuText = pcCpuIdInput?.closest(".hw-combobox")?.querySelector("[data-hw-search]")?.value?.trim();
+    const rawGpuId = pcGpuIdInput?.value;
+    const gpuText = pcGpuIdInput?.closest(".hw-combobox")?.querySelector("[data-hw-search]")?.value?.trim();
+
     const pcData = {
       user_id: currentUser.user_id,
       pc_name: pcNameInput.value.trim(),
       os: pcOsInput.value.trim(),
-      cpu_id: parseInt(pcCpuIdInput?.value) || null,
-      gpu_id: parseInt(pcGpuIdInput?.value) || null,
+      cpu_id: parseInt(rawCpuId) || rawCpuId || cpuText || null,
+      gpu_id: parseInt(rawGpuId) || rawGpuId || gpuText || null,
       ram: ramValue || null,
       storage: storageValue || null,
     };
