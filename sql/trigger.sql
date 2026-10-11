@@ -9,8 +9,8 @@
 */
 
 -- GamePCRec
-CREATE OR ALTER TRIGGER [dbo].[trg_GamePCRec_InsteadOfDelete]
-ON [dbo].[Game_PC_Recommendation]
+CREATE OR ALTER TRIGGER trg_GamePCRec_InsteadOfDelete
+ON Game_PC_Recommendation
 INSTEAD OF DELETE
 AS
 BEGIN
@@ -24,8 +24,8 @@ BEGIN
 END
 GO 
 
-CREATE OR ALTER TRIGGER [dbo].[trg_GamePCRec_InsteadOfInsert]
-ON [dbo].[Game_PC_Recommendation]
+CREATE OR ALTER TRIGGER trg_GamePCRec_InsteadOfInsert
+ON Game_PC_Recommendation
 INSTEAD OF INSERT
 AS
 BEGIN
@@ -58,8 +58,8 @@ END
 GO 
 
 -- GameRequirement
-CREATE OR ALTER TRIGGER [dbo].[TRI_CHECK_GAME_REQUIREMENT]
-ON [dbo].[Game_requirement]
+CREATE OR ALTER TRIGGER trg_GameRequirement_Check
+ON Game_requirement
 AFTER INSERT, UPDATE
 AS
 BEGIN
@@ -99,8 +99,8 @@ GO
 
 
 -- Games 
-CREATE OR ALTER TRIGGER [dbo].[trg_Games_SoftDelete]
-ON [dbo].[Games]
+CREATE OR ALTER TRIGGER trg_Games_SoftDelete
+ON Games
 INSTEAD OF DELETE
 AS
 BEGIN
@@ -125,8 +125,8 @@ END;
 GO 
 
 -- Tags
-CREATE OR ALTER TRIGGER [dbo].[trg_Tags_InsteadOfDelete]
-ON [dbo].[Tags]
+CREATE OR ALTER TRIGGER trg_Tags_InsteadOfDelete
+ON Tags
 INSTEAD OF DELETE
 AS
 BEGIN
@@ -138,8 +138,8 @@ END;
 GO
 
 -- User_pc
-CREATE OR ALTER TRIGGER [dbo].[trg_UserPC_InsteadOfDelete]
-ON [dbo].[User_pc]
+CREATE OR ALTER TRIGGER trg_UserPC_InsteadOfDelete
+ON User_pc
 INSTEAD OF DELETE
 AS
 BEGIN
@@ -152,8 +152,8 @@ GO
 
 
 -- Reviews
-CREATE OR ALTER TRIGGER [dbo].[TRI_UPDATE_REVIEWS] 
-ON [dbo].[Reviews] 
+CREATE OR ALTER TRIGGER trg_Reviews_Update 
+ON Reviews 
 AFTER UPDATE 
 AS
 BEGIN 
@@ -174,8 +174,8 @@ END
 GO 
 
 -- Wishlist
-CREATE OR ALTER TRIGGER [dbo].[trg_Wishlist_CheckGameStatus]
-ON [dbo].[Wishlist]
+CREATE OR ALTER TRIGGER trg_Wishlist_CheckGameStatus
+ON Wishlist
 INSTEAD OF INSERT
 AS
 BEGIN
