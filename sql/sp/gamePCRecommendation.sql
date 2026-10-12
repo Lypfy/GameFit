@@ -1,4 +1,4 @@
-﻿-- Đề xuất 
+-- Đề xuất 
 CREATE OR ALTER PROCEDURE sp_CreateGamePCRecommendation
     @user_id INT,
     @game_id INT,
@@ -36,35 +36,36 @@ BEGIN
     SET NOCOUNT ON;
 
     SELECT 
-        GPR.recommendation_id,
-        GPR.user_id,
-        U.user_name,
-        GPR.game_id,
-        GPR.pc_id,
+        gpr.recommendation_id,
+        gpr.user_id,
+        u.user_name,
+        gpr.game_id,
+        gpr.pc_id,
+        v.pc_name,
 
-        V.user_os AS os,
-        V.user_ram AS ram,
-        V.cpu_name,
-        V.gpu_name,
+        v.user_os AS os,
+        v.user_ram AS ram,
+        v.user_storage AS storage,
+        v.cpu_name,
+        v.gpu_name,
 
-        GPR.type,
-        GPR.note,
-        GPR.created_at
+        gpr.type,
+        gpr.note,
+        gpr.created_at
 
-    FROM Game_PC_Recommendation GPR
+    FROM Game_PC_Recommendation gpr
 
-    JOIN Users U
-        ON GPR.user_id = U.user_id
+    JOIN Users u
+        ON gpr.user_id = u.user_id
 
-    JOIN vw_User_PC_Detail V
-        ON GPR.pc_id = V.pc_id
+    JOIN vw_User_PC_Detail v
+        ON gpr.pc_id = v.pc_id
 
-    WHERE GPR.game_id = @game_id
-      AND GPR.is_hidden = 0
+    WHERE gpr.game_id = @game_id
+        AND gpr.is_hidden = 0
 
-    ORDER BY GPR.created_at DESC;
+    ORDER BY gpr.created_at DESC;
 END;
-GO
 
 -- Xóa 
 CREATE OR ALTER PROCEDURE sp_DeleteGamePCRecommendation

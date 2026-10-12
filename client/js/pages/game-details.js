@@ -560,5 +560,30 @@ window.openCommunityTab = function (tabId, clickedBtn) {
   // Active nút
   if (clickedBtn) {
     clickedBtn.classList.add('active');
+  } else {
+    const matchedBtn = document.querySelector(`.tab-btn[onclick*="${tabId}"]`);
+    if (matchedBtn) matchedBtn.classList.add('active');
+  }
+
+  // Lưu trạng thái tab vào sessionStorage để khi tải lại trang vẫn giữ nguyên tab
+  try {
+    sessionStorage.setItem('activeGameCommunityTab', tabId);
+  } catch (e) {}
+
+  // Nếu chuyển sang tab Đề xuất cấu hình, đảm bảo danh sách đề xuất được cập nhật
+  if (tabId === 'tab-pc-recommend' && typeof window.fetchRecommendations === 'function') {
+    window.fetchRecommendations();
   }
 };
+
+// Khôi phục tab đã chọn trước đó khi tải lại trang
+document.addEventListener("DOMContentLoaded", () => {
+  try {
+    const savedTab = sessionStorage.getItem('activeGameCommunityTab');
+    if (savedTab === 'tab-pc-recommend') {
+      setTimeout(() => {
+        window.openCommunityTab('tab-pc-recommend');
+      }, 50);
+    }
+  } catch (e) {}
+});

@@ -654,11 +654,6 @@
     updateButtons();
   });
 
-  if (gameId) {
-    fetchReviews();
-    fetchRecommendations();
-  }
-
   /* =============================================
      PC RECOMMENDATION LOGIC
      ============================================= */
@@ -858,38 +853,6 @@
     }
   };
 
-  window.vote = async function(targetType, targetId, voteType) {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      if (typeof showToast === 'function') showToast('Vui lòng đăng nhập để đánh giá', 'error');
-      else alert('Vui lòng đăng nhập để đánh giá');
-      return;
-    }
-    
-    try {
-      const res = await fetch('http://localhost:5000/api/reviews/vote', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ target_type: targetType, target_id: targetId, vote_type: voteType })
-      });
-      const result = await res.json();
-      if (result.success) {
-        if (targetType === 'RECOMMENDATION') {
-            fetchRecommendations();
-        } else {
-            fetchReviews();
-        }
-      } else {
-        if (typeof showToast === 'function') showToast(result.message, 'error');
-      }
-    } catch (e) {
-      console.error('Lỗi khi vote:', e);
-    }
-  };
-
   function renderRecommendations(list) {
     const activeUser = getActiveUser();
     pcRecommendList.innerHTML = list.map(rec => {
@@ -956,6 +919,16 @@
         </div>
       `;
     }).join('');
+  }
+
+  window.fetchRecommendations = fetchRecommendations;
+
+  /* =============================================
+     KHỞI TẠO DỮ LIỆU
+     ============================================= */
+  if (gameId) {
+    fetchReviews();
+    fetchRecommendations();
   }
 
 })();
