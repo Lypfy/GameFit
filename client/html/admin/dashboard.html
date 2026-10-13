@@ -2310,7 +2310,7 @@
     <!-- Modal Chi Tiết & Kiểm Duyệt Bình Luận Vi Phạm -->
     <div class="modal" id="violation-detail-modal">
       <div class="modal-overlay" id="violation-modal-overlay"></div>
-      <div class="modal-card modal-compact">
+      <div class="modal-card modal-compact modal-violation-detail">
         <!-- Header -->
         <div class="modal-header">
           <h3><i class="bx bx-shield-quarter"></i> Chi tiết báo cáo</h3>
@@ -2346,15 +2346,6 @@
                 >25/09/2026 14:30</span
               >
             </div>
-            <div class="violation-info-item full-width">
-              <strong>Lý do:</strong>
-              <div
-                id="violation-reason-summary"
-                class="violation-reason-summary"
-              >
-                <!-- Hiển thị lý do đơn lẻ hoặc nút 'Xem chi tiết' khi có nhiều lý do -->
-              </div>
-            </div>
           </div>
 
           <!-- Trích dẫn nội dung bình luận -->
@@ -2364,6 +2355,22 @@
           <div id="violation-comment-text" class="violation-comment-box">
             "Game này tối ưu như rác rưởi, hút máu người chơi không khác gì lừa
             đảo..."
+          </div>
+
+          <!-- Danh sách chi tiết các lý do báo cáo vi phạm -->
+          <div class="violation-reasons-section">
+            <label class="violation-label violation-reasons-header-label">
+              <span><i class="bx bx-error-alt"></i> Các phản ánh vi phạm:</span>
+              <span id="violation-reasons-count-badge" class="violation-count-badge"
+                >0 lượt</span
+              >
+            </label>
+            <div
+              id="violation-inline-reasons-list"
+              class="violation-inline-reasons-list"
+            >
+              <!-- Danh sách lý do được render tự động với thanh cuộn -->
+            </div>
           </div>
         </div>
 
@@ -2407,51 +2414,6 @@
       </div>
     </div>
 
-    <!-- Modal Danh Sách Chi Tiết Các Lý Do Báo Cáo -->
-    <div class="modal" id="violation-reasons-list-modal">
-      <div class="modal-overlay" id="violation-reasons-modal-overlay"></div>
-      <div class="modal-card modal-compact">
-        <!-- Header -->
-        <div class="modal-header">
-          <div class="modal-header-left">
-            <button
-              type="button"
-              id="btn-back-to-violation-detail"
-              class="btn-icon-back"
-              title="Quay lại chi tiết báo cáo"
-            >
-              <i class="bx bx-arrow-back"></i>
-            </button>
-            <h3 class="modal-sub-title">Lý do báo cáo</h3>
-          </div>
-          <button
-            type="button"
-            class="close-btn"
-            id="close-violation-reasons-modal"
-          >
-            &times;
-          </button>
-        </div>
-
-        <!-- Body -->
-        <div class="modal-body">
-          <p class="modal-reasons-intro">
-            Tổng cộng có
-            <strong id="reasons-modal-count" class="violation-count-badge"
-              >0 lượt</strong
-            >
-            phản ánh vi phạm cho bình luận này:
-          </p>
-          <div
-            id="violation-all-reasons-list"
-            class="violation-all-reasons-list"
-          >
-            <!-- Từng lý do vi phạm -->
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Toast Notification -->
     <div id="home-toast" class="home-toast"></div>
 
@@ -2461,6 +2423,7 @@
     <script src="../../js/data/games-data.js" defer></script>
     <script src="../../js/components/navbar.js" defer></script>
     <script src="../../js/components/user-dropdown.js" defer></script>
+    <script src="../../js/components/notification.js" defer></script>
     <script src="../../js/components/profile-modal.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="../../js/components/statistics.js" defer></script>

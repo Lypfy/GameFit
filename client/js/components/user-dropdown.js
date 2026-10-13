@@ -43,6 +43,9 @@ function renderUserDropdownUI() {
     if (userCapsule) userCapsule.style.display = "none";
     if (userDropdown) userDropdown.classList.remove("active");
 
+    const notifWrap = document.getElementById("notification-wrap");
+    if (notifWrap) notifWrap.style.display = "none";
+
     if (!navLoginBtn) {
       navLoginBtn = document.createElement("a");
       navLoginBtn.id = "nav-login-btn";
@@ -82,6 +85,10 @@ function renderUserDropdownUI() {
 
     userCapsule.addEventListener("click", function (e) {
       e.stopPropagation();
+      if (typeof closeNotificationDropdown === "function") {
+        closeNotificationDropdown();
+      }
+
       if (userDropdown) {
         const isActive = userDropdown.classList.toggle("active");
         userCapsule.classList.toggle("active", isActive);
@@ -157,9 +164,10 @@ document.addEventListener("DOMContentLoaded", function () {
   renderUserDropdownUI();
   checkUserLockStatus();
 
-  // Close dropdown when clicking outside
+  // Đóng user dropdown khi click ra ngoài
   document.addEventListener("click", function (e) {
     const userCapsule = document.getElementById("user-profile-capsule");
+
     if (
       userDropdown &&
       userDropdown.classList.contains("active") &&
@@ -180,6 +188,10 @@ document.addEventListener("DOMContentLoaded", function () {
       if (userDropdown) userDropdown.classList.remove("active");
       const userCapsule = document.getElementById("user-profile-capsule");
       if (userCapsule) userCapsule.classList.remove("active");
+      if (typeof closeNotificationDropdown === "function") {
+        closeNotificationDropdown();
+      }
+
       if (typeof logoutUser === "function") logoutUser();
       renderUserDropdownUI();
       if (typeof showToast === "function") {
@@ -209,3 +221,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+

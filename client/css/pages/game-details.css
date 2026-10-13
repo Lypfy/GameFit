@@ -703,6 +703,98 @@
   transform: translateY(0);
 }
 
+/* Review bị ẩn vi phạm (Chỉ hiển thị cho chính chủ tác giả) */
+.review-card.is-hidden-warning {
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px dashed rgba(239, 68, 68, 0.4);
+  border-radius: 10px;
+  margin: 0.75rem 0;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.review-card.is-hidden-warning:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.6);
+}
+
+.review-card.is-hidden-warning .review-avatar {
+  background: #7f1d1d;
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.review-hidden-banner {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 6px 0 10px 0;
+}
+
+.hidden-banner-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #f87171;
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.hidden-banner-header i {
+  font-size: 1.05rem;
+  color: #ef4444;
+}
+
+.hidden-banner-desc {
+  margin: 3px 0 0 22px;
+  color: #cbd5e1;
+  font-size: 0.77rem;
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
+.is-comment-hidden-text {
+  opacity: 0.65;
+  font-style: italic;
+  color: #94a3b8;
+  text-decoration: line-through;
+  text-decoration-color: rgba(239, 68, 68, 0.4);
+}
+
+.btn-delete-hidden-comment {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.45) !important;
+  color: #fca5a5 !important;
+  font-weight: 600 !important;
+}
+
+.btn-delete-hidden-comment:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+  border-color: #ef4444 !important;
+  color: #fff !important;
+}
+
+/* Hiệu ứng viền phát sáng khi người dùng click từ thông báo vào xem bình luận */
+@keyframes reviewHighlightPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6);
+    border-color: rgba(239, 68, 68, 0.9);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    border-color: rgba(239, 68, 68, 0.9);
+  }
+}
+
+.review-card.highlight-pulse {
+  animation: reviewHighlightPulse 1.2s ease-in-out 3;
+}
+
 /* Nội dung Modal Báo cáo */
 .report-guide-text {
   font-size: 0.88rem;
@@ -1281,7 +1373,8 @@
 
 [data-theme="light"] .review-comment-text,
 [data-theme="light"] .report-guide-text,
-[data-theme="light"] .reason-text {
+[data-theme="light"] .reason-text,
+[data-theme="light"] .hidden-banner-desc {
   color: #334155;
 }
 

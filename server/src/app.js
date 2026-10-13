@@ -28,6 +28,7 @@ const wishlistRoutes = require("./routes/wishlist.routes");
 const reviewRoutes = require("./routes/review.routes");
 const statisticsRoutes = require("./routes/statistics.routes");
 const aiRoutes = require("./routes/ai.routes");
+const notificationRoutes = require("./routes/notification.routes");
 
 // Đăng ký các router
 app.use("/api/computer-config", computerConfigRoutes);
@@ -40,6 +41,7 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/statistics", statisticsRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Khởi tạo kết nối DB và Redis trước khi lắng nghe port
 Promise.all([connectDB(), connectRedis()]).then(() => {

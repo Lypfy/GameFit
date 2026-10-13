@@ -71,7 +71,8 @@ const getReviews = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Thiếu game_id hợp lệ' });
         }
 
-        const result = await reviewService.getReview(game_id);
+        const current_user_id = req.user ? req.user.user_id : null;
+        const result = await reviewService.getReview(game_id, current_user_id);
         return res.status(200).json({
             success: true,
             message: 'Lấy thông tin review thành công',
@@ -248,9 +249,13 @@ const vote = async (req, res) => {
 
 const reportReview = async (req, res) => {
     try {
+        const user_id = req.user?.user_id;
         const { review_id } = req.params;
-        const { report_reason } = req.body;
+        const { report_reason, report_detail } = req.body;
 
+        if (!user_id) {
+            return res.status(401).json({ success: false, message: 'Bạn cần đăng nhập để thực hiện báo cáo' });
+        }
         if (!review_id) {
             return res.status(400).json({ success: false, message: 'Thiếu review_id hợp lệ' });
         }
@@ -258,7 +263,7 @@ const reportReview = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Thiếu lý do báo cáo' });
         }
 
-        const result = await reviewService.reportReview(review_id, report_reason);
+        const result = await reviewService.reportReview(review_id, user_id, report_reason, report_detail);
         return res.status(200).json(result);
     } catch (error) {
         console.log('Error in reportReview Controller: ', error.message);
@@ -306,6 +311,24 @@ const moderateReview = async (req, res) => {
     }
 }
 
+const getReviewReportDetails = async (req, res) => {
+    try {
+        const { review_id } = req.params;
+        if (!review_id) {
+            return res.status(400).json({ success: false, message: 'Thiếu review_id hợp lệ' });
+        }
+
+        const result = await reviewService.getReviewReportDetails(review_id);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('Error in getReviewReportDetails Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi lấy chi tiết danh sách báo cáo'
+        });
+    }
+}
+
 module.exports = {
     writeReview,
     updateReview,
@@ -318,5 +341,6 @@ module.exports = {
     vote,
     reportReview,
     getReportedReviews,
-    moderateReview
+    moderateReview,
+    getReviewReportDetails
 }

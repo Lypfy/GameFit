@@ -34,12 +34,26 @@ const updateReview = async (user_id, game_id, rating, comment) => {
     }
 }
 
-const getReview = async (game_id) => {
+const getReview = async (game_id, current_user_id = null) => {
     try {
         const request = new sql.Request();
         request.input('game_id', sql.Int, game_id);
+        request.input('current_user_id', sql.Int, current_user_id || null);
 
-        const result = await request.query('SELECT * FROM fn_getReviews(@game_id)');
+        const result = await request.query(`
+            SELECT 
+                r.review_id,
+                r.user_id,
+                u.user_name,
+                r.rating,
+                r.comment,
+                r.created_at,
+                ISNULL(r.is_hidden, 0) AS is_hidden
+            FROM dbo.Reviews r
+            JOIN dbo.Users u ON r.user_id = u.user_id
+            WHERE r.game_id = @game_id
+              AND (ISNULL(r.is_hidden, 0) = 0 OR (@current_user_id IS NOT NULL AND r.user_id = @current_user_id))
+        `);
         return { success: true, data: result.recordset };
     }
     catch (error) {
@@ -173,11 +187,13 @@ const vote = async (user_id, target_type, target_id, vote_type) => {
     }
 }
 
-const reportReview = async (review_id, report_reason) => {
+const reportReview = async (review_id, user_id, report_reason, report_detail) => {
     try {
         const request = new sql.Request();
         request.input('review_id', sql.Int, review_id);
+        request.input('user_id', sql.Int, user_id);
         request.input('report_reason', sql.NVarChar, report_reason);
+        request.input('report_detail', sql.NVarChar, report_detail || null);
 
         await request.execute('sp_ReportReview');
         return { success: true, message: 'Báo cáo đánh giá thành công' };
@@ -217,6 +233,19 @@ const moderateReview = async (review_id, action) => {
     }
 }
 
+const getReviewReportDetails = async (review_id) => {
+    try {
+        const request = new sql.Request();
+        request.input('review_id', sql.Int, review_id);
+
+        const result = await request.execute('sp_GetReviewReportDetails');
+        return { success: true, data: result.recordset };
+    } catch (error) {
+        console.log('Error in getReviewReportDetails Service: ', error.message);
+        throw new Error(error.message);
+    }
+}
+
 module.exports = {
     writeReview,
     updateReview,
@@ -229,5 +258,6 @@ module.exports = {
     vote,
     reportReview,
     getReportedReviews,
-    moderateReview
+    moderateReview,
+    getReviewReportDetails
 }

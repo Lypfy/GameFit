@@ -2207,6 +2207,18 @@ let activeViolationsSearchTimer = null;
 
 function formatViolationDate(dateStr) {
   if (!dateStr) return "-";
+
+  // Khi CSDL Azure SQL lưu giờ Việt Nam và trả về chuỗi ISO có cờ 'Z',
+  // bóc tách trực tiếp để tránh bị trình duyệt tự cộng thêm 7 tiếng (08:05 thành 15:05)
+  if (typeof dateStr === "string" && dateStr.includes("T")) {
+    const [datePart, timePart] = dateStr.split("T");
+    const [year, month, day] = datePart.split("-");
+    const [hours, minutes] = timePart.split(":");
+    if (year && month && day && hours && minutes) {
+      return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year} ${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}`;
+    }
+  }
+
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return dateStr;
   const day = String(d.getDate()).padStart(2, "0");
@@ -2256,17 +2268,20 @@ async function loadViolationsData() {
   }
 }
 
-function formatTableReason(reasonStr) {
-  if (!reasonStr) return "-";
-  // Nếu có nhiều lý do (chứa dấu phân cách |)
-  if (reasonStr.includes(" | ")) {
-    return "Nhiều lý do";
+function renderTableReasonCell(r) {
+  const count = r.report_count || 1;
+  if (count > 1) {
+    return `
+      <button type="button" class="btn-reasons-badge btn-open-reasons-fast" data-id="${r.review_id}" title="Nhấn để xem chi tiết ${count} lý do">
+        <i class='bx bx-list-ul'></i> ${count} lý do
+      </button>
+    `;
   }
-  // Nếu là "Lý do khác - [nội dung...]"
-  if (reasonStr.startsWith("Lý do khác")) {
-    return "Lý do khác";
+  const singleReason = r.report_reason || "Chưa rõ";
+  if (singleReason.startsWith("Lý do khác")) {
+    return `<span class="reason-tag">Lý do khác</span>`;
   }
-  return reasonStr;
+  return `<span class="reason-tag">${singleReason}</span>`;
 }
 
 function renderViolationsTable(reports) {
@@ -2295,7 +2310,7 @@ function renderViolationsTable(reports) {
         <td>#REP-${String(r.review_id).padStart(3, "0")}</td>
         <td class="text-highlight">${r.violator_name || "Người dùng"}</td>
         <td>${r.game_name || "-"}</td>
-        <td>${formatTableReason(r.report_reason)}</td>
+        <td>${renderTableReasonCell(r)}</td>
         <td>${formatViolationDate(r.reported_at)}</td>
         <td>${statusBadge}</td>
         <td class="text-center">
@@ -2338,14 +2353,6 @@ function initViolationActions() {
   const footerDefault = document.getElementById("violation-footer-default");
   const footerConfirm = document.getElementById("violation-footer-confirm");
 
-  // Modal Danh sách lý do
-  const reasonsModal = document.getElementById("violation-reasons-list-modal");
-  const closeReasonsModalBtn = document.getElementById("close-violation-reasons-modal");
-  const reasonsModalOverlay = document.getElementById("violation-reasons-modal-overlay");
-  const btnBackToDetail = document.getElementById("btn-back-to-violation-detail");
-  const allReasonsListContainer = document.getElementById("violation-all-reasons-list");
-  const reasonsModalCount = document.getElementById("reasons-modal-count");
-
   let currentInspectedReport = null;
 
   function hideViolationModal() {
@@ -2354,134 +2361,120 @@ function initViolationActions() {
     if (footerDefault) footerDefault.style.display = "flex";
   }
 
-  function hideReasonsModal() {
-    if (reasonsModal) reasonsModal.classList.remove("active");
-  }
-
-  function backToDetailModal() {
-    hideReasonsModal();
-    if (modal) modal.classList.add("active");
-  }
-
   if (closeBtn) closeBtn.addEventListener("click", hideViolationModal);
   if (overlay) overlay.addEventListener("click", hideViolationModal);
 
-  if (closeReasonsModalBtn) closeReasonsModalBtn.addEventListener("click", hideReasonsModal);
-  if (reasonsModalOverlay) reasonsModalOverlay.addEventListener("click", hideReasonsModal);
-  if (btnBackToDetail) btnBackToDetail.addEventListener("click", backToDetailModal);
+  async function populateViolationDetailModal(reportItem) {
+    currentInspectedReport = reportItem;
+
+    const targetIdInput = document.getElementById("violation-target-review-id");
+    const userEl = document.getElementById("violation-user");
+    const gameEl = document.getElementById("violation-game");
+    const countEl = document.getElementById("violation-count");
+    const timeEl = document.getElementById("violation-time");
+    const commentEl = document.getElementById("violation-comment-text");
+    const reasonsCountBadge = document.getElementById("violation-reasons-count-badge");
+    const inlineReasonsList = document.getElementById("violation-inline-reasons-list");
+
+    if (targetIdInput) targetIdInput.value = reportItem.review_id;
+    if (userEl) userEl.textContent = reportItem.violator_name || "-";
+    if (gameEl) gameEl.textContent = reportItem.game_name || "-";
+    const reportCount = reportItem.report_count || 1;
+    if (countEl) countEl.textContent = `${reportCount} lượt`;
+    if (reasonsCountBadge) reasonsCountBadge.textContent = `${reportCount} lượt`;
+    if (timeEl) timeEl.textContent = formatViolationDate(reportItem.reported_at);
+    if (commentEl) commentEl.textContent = reportItem.comment ? `"${reportItem.comment}"` : "(Không có nội dung bình luận)";
+
+    if (footerConfirm) footerConfirm.style.display = "none";
+    if (footerDefault) footerDefault.style.display = "flex";
+
+    // Tải và hiển thị danh sách chi tiết các lý do vi phạm ngay trong modal
+    if (inlineReasonsList) {
+      inlineReasonsList.innerHTML = `
+        <div style="text-align: center; padding: 18px 0; color: rgba(255, 255, 255, 0.65);">
+          <i class='bx bx-loader-alt bx-spin' style='font-size: 20px; color: #38bdf8;'></i>
+          <p style="margin-top: 6px; font-size: 0.8rem;">Đang tải danh sách người báo cáo...</p>
+        </div>
+      `;
+
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`/api/reviews/admin/reports/${reportItem.review_id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        const result = await res.json();
+
+        if (result.success && Array.isArray(result.data) && result.data.length > 0) {
+          inlineReasonsList.innerHTML = result.data.map((item, index) => {
+            const reporterName = item.reporter_name || "Người dùng ẩn danh";
+            const reportReason = item.report_reason || "Chưa rõ lý do";
+            const detailText = item.report_detail ? item.report_detail.trim() : null;
+            const reportedAt = formatViolationDate(item.reported_at);
+
+            return `
+              <div class="violation-reason-card">
+                <div class="violation-card-meta">
+                  <span class="reporter-name">
+                    <i class='bx bx-user-circle'></i> ${reporterName}
+                  </span>
+                  <span class="report-time">
+                    <i class='bx bx-time-five'></i> ${reportedAt}
+                  </span>
+                </div>
+                <div class="violation-reason-card-title">
+                  <span class="violation-reason-index">${index + 1}</span>
+                  <span>${reportReason}</span>
+                </div>
+                ${detailText ? `
+                  <div class="violation-reason-detail">
+                    <em>Chi tiết: "${detailText}"</em>
+                  </div>
+                ` : ""}
+              </div>
+            `;
+          }).join("");
+        } else {
+          // Fallback nếu chưa có bản ghi chi tiết
+          inlineReasonsList.innerHTML = `
+            <div class="violation-reason-card">
+              <div class="violation-reason-card-title">
+                <span class="violation-reason-index">1</span>
+                <span>${reportItem.report_reason || "Chưa rõ lý do"}</span>
+              </div>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error("Lỗi khi tải chi tiết lý do báo cáo:", err);
+        inlineReasonsList.innerHTML = `
+          <div class="violation-reason-card">
+            <div class="violation-reason-card-title">
+              <span class="violation-reason-index">1</span>
+              <span>${reportItem.report_reason || "Chưa rõ lý do"}</span>
+            </div>
+          </div>
+        `;
+      }
+    }
+  }
 
   // Click nút xem chi tiết & kiểm duyệt trên bảng
   const tableBody = document.getElementById("violations-table-body");
   if (tableBody) {
     tableBody.addEventListener("click", (e) => {
-      const btn = e.target.closest(".btn-view-violation");
-      if (!btn) return;
-      const reviewId = parseInt(btn.getAttribute("data-id"), 10);
+      // Nhấn nút badge "Xem X lý do" hoặc nút icon cây bút trên bảng đều mở Modal kiểm duyệt đầy đủ
+      const triggerBtn = e.target.closest(".btn-open-reasons-fast, .btn-view-violation");
+      if (!triggerBtn) return;
+
+      const reviewId = parseInt(triggerBtn.getAttribute("data-id"), 10);
       const reportItem = allReportedReviews.find((r) => r.review_id === reviewId);
       if (!reportItem) return;
 
-      currentInspectedReport = reportItem;
-
-      const targetIdInput = document.getElementById("violation-target-review-id");
-      const userEl = document.getElementById("violation-user");
-      const gameEl = document.getElementById("violation-game");
-      const countEl = document.getElementById("violation-count");
-      const timeEl = document.getElementById("violation-time");
-      const commentEl = document.getElementById("violation-comment-text");
-      const reasonSummaryEl = document.getElementById("violation-reason-summary");
-
-      if (targetIdInput) targetIdInput.value = reportItem.review_id;
-      if (userEl) userEl.textContent = reportItem.violator_name || "-";
-      if (gameEl) gameEl.textContent = reportItem.game_name || "-";
-      if (countEl) countEl.textContent = `${reportItem.report_count || 1} lượt`;
-      if (timeEl) timeEl.textContent = formatViolationDate(reportItem.reported_at);
-      if (commentEl) commentEl.textContent = reportItem.comment ? `"${reportItem.comment}"` : "(Không có nội dung bình luận)";
-
-      // Xử lý hiển thị phần Lý do trong Modal chính
-      const rawList = (reportItem.report_reason || "Không rõ")
-        .split(" | ")
-        .map((s) => s.trim())
-        .filter(Boolean);
-
-      if (reasonSummaryEl) {
-        if (rawList.length > 1) {
-          reasonSummaryEl.innerHTML = `
-            <button type="button" id="btn-open-reasons-list" class="btn-reasons-detail">
-              Xem chi tiết <i class='bx bx-chevron-right'></i>
-            </button>
-          `;
-          const openReasonsBtn = reasonSummaryEl.querySelector("#btn-open-reasons-list");
-          if (openReasonsBtn) {
-            openReasonsBtn.addEventListener("click", () => {
-              hideViolationModal();
-              openReasonsListModal(reportItem);
-            });
-          }
-        } else {
-          // Chỉ có 1 lý do
-          const singleItem = rawList[0] || "Không rõ";
-          if (singleItem.includes(" - ")) {
-            const parts = singleItem.split(" - ");
-            const detail = parts.slice(1).join(" - ").trim();
-            reasonSummaryEl.innerHTML = `<span>"${detail}"</span>`;
-          } else {
-            reasonSummaryEl.innerHTML = `<span>${singleItem}</span>`;
-          }
-        }
-      }
-
-      if (footerConfirm) footerConfirm.style.display = "none";
-      if (footerDefault) footerDefault.style.display = "flex";
-
+      populateViolationDetailModal(reportItem);
       if (modal) modal.classList.add("active");
     });
-  }
-
-  // Mở modal danh sách chi tiết các lý do
-  function openReasonsListModal(reportItem) {
-    if (!reasonsModal) return;
-
-    if (reasonsModalCount) {
-      reasonsModalCount.textContent = `${reportItem.report_count || 1} lượt`;
-    }
-
-    if (allReasonsListContainer) {
-      const rawList = (reportItem.report_reason || "Không rõ")
-        .split(" | ")
-        .map((s) => s.trim())
-        .filter(Boolean);
-
-      allReasonsListContainer.innerHTML = rawList
-        .map((item, index) => {
-          if (item.includes(" - ")) {
-            const parts = item.split(" - ");
-            const title = parts[0].trim();
-            const detail = parts.slice(1).join(" - ").trim();
-            return `
-              <div class="violation-reason-card">
-                <div class="violation-reason-card-title">
-                  <span class="violation-reason-index">${index + 1}</span>
-                  ${title}
-                </div>
-                <div class="violation-reason-detail">
-                  <em>Chi tiết: "${detail}"</em>
-                </div>
-              </div>
-            `;
-          }
-          return `
-            <div class="violation-reason-card">
-              <div class="violation-reason-card-title">
-                <span class="violation-reason-index">${index + 1}</span>
-                ${item}
-              </div>
-            </div>
-          `;
-        })
-        .join("");
-    }
-
-    reasonsModal.classList.add("active");
   }
 
   // Bấm nút "Bỏ qua báo cáo"

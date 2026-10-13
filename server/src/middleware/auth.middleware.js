@@ -81,4 +81,22 @@ const verifyRole = (rolesArray) => {
   };
 };
 
-module.exports = { verifyToken, verifyRole };
+// Middleware xác thực token tùy chọn (không bắt buộc đăng nhập, chỉ giải mã user_id nếu có token)
+const optionalVerifyToken = (req, res, next) => {
+  const authHeader = req.header("Authorization");
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token) {
+    try {
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || "GAMEFIT_SECRET_KEY"
+      );
+      req.user = decoded;
+    } catch (e) {
+      // Token không hợp lệ hoặc hết hạn - tiếp tục duyệt với tư cách khách
+    }
+  }
+  next();
+};
+
+module.exports = { verifyToken, verifyRole, optionalVerifyToken };
