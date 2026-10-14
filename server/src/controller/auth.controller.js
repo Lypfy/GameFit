@@ -141,7 +141,7 @@ const updateProfile = async (req, res) => {
         .json({ success: false, message: "Người dùng chưa đăng nhập" });
     }
 
-    const { username, password } = req.body;
+    const { username } = req.body;
     if (!username || !username.trim()) {
       return res
         .status(400)
@@ -151,7 +151,6 @@ const updateProfile = async (req, res) => {
     const result = await authService.updateUserProfile(
       userId,
       username.trim(),
-      password && password.trim() ? password.trim() : null,
     );
 
     if (!result.success) {
@@ -313,12 +312,57 @@ const changeUserRole = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?.user_id;
+    if (!userId) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Người dùng chưa đăng nhập" });
+    }
+
+    const { oldPassword, newPassword } = req.body;
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Vui lòng nhập đầy đủ mật khẩu cũ và mật khẩu mới",
+      });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "Mật khẩu mới phải có ít nhất 8 ký tự",
+      });
+    }
+
+    const result = await authService.changePassword(
+      userId,
+      oldPassword,
+      newPassword
+    );
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Error in changePassword Controller:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Lỗi server khi đổi mật khẩu",
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   forgotPassword,
   resetPassword,
   updateProfile,
+  changePassword,
   getUsers,
   adminAddUser,
   lockUnlockUser,

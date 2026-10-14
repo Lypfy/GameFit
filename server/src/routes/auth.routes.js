@@ -15,8 +15,11 @@ router.post("/forgot-password", authController.forgotPassword);
 // Route Đặt lại mật khẩu (Nhập OTP và mật khẩu mới)
 router.post("/reset-password", authController.resetPassword);
 
-// Route Cập nhật thông tin cá nhân (Tên người dùng, mật khẩu)
+// Route Cập nhật thông tin cá nhân (Tên người dùng)
 router.put("/profile", verifyToken, authController.updateProfile);
+
+// Route Đổi mật khẩu (Yêu cầu mật khẩu cũ và mới)
+router.put("/change-password", verifyToken, authController.changePassword);
 
 // Route Kiểm tra trạng thái tài khoản thời gian thực
 router.get("/check-status", verifyToken, (req, res) => {

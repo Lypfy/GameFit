@@ -115,20 +115,76 @@
   object-position: center;
 }
 
+.steam-thumbnails-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
 .steam-thumbnails-nav {
   display: flex;
   gap: 10px;
   overflow-x: auto;
-  padding-bottom: 5px;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Ẩn scrollbar trên Firefox */
+  -ms-overflow-style: none; /* Ẩn scrollbar trên IE/Edge */
+  flex: 1;
+  padding: 4px 0;
 }
 
 .steam-thumbnails-nav::-webkit-scrollbar {
-  height: 6px;
+  display: none; /* Ẩn thanh cuộn trên Chrome, Safari, Opera */
 }
 
-.steam-thumbnails-nav::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
+.thumb-nav-btn {
+  width: 32px;
+  height: 68px;
+  flex-shrink: 0;
+  background: rgba(20, 18, 30, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: all 0.2s ease;
+  z-index: 2;
+  user-select: none;
+}
+
+.thumb-nav-btn:hover {
+  background: var(--main-color, #fa5353);
+  border-color: var(--main-color, #fa5353);
+  color: #ffffff;
+  transform: scale(1.04);
+}
+
+.thumb-nav-btn:active {
+  transform: scale(0.96);
+}
+
+/* Light mode hỗ trợ cho nút điều hướng thumbnail */
+[data-theme="light"] .thumb-nav-btn {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #334155;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .thumb-nav-btn:hover {
+  background: var(--main-color, #fa5353);
+  border-color: var(--main-color, #fa5353);
+  color: #ffffff;
+}
+
+[data-theme="light"] .thumbnail-item:hover,
+[data-theme="light"] .thumbnail-item.active {
+  border-color: var(--main-color, #fa5353);
+  box-shadow: 0 0 0 2px var(--main-color, #fa5353);
 }
 
 .thumbnail-item {
@@ -1749,3 +1805,85 @@
 [data-theme="light"] .pc-rec-card:hover {
   background: #f8fafc;
 }
+
+/* Thẻ chi tiết cấu hình đề xuất */
+.pc-rec-box {
+  margin-top: 10px;
+  padding: 14px 16px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+}
+
+.pc-rec-box__title {
+  color: #f8fafc;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.pc-rec-box__specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.pc-rec-box__note {
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.pc-rec-box__actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 12px;
+}
+
+/* Hỗ trợ Light Mode cho khối Đề xuất cấu hình */
+[data-theme="light"] .pc-rec-box {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .pc-rec-box__title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .pc-rec-box__specs {
+  color: #475569;
+}
+
+[data-theme="light"] .pc-rec-box__note {
+  border-top-color: #e2e8f0;
+  color: #475569;
+}
+
+[data-theme="light"] .pc-rec-box__actions {
+  border-top-color: #e2e8f0;
+}
+
+[data-theme="light"] .tab-btn {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  color: #64748b;
+}
+
+[data-theme="light"] .tab-btn:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .tab-btn.active {
+  background-color: #ffffff;
+  border-color: #fa5353;
+  color: #fa5353;
+}
+

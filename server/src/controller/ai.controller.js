@@ -137,7 +137,7 @@ const generateFallbackReplyFromContext = (dbContext, message) => {
         return reply;
     }
 
-    return "Xin chào! Mình là GameFit Bot. Dựa vào CSDL của GameFit, mình có thể tư vấn cấu hình tối thiểu/khuyến nghị của các tựa game và so sánh với máy tính của bạn. Bạn muốn tra cứu tựa game nào?";
+    return "Xin chào! Mình là Jett. Dựa vào CSDL của GameFit, mình có thể tư vấn cấu hình tối thiểu/khuyến nghị của các tựa game và so sánh với máy tính của bạn. Bạn muốn tra cứu tựa game nào?";
 };
 
 const adviseUpgrade = async (req, res) => {
@@ -320,7 +320,7 @@ const chatWithAI = async (req, res) => {
 
         const ai = new GoogleGenAI({ apiKey: apiKey });
         
-        const prompt = `Bạn là GameFit Bot - trợ lý ảo tư vấn game và cấu hình máy tính chuyên nghiệp của nền tảng GameFit.
+        const prompt = `Bạn là Jett - trợ lý ảo tư vấn game và cấu hình máy tính chuyên nghiệp của nền tảng GameFit.
 Nhiệm vụ của bạn: Dựa vào DỮ LIỆU CƠ SỞ DỮ LIỆU GAMEFIT (CSDL) bên dưới để trả lời trực tiếp và chính xác câu hỏi của khách hàng.
 
 === DỮ LIỆU CƠ SỞ DỮ LIỆU GAMEFIT (CSDL) ===
@@ -333,7 +333,7 @@ QUY TẮC BẮT BUỘC:
    - Liệt kê cụ thể yêu cầu tối thiểu của game từ CSDL (CPU, GPU, RAM, Storage).
    - Đối chiếu với cấu hình máy của khách hàng từ CSDL (nêu rõ tên linh kiện CPU, GPU, RAM của máy khách hàng).
    - Đưa ra kết luận trực tiếp xem máy khách hàng có đạt yêu cầu hay không.
-3. Trả lời thân thiện, mạch lạc, dễ hiểu (khoảng 60 - 140 chữ), xưng "GameFit Bot" hoặc "Mình" và gọi người dùng là "Bạn".
+3. Trả lời thân thiện, mạch lạc, dễ hiểu (khoảng 60 - 140 chữ), xưng "Jett" hoặc "Mình" và gọi người dùng là "Bạn".
 4. TUYỆT ĐỐI KHÔNG dùng ký tự Markdown như ** hay * (dùng gạch đầu dòng - hoặc thụt lùi dòng).
 
 Tin nhắn của khách hàng: "${message}"`;

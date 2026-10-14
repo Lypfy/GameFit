@@ -174,7 +174,10 @@ document.addEventListener("DOMContentLoaded", async function () {
       if (thumbnailsContainer) {
         thumbnailsContainer.querySelectorAll('.thumbnail-item').forEach(t => t.classList.remove('active'));
         const activeThumb = thumbnailsContainer.querySelector(`.thumbnail-item[data-index="${index}"]`);
-        if (activeThumb) activeThumb.classList.add('active');
+        if (activeThumb) {
+          activeThumb.classList.add('active');
+          activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
       }
 
       document.getElementById('media-prev').addEventListener('click', (e) => {
@@ -211,6 +214,21 @@ document.addEventListener("DOMContentLoaded", async function () {
           renderMainMedia(currentMediaIndex);
         });
       });
+
+      const thumbPrevBtn = document.getElementById('thumb-prev');
+      const thumbNextBtn = document.getElementById('thumb-next');
+
+      if (thumbPrevBtn) {
+        thumbPrevBtn.addEventListener('click', () => {
+          thumbnailsContainer.scrollBy({ left: -260, behavior: 'smooth' });
+        });
+      }
+
+      if (thumbNextBtn) {
+        thumbNextBtn.addEventListener('click', () => {
+          thumbnailsContainer.scrollBy({ left: 260, behavior: 'smooth' });
+        });
+      }
     }
 
     // Cập nhật Mô tả

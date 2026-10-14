@@ -153,31 +153,68 @@ document.addEventListener("DOMContentLoaded", function () {
     pcConfigModal.classList.add("active");
   };
 
-  window.deleteConfig = async function (pcId) {
-    if (!confirm("Bạn có chắc chắn muốn xóa cấu hình này?")) return;
+  // Popup xác nhận xóa cấu hình
+  const deleteConfigModal = document.getElementById("delete-config-modal");
+  const deleteConfigOverlay = document.getElementById("delete-config-overlay");
+  const closeDeleteConfigModal = document.getElementById("close-delete-config-modal");
+  const cancelDeleteConfigBtn = document.getElementById("cancel-delete-config-btn");
+  const confirmDeleteConfigBtn = document.getElementById("confirm-delete-config-btn");
+  let pendingDeletePcId = null;
 
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("/api/computer-config", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ user_id: currentUser.user_id, pc_id: pcId }),
-      });
-      const result = await response.json();
+  function openDeleteModal(pcId) {
+    pendingDeletePcId = pcId;
+    if (deleteConfigModal) deleteConfigModal.classList.add("active");
+  }
 
-      if (result.success) {
-        showToast("Đã xóa cấu hình máy tính");
-        loadConfigs();
-      } else {
-        showToast(result.message || "Xóa thất bại", true);
-      }
-    } catch (error) {
-      showToast("Lỗi kết nối", true);
-    }
+  function closeDeleteModal() {
+    pendingDeletePcId = null;
+    if (deleteConfigModal) deleteConfigModal.classList.remove("active");
+  }
+
+  window.deleteConfig = function (pcId) {
+    openDeleteModal(pcId);
   };
+
+  if (closeDeleteConfigModal) closeDeleteConfigModal.addEventListener("click", closeDeleteModal);
+  if (cancelDeleteConfigBtn) cancelDeleteConfigBtn.addEventListener("click", closeDeleteModal);
+  if (deleteConfigOverlay) deleteConfigOverlay.addEventListener("click", closeDeleteModal);
+
+  if (confirmDeleteConfigBtn) {
+    confirmDeleteConfigBtn.addEventListener("click", async function () {
+      if (!pendingDeletePcId) return;
+      const pcId = pendingDeletePcId;
+      
+      const originalText = confirmDeleteConfigBtn.textContent;
+      confirmDeleteConfigBtn.disabled = true;
+      confirmDeleteConfigBtn.textContent = "Đang xóa...";
+
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("/api/computer-config", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ user_id: currentUser.user_id, pc_id: pcId }),
+        });
+        const result = await response.json();
+
+        if (result.success) {
+          showToast("Đã xóa cấu hình máy tính");
+          closeDeleteModal();
+          loadConfigs();
+        } else {
+          showToast(result.message || "Xóa thất bại", true);
+        }
+      } catch (error) {
+        showToast("Lỗi kết nối", true);
+      } finally {
+        confirmDeleteConfigBtn.disabled = false;
+        confirmDeleteConfigBtn.textContent = originalText;
+      }
+    });
+  }
 
   // Modal handlers
   function hideModal() {

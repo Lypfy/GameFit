@@ -108,8 +108,31 @@
         <li><a href="../home.html">Home</a></li>
         <li><a href="../games.html">Games</a></li>
         <li><a href="../pc_config.html">PC Check</a></li>
+        <li class="admin-only" style="display: none">
+          <a href="../admin/dashboard.html">Dashboard</a>
+        </li>
       </ul>
       <div class="nav-icon">
+        <div class="search search-poda">
+          <div class="search-glow"></div>
+          <div class="search-dark-border-bg"></div>
+          <div class="search-dark-border-bg"></div>
+          <div class="search-dark-border-bg"></div>
+          <div class="search-white"></div>
+          <div class="search-border"></div>
+          <div class="search-main">
+            <input type="text" placeholder="Tìm kiếm..." class="search-input" />
+            <div class="search-input-mask"></div>
+            <div class="search-pink-mask"></div>
+            <div class="search-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2"
+                stroke-linejoin="round" stroke-linecap="round" fill="none">
+                <circle stroke="#d6d6e6" r="8" cy="11" cx="11"></circle>
+                <line stroke="#d6d6e6" y2="16.65" y1="22" x2="16.65" y1="22"></line>
+              </svg>
+            </div>
+          </div>
+        </div>
         <label class="switch" title="Chuyển đổi giao diện Sáng / Tối">
           <input type="checkbox" id="theme-toggle" />
           <span class="slider"></span>
@@ -145,6 +168,12 @@
                 <a href="#" id="btn-update-profile">
                   <i class="bx bx-user-pin"></i>
                   <span>Cập nhật thông tin cá nhân</span>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="#" id="btn-change-password">
+                  <i class="bx bx-lock-alt"></i>
+                  <span>Đổi mật khẩu</span>
                 </a>
               </li>
               <li class="dropdown-divider"></li>
@@ -272,11 +301,39 @@
     </div>
   </div>
 
+  <!-- Modal Xác nhận xóa cấu hình -->
+  <div class="modal" id="delete-config-modal">
+    <div class="modal-overlay" id="delete-config-overlay"></div>
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <button type="button" class="close-btn" id="close-delete-config-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <i class="bx bx-trash confirm-icon" style="color: #fa5353;"></i>
+        <h3 class="confirm-title">Xác nhận xóa cấu hình</h3>
+        <p class="confirm-message">
+          Bạn có chắc chắn muốn xóa cấu hình này?<br />
+          Hành động này không thể hoàn tác.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" id="cancel-delete-config-btn">
+          Hủy
+        </button>
+        <button type="button" class="btn-save" id="confirm-delete-config-btn" style="background: #fa5353;">
+          Xóa
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="home-toast" class="home-toast"></div>
 
   <!-- Scripts -->
   <script src="../../js/utils/toast.js" defer></script>
   <script src="../../js/utils/auth-storage.js" defer></script>
+  <script src="../../js/data/games-data.js" defer></script>
+  <script src="../../js/components/navbar.js" defer></script>
   <script src="../../js/components/user-dropdown.js" defer></script>
   <script src="../../js/components/notification.js" defer></script>
   <script src="../../js/components/profile-modal.js" defer></script>

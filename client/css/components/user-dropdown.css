@@ -240,3 +240,50 @@
   background: var(--border-color);
   margin: 6px 0;
 }
+
+/* Light mode hỗ trợ cho User Dropdown & Profile Capsule */
+[data-theme="light"] .user-profile-capsule {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .user-profile-capsule:hover,
+[data-theme="light"] .user-profile-capsule.active {
+  border-color: #fa5353;
+  background: #e2e8f0;
+}
+
+[data-theme="light"] .user-profile-capsule .user-display-name {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .user-profile-capsule .nav-dropdown-arrow {
+  color: #475569;
+}
+
+[data-theme="light"] .user-dropdown {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .dropdown-header {
+  border-bottom-color: #e2e8f0;
+}
+
+[data-theme="light"] .dropdown-info h4,
+[data-theme="light"] #dropdown-username {
+  color: #0f172a;
+}
+
+[data-theme="light"] .dropdown-menu-list .menu-item a {
+  color: #334155;
+}
+
+[data-theme="light"] .dropdown-menu-list .menu-item a i {
+  color: #64748b;
+}
+
+[data-theme="light"] .dropdown-divider {
+  background: #e2e8f0;
+}

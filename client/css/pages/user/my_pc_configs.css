@@ -23,6 +23,25 @@
   --sidebar-width: 260px;
 }
 
+[data-theme="light"] {
+  --bg-main: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-input: #f1f5f9;
+  --bg-modal: #ffffff;
+  --border-color: #cbd5e1;
+  --border-hover: #94a3b8;
+  --primary: #fa5353;
+  --primary-hover: #e11d48;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --danger: #ff4d4f;
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
 * {
   margin: 0;
   padding: 0;

@@ -192,7 +192,7 @@ const resetPassword = async (email, otp, newPassword) => {
   }
 };
 
-const updateUserProfile = async (userId, newUsername, newPassword = null) => {
+const updateUserProfile = async (userId, newUsername) => {
   try {
     const checkReq = new sql.Request();
     checkReq.input("user_id", sql.Int, userId);
@@ -216,19 +216,7 @@ const updateUserProfile = async (userId, newUsername, newPassword = null) => {
     updateReq.input("new_email", sql.VarChar, null);
     await updateReq.execute("sp_UpdateInformationAccount");
 
-    // 3. Nếu người dùng muốn đổi cả mật khẩu
-    if (newPassword) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newPassword, salt);
-      const pwdReq = new sql.Request();
-      pwdReq.input("user_id", sql.Int, userId);
-      pwdReq.input("password", sql.VarChar, hashedPassword);
-      await pwdReq.query(
-        "UPDATE Users SET password = @password WHERE user_id = @user_id",
-      );
-    }
-
-    // 4. Lấy thông tin mới nhất trả về
+    // 3. Lấy thông tin mới nhất trả về
     const userReq = new sql.Request();
     userReq.input("user_id", sql.Int, userId);
     const userRes = await userReq.query(
@@ -394,12 +382,62 @@ const changeUserRole = async (userId, role) => {
   }
 };
 
+const changePassword = async (userId, oldPassword, newPassword) => {
+  try {
+    const userReq = new sql.Request();
+    userReq.input("user_id", sql.Int, userId);
+    const result = await userReq.query(
+      "SELECT user_id, password FROM Users WHERE user_id = @user_id"
+    );
+    const user = result.recordset?.[0];
+
+    if (!user) {
+      return { success: false, message: "Người dùng không tồn tại" };
+    }
+
+    // Kiểm tra mật khẩu cũ
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return { success: false, message: "Mật khẩu cũ không chính xác!" };
+    }
+
+    // Kiểm tra mật khẩu mới không trùng mật khẩu cũ
+    if (oldPassword === newPassword) {
+      return {
+        success: false,
+        message: "Mật khẩu mới không được trùng với mật khẩu cũ!",
+      };
+    }
+
+    // Hash mật khẩu mới
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Cập nhật vào DB
+    const updateReq = new sql.Request();
+    updateReq.input("user_id", sql.Int, userId);
+    updateReq.input("password", sql.VarChar, hashedPassword);
+    await updateReq.query(
+      "UPDATE Users SET password = @password WHERE user_id = @user_id"
+    );
+
+    return {
+      success: true,
+      message: "Đổi mật khẩu thành công!",
+    };
+  } catch (error) {
+    console.error("Error in changePassword Service:", error.message);
+    throw new Error("Lỗi khi cập nhật mật khẩu");
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   forgotPassword,
   resetPassword,
   updateUserProfile,
+  changePassword,
   getUsers,
   adminAddUser,
   lockUnlockUser,

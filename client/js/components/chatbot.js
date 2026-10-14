@@ -15,24 +15,24 @@ function initChatbot() {
             <div class="ai-chatbot-widget" id="ai-chatbot-widget">
                 <div class="chatbot-window" id="chatbot-window">
                     <div class="chatbot-header" id="chatbot-header" title="Kéo để di chuyển cửa sổ">
-                        <h3><img src="${assetPrefix}chiikawa.jpg" alt="Chiikawa" draggable="false" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"> GameFit AI Guide</h3>
+                        <h3><img src="${assetPrefix}chiikawa.jpg" alt="Chiikawa" draggable="false" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"> Jett</h3>
                         <button class="chatbot-close" id="chatbot-close" title="Đóng">&times;</button>
                     </div>
                     <div class="chatbot-messages" id="chatbot-messages">
-                        <div class="chat-msg bot">Xin chào! Mình là GameFit Bot. Bạn cần hướng dẫn tính năng nào của trang web không?</div>
-                        <div class="chat-typing" id="chat-typing">Bot đang gõ...</div>
+                        <div class="chat-msg bot">Xin chào! Mình là Jett, trợ lý ảo của bạn. Bạn cần hướng dẫn tính năng nào của trang web không?</div>
+                        <div class="chat-typing" id="chat-typing">Jett đang gõ...</div>
                     </div>
                     <div class="chatbot-input">
                         <input type="text" id="chat-input-text" placeholder="Nhập câu hỏi của bạn..." autocomplete="off">
                         <button id="chat-send-btn" title="Gửi"><i class='bx bxs-send'></i></button>
                     </div>
                 </div>
-                <button class="chatbot-btn" id="chatbot-btn" title="Kéo để di chuyển • Nhấp để mở Trợ lý AI (Click đúp để về góc mặc định)">
+                <button class="chatbot-btn" id="chatbot-btn" title="Kéo để di chuyển • Nhấp để mở Trợ lý Jett (Click đúp để về góc mặc định)">
                     <img src="${assetPrefix}chiikawa.jpg" alt="Chiikawa Avatar" draggable="false" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
                 </button>
             </div>
         `;
-        
+
         document.body.insertAdjacentHTML('beforeend', chatbotHTML);
 
         // Logic & Elements
@@ -136,7 +136,7 @@ function initChatbot() {
             e.stopPropagation();
             try {
                 localStorage.removeItem('gamefit_chatbot_position');
-            } catch (err) {}
+            } catch (err) { }
             chatbotWidget.style.left = '';
             chatbotWidget.style.top = '';
             chatbotWidget.style.right = '';
@@ -178,7 +178,7 @@ function initChatbot() {
 
             try {
                 dragTarget.setPointerCapture(activePointerId);
-            } catch (err) {}
+            } catch (err) { }
         }
 
         function handlePointerMove(e) {
@@ -221,7 +221,7 @@ function initChatbot() {
             if (dragTarget && activePointerId !== null) {
                 try {
                     dragTarget.releasePointerCapture(activePointerId);
-                } catch (err) {}
+                } catch (err) { }
             }
             dragTarget = null;
             activePointerId = null;
@@ -254,7 +254,7 @@ function initChatbot() {
 
                 try {
                     localStorage.setItem('gamefit_chatbot_position', JSON.stringify(newPos));
-                } catch (err) {}
+                } catch (err) { }
             }
         }
 
@@ -286,7 +286,7 @@ function initChatbot() {
                 try {
                     const pos = JSON.parse(saved);
                     applyPosition(pos);
-                } catch (err) {}
+                } catch (err) { }
             }
             updateWindowPosition();
         });
@@ -305,10 +305,10 @@ function initChatbot() {
         async function sendMessage() {
             const text = chatInput.value.trim();
             if (!text) return;
-            
+
             appendMessage(text, 'user');
             chatInput.value = '';
-            
+
             chatTyping.style.display = 'block';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -325,14 +325,14 @@ function initChatbot() {
                     body: JSON.stringify({ message: text })
                 });
                 const data = await res.json();
-                
+
                 chatTyping.style.display = 'none';
                 if (data.success) {
                     appendMessage(data.reply, 'bot');
                 } else {
                     appendMessage("Xin lỗi, mình đang gặp sự cố. Bạn thử lại sau nhé!", 'bot');
                 }
-            } catch(e) {
+            } catch (e) {
                 chatTyping.style.display = 'none';
                 appendMessage("Lỗi kết nối. Vui lòng thử lại!", 'bot');
             }

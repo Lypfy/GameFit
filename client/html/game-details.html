@@ -78,6 +78,11 @@
                   <i class="bx bx-user-pin"></i><span>Cập nhật thông tin cá nhân</span>
                 </a>
               </li>
+              <li class="menu-item">
+                <a href="#" id="btn-change-password">
+                  <i class="bx bx-lock-alt"></i><span>Đổi mật khẩu</span>
+                </a>
+              </li>
               <li class="dropdown-divider"></li>
               <li class="menu-item logout-item">
                 <a href="#" id="btn-logout">
@@ -125,8 +130,16 @@
           <div class="steam-main-media" id="steam-main-media">
             <!-- Inject media -->
           </div>
-          <div class="steam-thumbnails-nav" id="steam-thumbnails">
-            <!-- Inject thumbnails -->
+          <div class="steam-thumbnails-wrapper">
+            <button type="button" class="thumb-nav-btn thumb-prev" id="thumb-prev" title="Xem trước">
+              <i class="bx bx-chevron-left"></i>
+            </button>
+            <div class="steam-thumbnails-nav" id="steam-thumbnails">
+              <!-- Inject thumbnails -->
+            </div>
+            <button type="button" class="thumb-nav-btn thumb-next" id="thumb-next" title="Xem tiếp">
+              <i class="bx bx-chevron-right"></i>
+            </button>
           </div>
         </div>
 
@@ -410,35 +423,19 @@
       <form id="recommend-form">
         <div class="modal-body" style="padding: 0 0 16px 0">
           <div class="form-group" style="margin-bottom: 14px">
-            <label class="form-label" style="margin-bottom: 8px; color: white">Chọn máy tính của bạn <span
-                style="color: red">*</span></label>
-            <select id="recommend-pc-select" required style="
-                  width: 100%;
-                  padding: 10px;
-                  border-radius: 4px;
-                  border: 1px solid #334155;
-                  background: #1e293b;
-                  color: white;
-                  font-size: 14px;
-                  outline: none;
-                ">
+            <label for="recommend-pc-select" class="form-label" style="margin-bottom: 8px">
+              Chọn máy tính của bạn <span class="required">*</span>
+            </label>
+            <select id="recommend-pc-select" class="form-control" required>
               <option value="">-- Đang tải... --</option>
             </select>
           </div>
 
           <div class="form-group" style="margin-bottom: 14px">
-            <label class="form-label" style="margin-bottom: 8px; color: white">Loại cấu hình <span
-                style="color: red">*</span></label>
-            <select id="recommend-type-select" required style="
-                  width: 100%;
-                  padding: 10px;
-                  border-radius: 4px;
-                  border: 1px solid #334155;
-                  background: #1e293b;
-                  color: white;
-                  font-size: 14px;
-                  outline: none;
-                ">
+            <label for="recommend-type-select" class="form-label" style="margin-bottom: 8px">
+              Loại cấu hình <span class="required">*</span>
+            </label>
+            <select id="recommend-type-select" class="form-control" required>
               <option value="MINIMUM">
                 Tối thiểu (Chơi được, setting thấp)
               </option>
@@ -449,21 +446,11 @@
           </div>
 
           <div class="form-group">
-            <label for="recommend-note" class="form-label" style="margin-bottom: 6px; color: white">Ghi chú thêm (tùy
-              chọn)</label>
-            <textarea id="recommend-note" rows="3"
-              placeholder="Chia sẻ thêm về trải nghiệm (FPS, setting...) với cấu hình này..." style="
-                  width: 100%;
-                  padding: 10px;
-                  border-radius: 4px;
-                  border: 1px solid #334155;
-                  background: #1e293b;
-                  color: white;
-                  font-family: inherit;
-                  font-size: 14px;
-                  resize: vertical;
-                  outline: none;
-                "></textarea>
+            <label for="recommend-note" class="form-label" style="margin-bottom: 6px">
+              Ghi chú thêm (tùy chọn)
+            </label>
+            <textarea id="recommend-note" class="form-control" rows="3"
+              placeholder="Chia sẻ thêm về trải nghiệm (FPS, setting...) với cấu hình này..." style="resize: vertical;"></textarea>
           </div>
         </div>
 

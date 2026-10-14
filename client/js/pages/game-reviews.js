@@ -1077,14 +1077,14 @@
               }
             </div>
             
-            <div style="margin-top: 10px; padding: 12px; background: #0f172a; border-radius: 8px; border: 1px solid #1e293b;">
+            <div class="pc-rec-box">
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                 <span style="background: ${badgeColor}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">
                   ${typeLabel}
                 </span>
-                <strong style="color: #f8fafc; font-size: 15px;">${rec.pc_name || "Máy tính của " + (rec.user_name || rec.username)}</strong>
+                <strong class="pc-rec-box__title">${rec.pc_name || "Máy tính của " + (rec.user_name || rec.username)}</strong>
               </div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; color: #94a3b8; margin-bottom: ${rec.note ? "10px" : "0"};">
+              <div class="pc-rec-box__specs" style="margin-bottom: ${rec.note ? "10px" : "0"};">
                 <div><i class="bx bx-chip"></i> CPU: ${rec.cpu_name || "N/A"}</div>
                 <div><i class="bx bx-microchip"></i> GPU: ${rec.gpu_name || "N/A"}</div>
                 <div><i class="bx bx-memory-card"></i> RAM: ${rec.ram ? rec.ram + " GB" : "N/A"}</div>
@@ -1092,17 +1092,17 @@
               </div>
               ${
                 rec.note
-                  ? `<div style="padding-top: 10px; border-top: 1px solid #1e293b; color: #cbd5e1; font-size: 14px; font-style: italic;">
+                  ? `<div class="pc-rec-box__note">
                 "${rec.note}"
               </div>`
                   : ""
               }
               
-              <div class="vote-actions" style="display: flex; gap: 12px; margin-top: 12px; border-top: 1px solid #1e293b; padding-top: 12px;">
-                <button type="button" onclick="vote('RECOMMENDATION', ${rec.id || rec.recommendation_id}, 1)" style="background: none; border: none; color: ${userVote === 1 ? "#3b82f6" : "#94a3b8"}; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: bold; transition: color 0.2s;">
+              <div class="vote-actions pc-rec-box__actions">
+                <button type="button" onclick="vote('RECOMMENDATION', ${rec.id || rec.recommendation_id}, 1)" style="background: none; border: none; color: ${userVote === 1 ? "#3b82f6" : "inherit"}; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: bold; transition: color 0.2s;">
                   <i class="bx ${userVote === 1 ? "bxs-upvote" : "bx-upvote"}" style="font-size: 18px;"></i> <span>${rec.likes || 0}</span>
                 </button>
-                <button type="button" onclick="vote('RECOMMENDATION', ${rec.id || rec.recommendation_id}, -1)" style="background: none; border: none; color: ${userVote === -1 ? "#ef4444" : "#94a3b8"}; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: bold; transition: color 0.2s;">
+                <button type="button" onclick="vote('RECOMMENDATION', ${rec.id || rec.recommendation_id}, -1)" style="background: none; border: none; color: ${userVote === -1 ? "#ef4444" : "inherit"}; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: bold; transition: color 0.2s;">
                   <i class="bx ${userVote === -1 ? "bxs-downvote" : "bx-downvote"}" style="font-size: 18px;"></i> <span>${rec.dislikes || 0}</span>
                 </button>
               </div>
