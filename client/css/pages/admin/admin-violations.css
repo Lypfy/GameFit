@@ -1,0 +1,252 @@
+/* ==========================================================================
+   QUẢN LÝ BÁO CÁO VI PHẠM (VIOLATIONS) - GAMEFIT ADMIN
+   ========================================================================== */
+
+/* ==========================================================================
+   Quản lý Báo cáo Vi phạm & Modal Danh sách lý do
+   ========================================================================== */
+.table-filter-select {
+  padding: 7px 12px;
+  border-radius: 6px;
+  background: var(--input-bg, rgba(255, 255, 255, 0.06));
+  color: var(--text-color, #ffffff);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15));
+  outline: none;
+  font-family: inherit;
+  font-size: 0.88rem;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.table-filter-select:focus {
+  border-color: var(--main-color);
+}
+
+.violation-count-badge {
+  color: #fa5353;
+  font-weight: 600;
+}
+
+.modal-violation-detail {
+  max-width: 500px !important;
+}
+
+.modal-violation-detail .violation-comment-box {
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.violation-reasons-section {
+  margin-top: 14px;
+}
+
+.violation-reasons-header-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.violation-reasons-header-label span i {
+  color: #fa5353;
+  margin-right: 4px;
+}
+
+.violation-inline-reasons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 155px;
+  overflow-y: auto;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+  border-radius: 8px;
+}
+
+.violation-inline-reasons-list::-webkit-scrollbar {
+  width: 5px;
+}
+.violation-inline-reasons-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+.violation-inline-reasons-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+.violation-inline-reasons-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.violation-inline-reasons-list .violation-reason-card {
+  background: var(--card-inner-bg, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.violation-inline-reasons-list .violation-card-meta {
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+}
+
+.violation-reason-card {
+  background: var(--card-inner-bg, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.violation-reason-card-title {
+  font-weight: 600;
+  color: var(--text-color, #ffffff);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.violation-reason-index {
+  background: rgba(250, 83, 83, 0.2);
+  color: #fa5353;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.violation-reason-detail {
+  color: var(--text-muted, rgba(255, 255, 255, 0.75));
+  font-size: 0.84rem;
+  margin-top: 6px;
+  line-height: 1.45;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-left: 2px solid #fa5353;
+}
+
+.violation-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+  font-size: 0.82rem;
+}
+
+.reporter-name {
+  color: #38bdf8;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.report-time {
+  color: var(--text-muted, rgba(255, 255, 255, 0.6));
+  font-size: 0.78rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-reasons-badge {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.btn-reasons-badge:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.reason-tag {
+  color: var(--text-color, #ffffff);
+  font-size: 0.88rem;
+}
+
+#btn-dismiss-violation {
+  background: rgba(34, 197, 94, 1);
+  color: #ffffff;
+  font-weight: 500;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  transition: all 0.2s ease;
+}
+
+#btn-dismiss-violation:hover {
+  background: #22c55e;
+  color: #ffffff;
+  border-color: #22c55e;
+}
+
+/* Light mode hỗ trợ cho Modal Chi tiết báo cáo vi phạm */
+[data-theme="light"] .violation-inline-reasons-list {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .violation-inline-reasons-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+[data-theme="light"] .violation-inline-reasons-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+[data-theme="light"] .violation-inline-reasons-list .violation-reason-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .violation-card-meta {
+  border-bottom-color: #e2e8f0;
+}
+
+[data-theme="light"] .violation-reason-card-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .reporter-name {
+  color: #0284c7;
+}
+
+[data-theme="light"] .report-time {
+  color: #64748b;
+}
+
+[data-theme="light"] .violation-reason-detail {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+[data-theme="light"] .violation-comment-box {
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+[data-theme="light"] .violation-info-card {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}

@@ -1,0 +1,90 @@
+/* ==========================================================================
+   QUẢN LÝ PHẦN CỨNG (CPU & GPU) - GAMEFIT ADMIN
+   ========================================================================== */
+
+.hardware-sub-nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.sub-tab-pill {
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.sub-tab-pill:hover {
+  background: var(--border-color);
+  color: var(--text-primary);
+}
+
+.sub-tab-pill.active {
+  background: var(--main-color, #fa5353);
+  border-color: var(--main-color);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+#tab-games .table-card,
+#tab-users .table-card,
+#tab-genres .table-card,
+#tab-cpus .table-card,
+#tab-gpus .table-card {
+  max-height: 480px;
+  overflow-y: auto;
+  position: relative;
+  padding-top: 0;
+}
+
+/* Scroll */
+#tab-games .table-card::-webkit-scrollbar,
+#tab-users .table-card::-webkit-scrollbar,
+#tab-genres .table-card::-webkit-scrollbar,
+#tab-cpus .table-card::-webkit-scrollbar,
+#tab-gpus .table-card::-webkit-scrollbar {
+  width: 8px;
+}
+
+#tab-games .table-card::-webkit-scrollbar-track,
+#tab-users .table-card::-webkit-scrollbar-track,
+#tab-genres .table-card::-webkit-scrollbar-track,
+#tab-cpus .table-card::-webkit-scrollbar-track,
+#tab-gpus .table-card::-webkit-scrollbar-track {
+  background: var(--input-bg);
+  border-radius: 10px;
+}
+
+#tab-games .table-card::-webkit-scrollbar-thumb,
+#tab-users .table-card::-webkit-scrollbar-thumb,
+#tab-genres .table-card::-webkit-scrollbar-thumb,
+#tab-cpus .table-card::-webkit-scrollbar-thumb,
+#tab-gpus .table-card::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 10px;
+}
+
+/* Hỗ trợ trình duyệt Firefox */
+#tab-games .table-card,
+#tab-users .table-card,
+#tab-genres .table-card,
+#tab-cpus .table-card,
+#tab-gpus .table-card {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-hover) var(--input-bg);
+}
+
+#tab-games .table-header,
+#tab-users .table-header,
+#tab-genres .table-header,
+#tab-cpus .table-header,
+#tab-gpus .table-header {
+  padding-top: 1.5rem;
+}

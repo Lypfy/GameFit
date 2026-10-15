@@ -1,0 +1,99 @@
+/* ==========================================================================
+   QUẢN LÝ GAME - GAMEFIT ADMIN
+   ========================================================================== */
+
+/* Nút cập nhật cấu hình game */
+.btn-action.btn-config,
+.btn-action.btn-config-game {
+  color: #818cf8;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+}
+
+.btn-action.btn-config:hover,
+.btn-action.btn-config-game:hover {
+  background: var(--border-color);
+  color: #a5b4fc;
+}
+
+
+/* ==========================================================================
+   Modal Cập nhật Cấu hình Game
+   ========================================================================== */
+.config-modal-target-info {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: rgba(99, 102, 241, 0.1);
+  border-left: 4px solid #6366f1;
+  border-radius: 8px;
+}
+
+.config-modal-target-info span {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: block;
+}
+
+.config-modal-target-info strong {
+  font-size: 16px;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.config-sections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.config-box {
+  background: rgba(30, 41, 59, 0.5);
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.config-box h4 {
+  margin-top: 0;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.config-box h4.min-title {
+  color: #f59e0b;
+}
+
+.config-box h4.rec-title {
+  color: #10b981;
+}
+
+/* Light mode hỗ trợ cho Modal Cập nhật cấu hình Game */
+[data-theme="light"] .config-modal-target-info {
+  background: #ede9fe;
+  border-left-color: #6366f1;
+}
+
+[data-theme="light"] .config-modal-target-info span {
+  color: #475569;
+}
+
+[data-theme="light"] .config-modal-target-info strong {
+  color: #0f172a !important; /* Tên game màu đen khi đang ở theme trắng */
+}
+
+[data-theme="light"] .config-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .config-box h4.min-title {
+  color: #d97706;
+}
+
+[data-theme="light"] .config-box h4.rec-title {
+  color: #059669;
+}

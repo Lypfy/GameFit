@@ -1,0 +1,16 @@
+/* ==========================================================================
+   QUẢN LÝ NGƯỜI DÙNG (USERS) - GAMEFIT ADMIN
+   ========================================================================== */
+
+.user-lock-info-card {
+  margin-bottom: 1rem;
+}
+
+
+.user-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  margin-top: 0.5rem;
+}
