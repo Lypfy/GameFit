@@ -7,7 +7,7 @@ async function fetchUserWishlist() {
   if (!currentUser) return;
   try {
     const response = await fetch(
-      `http://localhost:5000/api/wishlist/${currentUser.user_id}`,
+      `/api/wishlist/${currentUser.user_id}`,
     );
     const result = await response.json();
     if (result.success) {
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   try {
-    const response = await fetch(`http://localhost:5000/api/games/${gameId}/full_detail`);
+    const response = await fetch(`/api/games/${gameId}/full_detail`);
     const result = await response.json();
 
     if (result.success && result.data && result.data.info) {
@@ -311,7 +311,7 @@ document.addEventListener("click", async (e) => {
       const isCurrentlySaved = savedWishlistGameIds.has(targetGameId);
       const method = isCurrentlySaved ? "DELETE" : "POST";
       const userId = currentUser.id || currentUser.user_id;
-      const url = `http://localhost:5000/api/wishlist/${userId}`;
+      const url = `/api/wishlist/${currentUser.user_id}`;
       const response = await fetch(url, {
         method: method,
         headers: { "Content-Type": "application/json" },
@@ -586,7 +586,7 @@ window.openCommunityTab = function (tabId, clickedBtn) {
   // Lưu trạng thái tab vào sessionStorage để khi tải lại trang vẫn giữ nguyên tab
   try {
     sessionStorage.setItem('activeGameCommunityTab', tabId);
-  } catch (e) {}
+  } catch (e) { }
 
   // Nếu chuyển sang tab Đề xuất cấu hình, đảm bảo danh sách đề xuất được cập nhật
   if (tabId === 'tab-pc-recommend' && typeof window.fetchRecommendations === 'function') {
@@ -603,5 +603,5 @@ document.addEventListener("DOMContentLoaded", () => {
         window.openCommunityTab('tab-pc-recommend');
       }, 50);
     }
-  } catch (e) {}
+  } catch (e) { }
 });

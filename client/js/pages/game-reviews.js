@@ -907,7 +907,7 @@
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/reviews/recommendation/${gameId}`,
+          `/api/reviews/recommendation/${gameId}`,
           {
             method: "POST",
             headers: {
@@ -947,7 +947,7 @@
     if (!gameId || !pcRecommendList) return;
     try {
       const res = await fetch(
-        `http://localhost:5000/api/reviews/recommendation/${gameId}`,
+        `/api/reviews/recommendation/${gameId}`,
       );
       const result = await res.json();
       if (result.success && result.data && result.data.length > 0) {
@@ -974,7 +974,7 @@
       async () => {
         try {
           const res = await fetch(
-            `http://localhost:5000/api/reviews/recommendation/${recId}`,
+            `/api/reviews/recommendation/${recId}`,
             {
               method: "DELETE",
               headers: { Authorization: `Bearer ${token}` },
@@ -1004,7 +1004,7 @@
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/reviews/vote", {
+      const res = await fetch("/api/reviews/vote", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

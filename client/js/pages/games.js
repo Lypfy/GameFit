@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function fetchGames(page = 1, filters = {}) {
     renderSkeletonCards(12);
     try {
-      let url = `http://localhost:5000/api/games?page=${page}&limit=${limit}`;
+      let url = `/api/games?page=${page}&limit=${limit}`;
 
       // Gắn tham số lọc vào URL
       if (filters.categories?.length)
@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
       try {
         const userId = currentUser.id || currentUser.user_id;
         const response = await fetch(
-          `http://localhost:5000/api/wishlist/${userId}`,
+          `/api/wishlist/${userId}`,
         );
         const result = await response.json();
         if (result.success) {
@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
           const method = isSaved ? "DELETE" : "POST";
           const response = await fetch(
-            `http://localhost:5000/api/wishlist/${userId}`,
+            `/api/wishlist/${userId}`,
             {
               method: method,
               headers: { "Content-Type": "application/json" },

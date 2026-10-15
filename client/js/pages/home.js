@@ -91,7 +91,7 @@ async function renderCategorySections() {
       if (cat.tagId) {
         try {
           const res = await fetch(
-            `http://localhost:5000/api/games/tag/${cat.tagId}`,
+            `/api/games/tag/${cat.tagId}`,
           );
           const data = await res.json();
           if (
@@ -185,7 +185,7 @@ async function fetchAndRenderActionGames() {
 
     // Lấy game theo tag
     const gamesRes = await fetch(
-      `http://localhost:5000/api/games/tag/${actionTagId}`,
+      `/api/games/tag/${actionTagId}`,
     );
     const gamesData = await gamesRes.json();
 
@@ -252,7 +252,7 @@ async function fetchUserWishlist() {
     try {
       const userId = currentUser.id || currentUser.user_id;
       const response = await fetch(
-        `http://localhost:5000/api/wishlist/${userId}`,
+        `/api/wishlist/${userId}`,
       );
       const result = await response.json();
       if (result.success) {
@@ -285,7 +285,7 @@ function renderPopularSkeleton(count = 4) {
 
 async function fetchAllGames() {
   try {
-    const res = await fetch(`http://localhost:5000/api/games?page=1&limit=100`);
+    const res = await fetch(`/api/games?page=1&limit=100`);
     const data = await res.json();
     if (data.success) {
       allGames = data.data;
@@ -391,7 +391,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       try {
         const method = isSaved ? "DELETE" : "POST";
         const response = await fetch(
-          `http://localhost:5000/api/wishlist/${userId}`,
+          `/api/wishlist/${userId}`,
           {
             method: method,
             headers: { "Content-Type": "application/json" },

@@ -49,7 +49,7 @@ async function loadCategoriesFilter() {
       .join("");
   }
   try {
-    const res = await fetch("http://localhost:5000/api/games/categories");
+    const res = await fetch("/api/games/categories");
     const result = await res.json();
 
     if (result.success && result.data && categoryContainer) {
@@ -85,7 +85,7 @@ async function loadPublishersFilter() {
       .join("");
   }
   try {
-    const res = await fetch("http://localhost:5000/api/games/publishers");
+    const res = await fetch("/api/games/publishers");
     const result = await res.json();
 
     if (result.success && result.data && publisherContainer) {

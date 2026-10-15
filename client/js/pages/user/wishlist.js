@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   async function fetchWishlistGames() {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/wishlist/${userId}`,
+        `/api/wishlist/${userId}`,
       );
       const result = await response.json();
 
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         try {
           const response = await fetch(
-            `http://localhost:5000/api/wishlist/${userId}`,
+            `/api/wishlist/${userId}`,
             {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },

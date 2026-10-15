@@ -15,8 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const password = document.getElementById("login-password").value.trim();
 
       try {
-        // Sử dụng biến API_URL từ file config.js (nếu chưa add vào HTML thì mặc định dùng localhost)
-        const BASE_URL = window.API_URL || "http://localhost:5000/api";
+        // Sử dụng biến API_URL từ file config.js (nếu chưa add vào HTML thì mặc định dùng relative /api)
+        const BASE_URL = window.API_URL || "/api";
 
         const response = await fetch(`${BASE_URL}/auth/login`, {
           method: "POST",
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       try {
-        const BASE_URL = window.API_URL || "http://localhost:5000/api";
+        const BASE_URL = window.API_URL || "/api";
 
         const response = await fetch(`${BASE_URL}/auth/register`, {
           method: "POST",
