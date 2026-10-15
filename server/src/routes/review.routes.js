@@ -10,6 +10,11 @@ router.get('/admin/reports', verifyToken, reviewController.getReportedReviews);
 router.get('/admin/reports/:review_id', verifyToken, reviewController.getReviewReportDetails);
 router.post('/admin/moderate/:review_id', verifyToken, reviewController.moderateReview);
 
+router.get('/admin/recommendations', verifyToken, reviewController.getAdminRecommendations);
+router.get('/admin/recommendations/:id', verifyToken, reviewController.getAdminRecommendationDetail);
+router.post('/admin/recommendations/:id/approve', verifyToken, reviewController.approveRecommendation);
+router.post('/admin/recommendations/:id/reject', verifyToken, reviewController.rejectRecommendation);
+
 router.post('/:game_id', verifyToken, reviewController.writeReview);
 router.put('/:game_id', verifyToken, reviewController.updateReview);
 router.delete('/:game_id', verifyToken, reviewController.deleteReview);

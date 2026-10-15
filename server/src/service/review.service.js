@@ -154,7 +154,7 @@ const deleteGamePCRecommendation = async (user_id, recommendation_id) => {
         request.input('recommendation_id', sql.Int, recommendation_id);
 
         // Gọi Procedure thực hiện lệnh UPDATE ẩn bài (Soft Delete)
-        const result = await request.execute('sp_DeleteGamePCRecommendation');
+        const result = await request.execute('sp_HideGamePCRecommendation');
 
         // Nếu rowsAffected[0] === 0 nghĩa là không tìm thấy bài nào khớp id hoặc user đó không phải chủ bài
         if (result.rowsAffected[0] === 0) {
@@ -246,6 +246,73 @@ const getReviewReportDetails = async (review_id) => {
     }
 }
 
+const adminGetGamePCRecommendations = async (status, type, search, minVotes) => {
+    try {
+        const request = new sql.Request();
+        request.input('status', sql.VarChar, status || null);
+        request.input('type', sql.VarChar, type || null);
+        request.input('search', sql.NVarChar, search || null);
+        request.input('min_votes', sql.Int, (minVotes !== undefined && minVotes !== null && minVotes !== '') ? parseInt(minVotes, 10) : 1);
+
+        const result = await request.execute('sp_Admin_GetGamePCRecommendations');
+        return { success: true, data: result.recordset || [] };
+    } catch (error) {
+        console.log('Error in adminGetGamePCRecommendations Service: ', error.message);
+        throw new Error(error.message);
+    }
+}
+
+const adminGetRecommendationDetail = async (recommendation_id) => {
+    try {
+        const request = new sql.Request();
+        request.input('recommendation_id', sql.Int, recommendation_id);
+
+        const result = await request.execute('sp_Admin_GetRecommendationDetail');
+        const recommendation = result.recordsets[0]?.[0] || null;
+        const gameRequirements = result.recordsets[1] || [];
+
+        return {
+            success: true,
+            data: {
+                recommendation,
+                gameRequirements
+            }
+        };
+    } catch (error) {
+        console.log('Error in adminGetRecommendationDetail Service: ', error.message);
+        throw new Error(error.message);
+    }
+}
+
+const adminApproveRecommendation = async (recommendation_id, admin_id) => {
+    try {
+        const request = new sql.Request();
+        request.input('recommendation_id', sql.Int, recommendation_id);
+        request.input('admin_id', sql.Int, admin_id);
+
+        await request.execute('sp_Admin_ApproveRecommendation');
+        return { success: true, message: 'Đã duyệt đề xuất và áp dụng vào cấu hình game thành công' };
+    } catch (error) {
+        console.log('Error in adminApproveRecommendation Service: ', error.message);
+        throw new Error(error.message);
+    }
+}
+
+const adminRejectRecommendation = async (recommendation_id, admin_id, reject_reason) => {
+    try {
+        const request = new sql.Request();
+        request.input('recommendation_id', sql.Int, recommendation_id);
+        request.input('admin_id', sql.Int, admin_id);
+        request.input('reject_reason', sql.NVarChar, reject_reason || null);
+
+        await request.execute('sp_Admin_RejectRecommendation');
+        return { success: true, message: 'Đã từ chối đề xuất cấu hình thành công' };
+    } catch (error) {
+        console.log('Error in adminRejectRecommendation Service: ', error.message);
+        throw new Error(error.message);
+    }
+}
+
 module.exports = {
     writeReview,
     updateReview,
@@ -259,5 +326,9 @@ module.exports = {
     reportReview,
     getReportedReviews,
     moderateReview,
-    getReviewReportDetails
+    getReviewReportDetails,
+    adminGetGamePCRecommendations,
+    adminGetRecommendationDetail,
+    adminApproveRecommendation,
+    adminRejectRecommendation
 }

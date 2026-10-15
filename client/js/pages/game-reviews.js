@@ -1078,10 +1078,15 @@
             </div>
             
             <div class="pc-rec-box">
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
                 <span style="background: ${badgeColor}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">
                   ${typeLabel}
                 </span>
+                ${
+                  rec.status === "APPROVED"
+                    ? `<span style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;"><i class='bx bx-check-shield'></i> Cấu hình chính thức</span>`
+                    : ""
+                }
                 <strong class="pc-rec-box__title">${rec.pc_name || "Máy tính của " + (rec.user_name || rec.username)}</strong>
               </div>
               <div class="pc-rec-box__specs" style="margin-bottom: ${rec.note ? "10px" : "0"};">

@@ -184,6 +184,9 @@
           <button class="tab-pill" data-tab="tab-violations">
             Báo cáo vi phạm
           </button>
+          <button class="tab-pill" data-tab="tab-recommendations">
+            Đề xuất cấu hình
+          </button>
         </div>
         <!-- TAB 1: Thống kê (Nạp từ statistics.html) -->
         <div id="tab-dashboard" class="tab-content active"></div>
@@ -988,6 +991,92 @@
               </thead>
               <tbody id="violations-table-body">
                 <!-- Sẽ render động từ API loadViolationsData() -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 7: Đề xuất cấu hình -->
+        <div id="tab-recommendations" class="tab-content" style="display: none">
+          <div class="table-card">
+            <div class="table-header">
+              <h2>Quản lý Đề xuất Cấu hình</h2>
+              <div class="table-actions">
+                <!-- Bộ lọc Trạng thái -->
+                <select id="rec-status-filter" class="table-filter-select">
+                  <option value="ALL">Tất cả trạng thái</option>
+                  <option value="PENDING" selected>Chờ duyệt</option>
+                  <option value="APPROVED">Đã áp dụng</option>
+                  <option value="REPLACED">Đã thay thế</option>
+                  <option value="REJECTED">Đã từ chối</option>
+                </select>
+
+                <!-- Bộ lọc Loại cấu hình -->
+                <select id="rec-type-filter" class="table-filter-select">
+                  <option value="ALL" selected>Tất cả loại</option>
+                  <option value="MINIMUM">Tối thiểu (MINIMUM)</option>
+                  <option value="RECOMMENDED">Khuyến nghị (RECOMMENDED)</option>
+                </select>
+
+                <div class="table-search search-poda">
+                  <div class="search-glow"></div>
+                  <div class="search-dark-border-bg"></div>
+                  <div class="search-dark-border-bg"></div>
+                  <div class="search-dark-border-bg"></div>
+                  <div class="search-white"></div>
+                  <div class="search-border"></div>
+                  <div class="search-main">
+                    <input
+                      type="text"
+                      id="rec-search-input"
+                      placeholder="Tìm game, người đề xuất, PC..."
+                      class="search-input"
+                    />
+                    <div class="search-input-mask"></div>
+                    <div class="search-pink-mask"></div>
+                    <div class="search-icon">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke-linejoin="round"
+                        stroke-linecap="round"
+                      >
+                        <circle
+                          stroke="#d6d6e6"
+                          fill="none"
+                          r="8"
+                          cy="11"
+                          cx="11"
+                        ></circle>
+                        <line
+                          stroke="#d6d6e6"
+                          y2="16.65"
+                          y1="22"
+                          x2="16.65"
+                          x1="22"
+                        ></line>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead class="highlight-headers">
+                <tr>
+                  <th>Game</th>
+                  <th>Người đề xuất</th>
+                  <th>Loại</th>
+                  <th>Vote</th>
+                  <th>Trạng thái</th>
+                  <th class="text-center">Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="recommendations-table-body">
+                <!-- Sẽ render động từ API loadRecommendationsData() -->
               </tbody>
             </table>
           </div>
@@ -2338,6 +2427,138 @@
               Xác nhận
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 1: Chi tiết & So sánh Đề xuất Cấu hình -->
+    <div class="modal" id="modal-recommendation-detail">
+      <div class="modal-overlay" id="rec-detail-overlay"></div>
+      <div class="modal-card modal-rec-detail">
+        <div class="modal-header">
+          <div class="modal-header-left">
+            <i class="bx bx-git-compare" style="color: var(--main-color); font-size: 1.4rem;"></i>
+            <h3>So sánh Cấu hình Đề xuất & Cấu hình Game</h3>
+          </div>
+          <button type="button" class="close-btn" id="close-rec-detail-modal">&times;</button>
+        </div>
+        <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+          <input type="hidden" id="modal-detail-rec-id" />
+          <div class="rec-detail-meta" id="rec-detail-meta">
+            <!-- Render động thông tin Game, Người đề xuất, Loại, Vote -->
+          </div>
+
+          <!-- Bảng so sánh 2 cột -->
+          <div class="rec-compare-container">
+            <div class="rec-compare-column game-column">
+              <div class="rec-col-header">
+                <i class="bx bx-joystick"></i>
+                <span id="compare-game-col-title">Cấu hình Game hiện tại</span>
+              </div>
+              <div class="rec-col-body" id="compare-game-body">
+                <!-- Nội dung cấu hình game -->
+              </div>
+            </div>
+
+            <div class="rec-compare-column user-column">
+              <div class="rec-col-header">
+                <i class="bx bx-desktop"></i>
+                <span id="compare-user-col-title">Cấu hình đề xuất (Người dùng)</span>
+              </div>
+              <div class="rec-col-body" id="compare-user-body">
+                <!-- Nội dung cấu hình người dùng -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Cảnh báo xung đột (nếu có) -->
+          <div id="rec-conflict-warning" class="rec-conflict-warning" style="display: none;">
+            <i class="bx bx-error-alt"></i>
+            <div class="rec-warning-text" id="rec-warning-text"></div>
+          </div>
+
+          <!-- Ghi chú của người đề xuất (nếu có) -->
+          <div id="rec-user-note-box" class="rec-user-note-box" style="display: none;">
+            <span class="rec-note-label"><i class="bx bx-message-detail"></i> Ghi chú của người dùng:</span>
+            <p id="rec-user-note-content" class="rec-note-content"></p>
+          </div>
+        </div>
+        <div class="modal-footer" id="rec-detail-footer">
+          <button type="button" class="btn-cancel" id="btn-close-rec-detail">Đóng</button>
+          <button type="button" class="btn-cancel" id="btn-modal-trigger-reject" style="display: none;">
+            <i class="bx bx-x"></i> Từ chối
+          </button>
+          <button type="button" class="btn-save" id="btn-modal-trigger-approve" style="display: none;">
+            <i class="bx bx-check"></i> Duyệt & Áp dụng
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 2: Xác nhận Duyệt & Áp dụng Cấu hình -->
+    <div class="modal" id="modal-confirm-rec-approve">
+      <div class="modal-overlay" id="confirm-rec-approve-overlay"></div>
+      <div class="modal-card modal-confirm-card">
+        <div class="modal-header">
+          <div class="modal-header-left">
+            <i class="bx bx-check-circle" style="color: #22c55e; font-size: 1.4rem;"></i>
+            <h3>Xác nhận Duyệt & Áp dụng Cấu hình</h3>
+          </div>
+          <button type="button" class="close-btn" id="close-confirm-approve-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="approve-target-rec-id" />
+          <p id="approve-confirm-message" class="confirm-message-text" style="font-size: 0.95rem; line-height: 1.5; color: rgba(255,255,255,0.9);">
+            Bạn có chắc chắn muốn duyệt đề xuất cấu hình này và áp dụng làm cấu hình chính thức cho game không?
+          </p>
+          <div id="approve-conflict-alert" class="rec-conflict-warning" style="display: none; margin-top: 12px;">
+            <i class="bx bx-error-alt"></i>
+            <span id="approve-conflict-text"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="btn-cancel-approve">Hủy</button>
+          <button type="button" class="btn-save btn-success-sm" id="btn-submit-approve">
+            <i class="bx bx-check"></i> Xác nhận Duyệt
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 3: Xác nhận Từ chối Đề xuất -->
+    <div class="modal" id="modal-confirm-rec-reject">
+      <div class="modal-overlay" id="confirm-rec-reject-overlay"></div>
+      <div class="modal-card modal-confirm-card">
+        <div class="modal-header">
+          <div class="modal-header-left">
+            <i class="bx bx-x-circle" style="color: #ef4444; font-size: 1.4rem;"></i>
+            <h3>Từ chối Đề xuất Cấu hình</h3>
+          </div>
+          <button type="button" class="close-btn" id="close-confirm-reject-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="reject-target-rec-id" />
+          <p id="reject-confirm-message" class="confirm-message-text" style="font-size: 0.95rem; line-height: 1.5; color: rgba(255,255,255,0.9);">
+            Bạn có chắc chắn muốn từ chối đề xuất cấu hình này không?
+          </p>
+          <div class="form-group" style="margin-top: 14px;">
+            <label for="reject-reason-input" style="font-size: 0.88rem; color: rgba(255,255,255,0.85); margin-bottom: 6px; display: block;">
+              Lý do từ chối (tùy chọn - sẽ gửi thông báo đến người đề xuất):
+            </label>
+            <textarea
+              id="reject-reason-input"
+              class="form-control"
+              rows="3"
+              placeholder="Ví dụ: Hiệu năng thực tế chưa đủ đáp ứng mức thiết lập này, linh kiện không tương thích..."
+              style="width: 100%; resize: vertical; border-radius: 6px; padding: 8px 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-family: inherit; font-size: 0.88rem; outline: none;"
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="btn-cancel-reject">Hủy</button>
+          <button type="button" class="btn-save btn-danger-sm" id="btn-submit-reject">
+            <i class="bx bx-x"></i> Xác nhận Từ chối
+          </button>
         </div>
       </div>
     </div>

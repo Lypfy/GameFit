@@ -329,6 +329,84 @@ const getReviewReportDetails = async (req, res) => {
     }
 }
 
+const getAdminRecommendations = async (req, res) => {
+    try {
+        const { status, type, search, min_votes } = req.query;
+        const result = await reviewService.adminGetGamePCRecommendations(status, type, search, min_votes);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('Error in getAdminRecommendations Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi lấy danh sách đề xuất cấu hình'
+        });
+    }
+}
+
+const getAdminRecommendationDetail = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ success: false, message: 'Thiếu recommendation_id hợp lệ' });
+        }
+        const result = await reviewService.adminGetRecommendationDetail(id);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('Error in getAdminRecommendationDetail Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi lấy chi tiết đề xuất cấu hình'
+        });
+    }
+}
+
+const approveRecommendation = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const admin_id = req.user?.user_id;
+
+        if (!admin_id) {
+            return res.status(401).json({ success: false, message: 'Yêu cầu đăng nhập tài khoản quản trị viên' });
+        }
+        if (!id) {
+            return res.status(400).json({ success: false, message: 'Thiếu recommendation_id hợp lệ' });
+        }
+
+        const result = await reviewService.adminApproveRecommendation(id, admin_id);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('Error in approveRecommendation Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi duyệt đề xuất cấu hình'
+        });
+    }
+}
+
+const rejectRecommendation = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { reject_reason } = req.body;
+        const admin_id = req.user?.user_id;
+
+        if (!admin_id) {
+            return res.status(401).json({ success: false, message: 'Yêu cầu đăng nhập tài khoản quản trị viên' });
+        }
+        if (!id) {
+            return res.status(400).json({ success: false, message: 'Thiếu recommendation_id hợp lệ' });
+        }
+
+        const result = await reviewService.adminRejectRecommendation(id, admin_id, reject_reason);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('Error in rejectRecommendation Controller: ', error.message);
+        return res.status(400).json({
+            success: false,
+            message: error.message || 'Lỗi server khi từ chối đề xuất cấu hình'
+        });
+    }
+}
+
 module.exports = {
     writeReview,
     updateReview,
@@ -342,5 +420,9 @@ module.exports = {
     reportReview,
     getReportedReviews,
     moderateReview,
-    getReviewReportDetails
+    getReviewReportDetails,
+    getAdminRecommendations,
+    getAdminRecommendationDetail,
+    approveRecommendation,
+    rejectRecommendation
 }
