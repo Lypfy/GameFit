@@ -348,54 +348,16 @@ const deleteGame = async (game_id) => {
     const numericId = parseInt(game_id, 10);
     const validId = isNaN(numericId) ? game_id : numericId;
 
-    try {
-      const request = pool.request();
-      request.input("game_id", sql.Int, validId);
-      const result = await request.execute("sp_deleteGame");
-      return {
-        success: true,
-        data: result.recordset || [],
-      };
-    } catch (spErr) {
-      console.warn("Lỗi sp_deleteGame, thực hiện xóa trực tiếp (xóa ràng buộc FK):", spErr.message);
+    const request = pool.request();
+    request.input("game_id", sql.Int, validId);
+    const result = await request.execute("sp_deleteGame");
 
-      // Xóa các bảng liên quan (FK) trước để tránh lỗi dính khóa ngoại
-      const tablesToDeleteFrom = [
-        "Wishlist",
-        "Wishlists",
-        "Games_Tags",
-        "Game_Tags",
-        "GameTags",
-        "Game_requirement",
-        "Game_Requirements",
-        "GameRequirements",
-        "Reviews",
-        "Comments",
-        "Ratings"
-      ];
-
-      for (const table of tablesToDeleteFrom) {
-        try {
-          const reqDel = pool.request();
-          reqDel.input("game_id", sql.Int, validId);
-          await reqDel.query(`DELETE FROM ${table} WHERE game_id = @game_id`);
-        } catch (e) {
-          // Bỏ qua nếu bảng không tồn tại hoặc không có khóa ngoại
-        }
-      }
-
-      // Xóa game khỏi bảng Games
-      const reqFinal = pool.request();
-      reqFinal.input("game_id", sql.Int, validId);
-      const finalResult = await reqFinal.query("DELETE FROM Games WHERE game_id = @game_id");
-
-      return {
-        success: true,
-        data: finalResult.recordset || [],
-      };
-    }
+    return {
+      success: true,
+      data: result.recordset || [],
+    };
   } catch (error) {
-    console.error("Lỗi khi xóa game:", error);
+    console.error("Lỗi khi xóa game:", error.message || error);
     throw error;
   }
 };
