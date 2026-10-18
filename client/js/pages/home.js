@@ -90,11 +90,12 @@ async function renderCategorySections() {
     categoriesToDisplay.map(async (cat) => {
       let games = [];
 
-      // 1. Thử fetch trực tiếp từ API theo tagId để lấy dữ liệu đầy đủ từ DB
-      if (cat.tagId) {
+      // 1. Thử fetch trực tiếp từ API theo tagName (filterKey) để lấy dữ liệu từ DB
+      const tagQuery = cat.filterKey || cat.title;
+      if (tagQuery) {
         try {
           const res = await fetch(
-            `/api/games/tag/${cat.tagId}`,
+            `/api/games/tag/${encodeURIComponent(tagQuery)}`,
           );
           const data = await res.json();
           if (
@@ -109,9 +110,9 @@ async function renderCategorySections() {
         }
       }
 
-      // 2. Fallback nếu không có tagId hoặc fetch API thất bại: Lọc trong mảng allGames
+      // 2. Fallback nếu fetch API không có kết quả: Lọc trong mảng allGames
       if (games.length === 0 && allGames.length > 0) {
-        const key = cat.filterKey.toLowerCase();
+        const key = (cat.filterKey || cat.title).toLowerCase();
         games = allGames.filter((game) => {
           const gameCat = game.category || game.platform || "";
           const gameTags = game.tags || "";
@@ -130,6 +131,7 @@ async function renderCategorySections() {
         .map((game) => {
           const gameIdStr = (game.game_id || game.id || "").toString();
           const isSaved = savedWishlistGameIds.has(gameIdStr);
+          const bookmarkHtml = getBookmarkHtml(gameIdStr, isSaved);
           const ytId = game.trailer_url ? (typeof getYouTubeVideoId === "function" ? getYouTubeVideoId(game.trailer_url) : null) : null;
           const ytAttr = ytId ? `data-yt-id="${ytId}"` : "";
 
