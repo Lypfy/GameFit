@@ -128,6 +128,9 @@ function initNavbarLiveSearch() {
 
         let rawImg =
           (game.image ? game.image.split(' ')[0] : null) || game.download_url || game.banner_image || defaultImg;
+        if (typeof getSafeImageUrl === 'function') {
+          rawImg = getSafeImageUrl(rawImg);
+        }
         if (rawImg.startsWith("./"))
           rawImg = rawImg.replace("./", isInSubfolder ? "../../" : "../");
         else if (rawImg.startsWith("../assets/") && isInSubfolder)

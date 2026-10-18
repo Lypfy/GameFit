@@ -10,8 +10,19 @@ const path = require("path");
 
 app.use(express.json());
 
-// Phục vụ các file tĩnh (Frontend: HTML, CSS, JS) từ thư mục client
-app.use(express.static(path.join(__dirname, "../../client")));
+// Phục vụ các file tĩnh: cache ảnh/font 1 ngày, còn file code (js, css, html) không cache lâu để code cập nhật ngay
+app.use(
+  express.static(path.join(__dirname, "../../client"), {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith(".html") || filePath.endsWith(".js") || filePath.endsWith(".css")) {
+        res.setHeader("Cache-Control", "no-cache");
+      } else {
+        res.setHeader("Cache-Control", "public, max-age=86400");
+      }
+    },
+    etag: true,
+  })
+);
 
 // Tự động chuyển hướng khi người dùng gõ localhost:5000
 app.get("/", (req, res) => {

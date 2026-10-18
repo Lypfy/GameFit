@@ -51,20 +51,23 @@ async function renderWishlistGames(gamesList) {
             ? parseFloat(ratingVal).toFixed(1)
             : "0.0";
       const tagsHtml = getGameTagsHtml(game);
-      const imgSrc = game.image
+      const rawImg = game.image
         ? game.image.split(" ")[0]
         : "../../assets/home.jpg";
+      const imgSrc = typeof getSafeImageUrl === "function" ? getSafeImageUrl(rawImg) : rawImg;
       const trailerSrc = game.trailer_url
         ? game.trailer_url.split(" ")[0]
         : "";
+      const ytId = trailerSrc ? (typeof getYouTubeVideoId === "function" ? getYouTubeVideoId(trailerSrc) : null) : null;
+      const ytAttr = ytId ? `data-yt-id="${ytId}"` : "";
 
       return `
-    <div class="box" data-id="${gameIdStr}" style="position: relative; cursor: pointer; transition: transform 0.3s;" 
-         onmouseenter="this.style.transform='scale(1.05)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=1; i.style.opacity=0; v.play().catch(()=>{}); }" 
-         onmouseleave="this.style.transform='scale(1)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=0; i.style.opacity=1; v.pause(); v.currentTime=0; }">
+    <div class="box" data-id="${gameIdStr}" ${ytAttr} style="position: relative; cursor: pointer; transition: transform 0.3s;" 
+         onmouseenter="handleGameCardHover(this, true)" 
+         onmouseleave="handleGameCardHover(this, false)">
       <div class="media-wrapper" style="position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden;">
-        <img src="${imgSrc}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${gameName}" />
-        ${trailerSrc ? `<video src="${trailerSrc}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ""}
+        <img src="${imgSrc}" onerror="this.onerror=null; this.src='../../assets/home.jpg'" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${gameName}" />
+        ${trailerSrc && !trailerSrc.includes('youtube') && !trailerSrc.includes('youtu.be') ? `<video src="${trailerSrc}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ""}
       </div>
       <button type="button" class="wishlist-btn active" data-game-id="${gameIdStr}" title="Xóa khỏi Wishlist">${bookmarkSvgIcon}</button>
       <div class="box-text">

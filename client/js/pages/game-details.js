@@ -86,16 +86,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("gd-subtitle").textContent =
       `A downloadable ${gameInfo.platform || "PC"} Game`;
 
-    // Xử lý ảnh: Tách link nếu có nhiều ảnh
+    // Xử lý ảnh: Tách link nếu có nhiều ảnh và bảo vệ bằng proxy nếu là link Steam
     let imageUrls = [];
     if (gameInfo.image) {
-      imageUrls = gameInfo.image.split(" ").filter(url => url.trim());
+      imageUrls = gameInfo.image
+        .split(" ")
+        .filter(url => url.trim())
+        .map(url => (typeof getSafeImageUrl === "function" ? getSafeImageUrl(url) : url));
     }
 
     // Cập nhật Top Section (Mua / Tải)
     // Ảnh đầu tiên chỉ làm ảnh nền (ảnh cover cột phải)
-    document.getElementById("gd-cover-img").src =
-      imageUrls.length > 0 ? imageUrls[0] : "../assets/default-game.png";
+    const coverImgEl = document.getElementById("gd-cover-img");
+    if (coverImgEl) {
+      coverImgEl.src = imageUrls.length > 0 ? imageUrls[0] : "../assets/default-game.png";
+      coverImgEl.onerror = function () {
+        this.onerror = null;
+        this.src = "../assets/default-game.png";
+      };
+    }
 
     document.getElementById("gd-download-btn").href =
       gameInfo.download_url || "#";
@@ -122,12 +131,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     const mainMediaContainer = document.getElementById("steam-main-media");
     const thumbnailsContainer = document.getElementById("steam-thumbnails");
 
-    // Bỏ các ảnh bìa (header, capsule) khỏi gallery để tránh bị mờ
+    // Hàm trích xuất ID YouTube từ nhiều định dạng URL (watch?v=, embed/, youtu.be/)
+    function getYouTubeVideoId(url) {
+      if (!url) return null;
+      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/i);
+      return match ? match[1] : null;
+    }
+
+    // Bỏ các ảnh bìa (header, capsule) khỏi gallery nếu game có nhiều hơn 1 ảnh
     let galleryImages = imageUrls.filter((url, idx) => {
-      if (idx === 0) return false; // Luôn bỏ ảnh đầu tiên vì đã dùng làm cover
-      if (url.includes('capsule') || url.includes('header')) return false; // Bỏ các ảnh capsule/header khác
+      if (imageUrls.length > 1 && idx === 0) return false; // Chỉ bỏ ảnh đầu tiên nếu có nhiều ảnh
+      if (imageUrls.length > 1 && (url.includes('capsule') || url.includes('header'))) return false;
       return true;
     });
+
+    // Nếu lọc xong mà không còn ảnh nào, giữ lại ảnh ban đầu
+    if (galleryImages.length === 0 && imageUrls.length > 0) {
+      galleryImages = [imageUrls[0]];
+    }
+
     let galleryVideos = [];
     if (gameInfo.trailer_url) {
       galleryVideos = gameInfo.trailer_url.split(" ").filter(url => url.trim());
@@ -166,9 +188,23 @@ document.addEventListener("DOMContentLoaded", async function () {
          <button class="media-nav-btn next" id="media-next"><i class='bx bx-chevron-right'></i></button>
        `;
       if (item.type === 'video') {
-        mainMediaContainer.innerHTML = `<video src="${item.url}" controls autoplay muted class="main-media-item"></video>` + navButtons;
+        const ytId = getYouTubeVideoId(item.url);
+        if (ytId) {
+          mainMediaContainer.innerHTML = `
+            <iframe 
+              src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&enablejsapi=1&rel=0" 
+              class="main-media-item" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen 
+              style="width: 100%; height: 100%; border: 0;">
+            </iframe>` + navButtons;
+        } else {
+          mainMediaContainer.innerHTML = `<video src="${item.url}" controls autoplay muted class="main-media-item"></video>` + navButtons;
+        }
       } else {
-        mainMediaContainer.innerHTML = `<img src="${item.url}" class="main-media-item" />` + navButtons;
+        mainMediaContainer.innerHTML = `<img src="${item.url}" class="main-media-item" onerror="this.src='../assets/default-game.png'" />` + navButtons;
       }
 
       if (thumbnailsContainer) {
@@ -197,13 +233,17 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       thumbnailsContainer.innerHTML = mediaItems.map((item, index) => {
         if (item.type === 'video') {
+          const ytId = getYouTubeVideoId(item.url);
+          const thumbMedia = ytId
+            ? `<img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" class="thumb-media" />`
+            : `<video src="${item.url}" class="thumb-media"></video>`;
           return `<div class="thumbnail-item ${index === 0 ? 'active' : ''}" data-index="${index}">
                         <div class="video-play-icon"><i class='bx bx-play-circle'></i></div>
-                        <video src="${item.url}" class="thumb-media"></video>
+                        ${thumbMedia}
                      </div>`;
         } else {
           return `<div class="thumbnail-item ${index === 0 ? 'active' : ''}" data-index="${index}">
-                        <img src="${item.url}" class="thumb-media" />
+                        <img src="${item.url}" class="thumb-media" onerror="this.src='../assets/default-game.png'" />
                      </div>`;
         }
       }).join('');
