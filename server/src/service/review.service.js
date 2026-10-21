@@ -40,20 +40,9 @@ const getReview = async (game_id, current_user_id = null) => {
         request.input('game_id', sql.Int, game_id);
         request.input('current_user_id', sql.Int, current_user_id || null);
 
-        const result = await request.query(`
-            SELECT 
-                r.review_id,
-                r.user_id,
-                u.user_name,
-                r.rating,
-                r.comment,
-                r.created_at,
-                ISNULL(r.is_hidden, 0) AS is_hidden
-            FROM dbo.Reviews r
-            JOIN dbo.Users u ON r.user_id = u.user_id
-            WHERE r.game_id = @game_id
-              AND (ISNULL(r.is_hidden, 0) = 0 OR (@current_user_id IS NOT NULL AND r.user_id = @current_user_id))
-        `);
+        const result = await request.query(
+            "SELECT * FROM dbo.fn_getReviews(@game_id, @current_user_id)"
+        );
         return { success: true, data: result.recordset };
     }
     catch (error) {
@@ -66,7 +55,7 @@ const getAvgRating = async (game_id) => {
     try {
         const request = new sql.Request();
         request.input('game_id', sql.Int, game_id);
-        const result = await request.query('SELECT fn_GetAverageRating(@game_id)');
+        const result = await request.query('SELECT dbo.fn_GetAverageRating(@game_id)');
         return { success: true, data: result };
     }
     catch (error) {
@@ -125,9 +114,13 @@ const getGamePCRecommendations = async (game_id) => {
         if (recommendations.length > 0) {
             const recIds = recommendations.map(r => r.recommendation_id || r.id).filter(id => id).join(',');
             if (recIds) {
-                const voteResult = await request.query(`SELECT target_id, user_id, vote_type FROM Votes WHERE target_type = 'RECOMMENDATION' AND target_id IN (${recIds})`);
+                const voteResult = await request.query(`
+                    SELECT target_id, user_id, vote_type 
+                    FROM dbo.fn_GetRecommendationVotes() 
+                    WHERE target_id IN (${recIds})
+                `);
                 const votes = voteResult.recordset;
-                
+
                 recommendations.forEach(r => {
                     const rId = r.recommendation_id || r.id;
                     const rVotes = votes.filter(v => v.target_id === rId);
@@ -177,9 +170,9 @@ const vote = async (user_id, target_type, target_id, vote_type) => {
         request.input('target_type', sql.VarChar, target_type);
         request.input('target_id', sql.Int, target_id);
         request.input('vote_type', sql.SmallInt, vote_type);
-        
+
         await request.execute('sp_Vote');
-        
+
         return { success: true, message: 'Thao tác vote thành công' };
     } catch (error) {
         console.log('Error in vote Service: ', error.message);

@@ -45,7 +45,7 @@ const loginUser = async (username, password) => {
 
     // 1. Tìm user trong DB theo user_name HOẶC email (Cho phép khách đăng nhập bằng 1 trong 2)
     const result = await request.query(
-      "SELECT * FROM Users WHERE user_name = @username OR email = @username",
+      "SELECT * FROM dbo.fn_checkUserByEmail(@username)",
     );
     const user = result.recordset[0];
 
@@ -62,11 +62,13 @@ const loginUser = async (username, password) => {
       if (user.lock_until && new Date(user.lock_until) <= new Date()) {
         const unlockReq = new sql.Request();
         unlockReq.input("user_id", sql.Int, user.user_id);
-        await unlockReq.query(
-          "UPDATE Users SET status = 'Active', lock_until = NULL, lock_reason = NULL WHERE user_id = @user_id",
-        );
+        unlockReq.input("status", sql.NVarChar(50), "Active");
+        unlockReq.input("lock_reason", sql.NVarChar(255), null);
+        unlockReq.input("lock_until", sql.DateTime, null);
+        await unlockReq.execute("sp_LockUnlockUser");
         user.status = "Active";
-      } else {
+      }
+      else {
         let msg = "Tài khoản của bạn đã bị khóa!";
         if (user.lock_reason) msg += ` Lý do: ${user.lock_reason}.`;
         if (user.lock_until) {
@@ -128,7 +130,7 @@ const forgotPassword = async (email) => {
 
     // 1. Kiểm tra email có tồn tại không
     const checkUser = await request.query(
-      "SELECT user_id FROM Users WHERE email = @email",
+      "SELECT user_id FROM dbo.fn_checkUserByEmail(@email)",
     );
     if (checkUser.recordset.length === 0) {
       return {
@@ -200,7 +202,7 @@ const updateUserProfile = async (userId, newUsername) => {
 
     // 1. Kiểm tra xem user_name đã bị tài khoản khác sử dụng chưa
     const checkResult = await checkReq.query(
-      "SELECT 1 FROM Users WHERE user_name = @new_user_name AND user_id != @user_id",
+      "SELECT * FROM dbo.fn_CheckUsernameExists(@user_id, @new_user_name)",
     );
     if (checkResult.recordset && checkResult.recordset.length > 0) {
       return {
@@ -216,11 +218,11 @@ const updateUserProfile = async (userId, newUsername) => {
     updateReq.input("new_email", sql.VarChar, null);
     await updateReq.execute("sp_UpdateInformationAccount");
 
-    // 3. Lấy thông tin mới nhất trả về
+    // 3. Lấy thông tin mới nhất trả về thông qua Function
     const userReq = new sql.Request();
     userReq.input("user_id", sql.Int, userId);
     const userRes = await userReq.query(
-      "SELECT user_id, user_name, email, role, status FROM Users WHERE user_id = @user_id",
+      "SELECT * FROM dbo.fn_GetUserById(@user_id)",
     );
     const updatedUser = userRes.recordset[0];
 
@@ -261,12 +263,8 @@ const getUsers = async (keyword = null, role = null, status = null) => {
     const pool = await sql.connect();
 
     // Tự động mở khóa cho tất cả tài khoản đã quá thời hạn lock_until
-    await pool
-      .request()
-      .query(
-        "UPDATE Users SET status = 'Active', lock_until = NULL, lock_reason = NULL WHERE status = 'Locked' AND lock_until IS NOT NULL AND lock_until <= GETDATE()",
-      );
-
+    // Tự động mở khóa cho tất cả tài khoản đã quá thời hạn lock_until
+    await pool.request().execute("sp_AutoUnlockExpiredUsers");
     const request = pool.request();
     request.input("keyword", sql.NVarChar(100), keyword || null);
     request.input("role", sql.NVarChar(50), role || null);
@@ -387,7 +385,7 @@ const changePassword = async (userId, oldPassword, newPassword) => {
     const userReq = new sql.Request();
     userReq.input("user_id", sql.Int, userId);
     const result = await userReq.query(
-      "SELECT user_id, password FROM Users WHERE user_id = @user_id"
+      "SELECT user_id, email, password FROM dbo.fn_GetUserPasswordById(@user_id)"
     );
     const user = result.recordset?.[0];
 
@@ -413,13 +411,11 @@ const changePassword = async (userId, oldPassword, newPassword) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-    // Cập nhật vào DB
+    // Cập nhật vào DB bằng sp_ResetPassword có sẵn
     const updateReq = new sql.Request();
-    updateReq.input("user_id", sql.Int, userId);
+    updateReq.input("email", sql.VarChar, user.email);
     updateReq.input("password", sql.VarChar, hashedPassword);
-    await updateReq.query(
-      "UPDATE Users SET password = @password WHERE user_id = @user_id"
-    );
+    await updateReq.execute("sp_ResetPassword");
 
     return {
       success: true,

@@ -75,34 +75,6 @@ const getGames = async (page = 1, limit = 20, filters = {}) => {
         games.sort((a, b) => (parseFloat(b.rating || b.DiemTrungBinh) || 0) - (parseFloat(a.rating || a.DiemTrungBinh) || 0));
       }
     }
-
-    // Bổ sung các thông tin chi tiết (developer, publisher, is_active) từ bảng Games
-    if (games.length > 0) {
-      try {
-        const gameIds = games.map((g) => g.game_id || g.id).filter(Boolean);
-        if (gameIds.length > 0) {
-          const devReq = pool.request();
-          const devRes = await devReq.query(`SELECT game_id, developer, publisher, is_active FROM Games WHERE game_id IN (${gameIds.join(",")})`);
-          const devMap = new Map();
-          (devRes.recordset || []).forEach((row) => {
-            devMap.set(row.game_id, row);
-          });
-          games = games.map((g) => {
-            const id = g.game_id || g.id;
-            const extra = devMap.get(id);
-            return {
-              ...g,
-              developer: extra?.developer || g.developer || "",
-              publisher: extra?.publisher || g.publisher || "",
-              is_active: extra?.is_active !== undefined ? extra.is_active : (g.is_active !== undefined ? g.is_active : 1),
-            };
-          });
-        }
-      } catch (enrichErr) {
-        console.warn("Không thể bổ sung thông tin developer/publisher/is_active từ Games:", enrichErr.message);
-      }
-    }
-
     return {
       data: games,
       pagination: {
@@ -256,91 +228,24 @@ const updateGame = async (game) => {
     const devStr = game.developer ? game.developer.trim() : "";
     const tagStr = game.name_tag ? game.name_tag.trim() : "";
 
-    try {
-      const request = pool.request();
-      request.input("game_id", sql.Int, validId);
-      request.input("name", sql.NVarChar(255), nameStr);
-      request.input("name_tag", sql.NVarChar(sql.MAX), tagStr);
-      request.input("developer", sql.NVarChar(255), devStr);
-      request.input("is_active", sql.Bit, isActive);
+    const request = pool.request();
+    request.input("game_id", sql.Int, validId);
+    request.input("name", sql.NVarChar(255), nameStr);
+    request.input("name_tag", sql.NVarChar(sql.MAX), tagStr);
+    request.input("developer", sql.NVarChar(255), devStr);
+    request.input("is_active", sql.Bit, isActive);
+    const result = await request.execute("sp_updateGame");
 
-      const result = await request.execute("sp_updateGame");
-
-      if (game.image !== undefined) {
-        try {
-          const reqImg = pool.request();
-          reqImg.input("game_id", sql.Int, validId);
-          reqImg.input("image", sql.NVarChar(sql.MAX), game.image);
-          await reqImg.query("UPDATE Games SET image = @image WHERE game_id = @game_id");
-        } catch (imgErr) {
-          console.warn("Lỗi khi cập nhật ảnh game:", imgErr.message);
-        }
-      }
-
-      return {
-        success: true,
-        data: result.recordset || [],
-      };
-    } catch (spErr) {
-      console.warn("Thử lại cập nhật game với direct query:", spErr.message);
-
-      const reqUpdate = pool.request();
-      reqUpdate.input("game_id", sql.Int, validId);
-      reqUpdate.input("name", sql.NVarChar(255), nameStr);
-      reqUpdate.input("developer", sql.NVarChar(255), devStr);
-      reqUpdate.input("is_active", sql.Bit, isActive);
-
-      await reqUpdate.query(`
-        UPDATE Games 
-        SET name = @name, developer = @developer, is_active = @is_active 
-        WHERE game_id = @game_id
-      `);
-
-      if (game.image !== undefined) {
-        try {
-          const reqImg = pool.request();
-          reqImg.input("game_id", sql.Int, validId);
-          reqImg.input("image", sql.NVarChar(sql.MAX), game.image);
-          await reqImg.query("UPDATE Games SET image = @image WHERE game_id = @game_id");
-        } catch (imgErr) {
-          console.warn("Lỗi khi cập nhật ảnh game (direct query):", imgErr.message);
-        }
-      }
-
-
-      if (tagStr !== undefined && tagStr !== null) {
-        try {
-          const reqDelTags = pool.request();
-          reqDelTags.input("game_id", sql.Int, validId);
-          await reqDelTags.query(`DELETE FROM Games_Tags WHERE game_id = @game_id`);
-
-          if (tagStr) {
-            const reqInsTags = pool.request();
-            reqInsTags.input("game_id", sql.Int, validId);
-            reqInsTags.input("name_tag", sql.NVarChar(sql.MAX), tagStr);
-            await reqInsTags.query(`
-              INSERT INTO Games_Tags (game_id, tag_id)
-              SELECT DISTINCT @game_id, t.tag_id
-              FROM Tags t
-              INNER JOIN STRING_SPLIT(@name_tag, ',') s
-                ON LOWER(LTRIM(RTRIM(s.value))) = LOWER(LTRIM(RTRIM(t.name)))
-            `);
-          }
-        } catch (tagErr) {
-          console.warn("Lỗi khi cập nhật Games_Tags:", tagErr.message);
-        }
-      }
-
-      return {
-        success: true,
-        data: [],
-      };
-    }
+    return {
+      success: true,
+      data: result.recordset || [],
+    };
   } catch (error) {
     console.error("Lỗi khi cập nhật game:", error);
     throw error;
   }
 };
+
 
 const deleteGame = async (game_id) => {
   try {
@@ -391,21 +296,17 @@ const getCompatibilityPercent = async (
 };
 
 const getAllCategories = async () => {
-  // Thay đổi câu query này theo đúng tên bảng chứa Tags trong Database của bạn
-  const query = `SELECT name FROM Tags`;
-
   const pool = await sql.connect();
-  const result = await pool.request().query(query);
-  return result.recordset.map(row => row.name); // trả về mảng chuỗi
+  const result = await pool.request().query("SELECT name FROM dbo.fn_SearchTagsWithGameCount('')");
+  return result.recordset.map(row => row.name);
 };
-
 
 const getAllPublishers = async () => {
-  const query = `SELECT DISTINCT publisher FROM Games WHERE publisher IS NOT NULL AND publisher != ''`;
   const pool = await sql.connect();
-  const result = await pool.request().query(query);
+  const result = await pool.request().query("SELECT publisher FROM dbo.fn_GetAllPublishers()");
   return result.recordset.map(row => row.publisher);
 };
+
 
 const sortGamesByName = async () => {
   try {
@@ -448,156 +349,20 @@ const updateGameRequirement = async (game_id, minimum, recommended) => {
       { type: "RECOMMENDED", data: recommended }
     ];
 
-    const tablesToTry = ["Game_requirement", "Game_Requirements", "GameRequirements"];
-
     for (const item of itemsToUpdate) {
       if (!item.data) continue;
       const { os, cpu_name, gpu_name, ram, storage } = item.data;
 
-      // Thử gọi Stored Procedure sp_UpdateGameRequirement nếu đã cài trong CSDL SQL Server
-      try {
-        const spReq = pool.request();
-        spReq.input("game_id", sql.Int, validId);
-        spReq.input("type", sql.VarChar(50), item.type);
-        spReq.input("os", sql.NVarChar(100), os ? os.trim() : "");
-        spReq.input("cpu_name", sql.NVarChar(255), cpu_name ? cpu_name.trim() : "");
-        spReq.input("gpu_name", sql.NVarChar(255), gpu_name ? gpu_name.trim() : "");
-        spReq.input("ram", sql.Int, parseInt(ram, 10) || 0);
-        spReq.input("storage", sql.Int, parseInt(storage, 10) || 0);
+      const spReq = pool.request();
+      spReq.input("game_id", sql.Int, validId);
+      spReq.input("type", sql.VarChar(50), item.type);
+      spReq.input("os", sql.NVarChar(100), os ? os.trim() : "");
+      spReq.input("cpu_name", sql.NVarChar(255), cpu_name ? cpu_name.trim() : "");
+      spReq.input("gpu_name", sql.NVarChar(255), gpu_name ? gpu_name.trim() : "");
+      spReq.input("ram", sql.Int, parseInt(ram, 10) || 0);
+      spReq.input("storage", sql.Int, parseInt(storage, 10) || 0);
 
-        const spRes = await spReq.execute("dbo.sp_UpdateGameRequirement");
-        if (spRes.recordset?.[0] && spRes.recordset[0].success === 0) {
-          console.warn("dbo.sp_UpdateGameRequirement thông báo:", spRes.recordset[0].message);
-        } else {
-          continue; // Đã chạy thành công qua Stored Procedure
-        }
-      } catch (spErr) {
-        console.warn("Chạy sp_UpdateGameRequirement thất bại, chuyển sang query trực tiếp:", spErr.message);
-      }
-
-      // 1. Tìm cpu_id từ CPUs table dựa trên cpu_name nếu có
-      let cpu_id = null;
-      if (cpu_name && cpu_name.trim()) {
-        try {
-          const reqCpu = pool.request();
-          reqCpu.input("searchCpu", sql.NVarChar(100), cpu_name.trim());
-          const cpuRes = await reqCpu.query(`
-            SELECT TOP 1 cpu_id FROM CPUs 
-            WHERE LOWER(name) = LOWER(@searchCpu) 
-               OR LOWER(cpu_name) = LOWER(@searchCpu) 
-               OR name LIKE '%' + @searchCpu + '%' 
-               OR cpu_name LIKE '%' + @searchCpu + '%'
-          `);
-          if (cpuRes.recordset?.[0]?.cpu_id) {
-            cpu_id = cpuRes.recordset[0].cpu_id;
-          }
-        } catch (e) { }
-      }
-
-      // 2. Tìm gpu_id từ GPUs table dựa trên gpu_name nếu có
-      let gpu_id = null;
-      if (gpu_name && gpu_name.trim()) {
-        try {
-          const reqGpu = pool.request();
-          reqGpu.input("searchGpu", sql.NVarChar(100), gpu_name.trim());
-          const gpuRes = await reqGpu.query(`
-            SELECT TOP 1 gpu_id FROM GPUs 
-            WHERE LOWER(name) = LOWER(@searchGpu) 
-               OR LOWER(gpu_name) = LOWER(@searchGpu) 
-               OR name LIKE '%' + @searchGpu + '%' 
-               OR gpu_name LIKE '%' + @searchGpu + '%'
-          `);
-          if (gpuRes.recordset?.[0]?.gpu_id) {
-            gpu_id = gpuRes.recordset[0].gpu_id;
-          }
-        } catch (e) { }
-      }
-
-      const ramVal = parseInt(ram, 10) || 0;
-      const storageVal = parseInt(storage, 10) || 0;
-      const osVal = os ? os.trim() : "";
-
-      for (const table of tablesToTry) {
-        try {
-          const checkReq = pool.request();
-          checkReq.input("game_id", sql.Int, validId);
-          checkReq.input("type", sql.VarChar(50), item.type);
-          const existRes = await checkReq.query(`
-            SELECT COUNT(*) AS cnt FROM ${table} 
-            WHERE game_id = @game_id AND (UPPER(type) = UPPER(@type) OR type = @type)
-          `);
-
-          const exists = existRes.recordset?.[0]?.cnt > 0;
-
-          if (exists) {
-            const updReq = pool.request();
-            updReq.input("game_id", sql.Int, validId);
-            updReq.input("type", sql.VarChar(50), item.type);
-            updReq.input("os", sql.NVarChar(100), osVal);
-            updReq.input("ram", sql.Int, ramVal);
-            updReq.input("storage", sql.Int, storageVal);
-            if (cpu_id) updReq.input("cpu_id", sql.Int, cpu_id);
-            if (gpu_id) updReq.input("gpu_id", sql.Int, gpu_id);
-
-            let setFields = ["os = @os", "ram = @ram", "storage = @storage"];
-            if (cpu_id) setFields.push("cpu_id = @cpu_id");
-            if (gpu_id) setFields.push("gpu_id = @gpu_id");
-
-            await updReq.query(`
-              UPDATE ${table}
-              SET ${setFields.join(", ")}
-              WHERE game_id = @game_id AND (UPPER(type) = UPPER(@type) OR type = @type)
-            `);
-
-            // Check if cpu_name / gpu_name text columns exist and update them as well
-            try {
-              const textUpd = pool.request();
-              textUpd.input("game_id", sql.Int, validId);
-              textUpd.input("type", sql.VarChar(50), item.type);
-              textUpd.input("cpu_name", sql.NVarChar(255), cpu_name ? cpu_name.trim() : "");
-              textUpd.input("gpu_name", sql.NVarChar(255), gpu_name ? gpu_name.trim() : "");
-              await textUpd.query(`
-                UPDATE ${table}
-                SET cpu_name = @cpu_name, gpu_name = @gpu_name
-                WHERE game_id = @game_id AND (UPPER(type) = UPPER(@type) OR type = @type)
-              `);
-            } catch (tErr) { }
-
-            break;
-          } else {
-            const insReq = pool.request();
-            insReq.input("game_id", sql.Int, validId);
-            insReq.input("type", sql.VarChar(50), item.type);
-            insReq.input("os", sql.NVarChar(100), osVal);
-            insReq.input("ram", sql.Int, ramVal);
-            insReq.input("storage", sql.Int, storageVal);
-            if (cpu_id) insReq.input("cpu_id", sql.Int, cpu_id);
-            if (gpu_id) insReq.input("gpu_id", sql.Int, gpu_id);
-
-            await insReq.query(`
-              INSERT INTO ${table} (game_id, type, os, ram, storage ${cpu_id ? ', cpu_id' : ''} ${gpu_id ? ', gpu_id' : ''})
-              VALUES (@game_id, @type, @os, @ram, @storage ${cpu_id ? ', @cpu_id' : ''} ${gpu_id ? ', @gpu_id' : ''})
-            `);
-
-            try {
-              const textUpd = pool.request();
-              textUpd.input("game_id", sql.Int, validId);
-              textUpd.input("type", sql.VarChar(50), item.type);
-              textUpd.input("cpu_name", sql.NVarChar(255), cpu_name ? cpu_name.trim() : "");
-              textUpd.input("gpu_name", sql.NVarChar(255), gpu_name ? gpu_name.trim() : "");
-              await textUpd.query(`
-                UPDATE ${table}
-                SET cpu_name = @cpu_name, gpu_name = @gpu_name
-                WHERE game_id = @game_id AND (UPPER(type) = UPPER(@type) OR type = @type)
-              `);
-            } catch (tErr) { }
-
-            break;
-          }
-        } catch (tblErr) {
-          // Thử tên bảng kế tiếp
-        }
-      }
+      await spReq.execute("dbo.sp_UpdateGameRequirement");
     }
 
     return {
@@ -609,6 +374,7 @@ const updateGameRequirement = async (game_id, minimum, recommended) => {
     throw error;
   }
 };
+
 
 module.exports = {
   getGames,

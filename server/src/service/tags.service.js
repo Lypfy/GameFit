@@ -34,21 +34,11 @@ const updateTag = async (id, name) => {
     const pool = await sql.connect();
     const numericId = parseInt(id, 10);
     const validId = isNaN(numericId) ? id : numericId;
-
-    try {
-      const request = pool.request();
-      request.input("tag_id", sql.Int, validId);
-      request.input("name", sql.NVarChar(100), name);
-      await request.execute("dbo.sp_UpdateTag");
-      return true;
-    } catch (spErr) {
-      console.warn("Thử lại cập nhật tag với direct query:", spErr.message);
-      const req2 = pool.request();
-      req2.input("tag_id", sql.Int, validId);
-      req2.input("name", sql.NVarChar(100), name);
-      await req2.query("UPDATE Tags SET name = @name WHERE tag_id = @tag_id");
-      return true;
-    }
+    const request = pool.request();
+    request.input("tag_id", sql.Int, validId);
+    request.input("name", sql.NVarChar(100), name);
+    await request.execute("dbo.sp_UpdateTag");
+    return true;
   } catch (error) {
     console.error("Lỗi khi truy vấn updateTag:", error.message);
     throw error;
@@ -60,23 +50,16 @@ const deleteTag = async (id) => {
     const numericId = parseInt(id, 10);
     const validId = isNaN(numericId) ? id : numericId;
 
-    try {
-      const request = pool.request();
-      request.input("tag_id", sql.Int, validId);
-      await request.execute("dbo.sp_DeleteTag");
-      return true;
-    } catch (spErr) {
-      console.warn("Thử lại xóa tag với direct query:", spErr.message);
-      const req2 = pool.request();
-      req2.input("tag_id", sql.Int, validId);
-      await req2.query("DELETE FROM Tags WHERE tag_id = @tag_id");
-      return true;
-    }
+    const request = pool.request();
+    request.input("tag_id", sql.Int, validId);
+    await request.execute("dbo.sp_DeleteTag");
+    return true;
   } catch (error) {
     console.error("Lỗi khi truy vấn deleteTag:", error.message);
     throw error;
   }
 };
+
 module.exports = {
   getTagsWithGameCount,
   addTag,
