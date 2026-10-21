@@ -116,7 +116,9 @@
   <!-- Home Section -->
   <section class="home container" id="home">
     <video class="home-video-bg" autoplay loop muted playsinline poster="../assets/home.jpg">
-      <source src="../assets/home-bg.mp4" type="video/mp4" />
+      <!-- Dùng Cloudinary CDN: link tối ưu tự động nén còn ~8MB giúp tải nhanh và tiết kiệm băng thông -->
+      <source src="https://res.cloudinary.com/kxdhpazy/video/upload/w_1280,q_auto:eco,vc_auto/v1792327644/home-bg.mp4" type="video/mp4" />
+      <source src="https://res.cloudinary.com/kxdhpazy/video/upload/v1792327644/home-bg.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
     <div class="home-overlay"></div>
@@ -235,13 +237,13 @@
 
   <!-- App JavaScript Modules -->
   <script src="../js/utils/toast.js" defer></script>
-  <script src="../js/utils/auth-storage.js" defer></script>
+  <script src="../js/utils/auth-storage.js?v=2" defer></script>
   <script src="../js/data/games-data.js" defer></script>
   <script src="../js/components/navbar.js" defer></script>
   <script src="../js/components/user-dropdown.js" defer></script>
   <script src="../js/components/notification.js" defer></script>
   <script src="../js/components/profile-modal.js" defer></script>
-  <script src="../js/pages/home.js" defer></script>
+  <script src="../js/pages/home.js?v=3" defer></script>
   <script src="../js/components/cpu-gpu-combobox.js" defer></script>
   <script src="../js/components/pc-config-modal.js" defer></script>
 </body>

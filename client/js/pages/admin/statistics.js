@@ -434,9 +434,10 @@ function renderRecentGamesTable(root) {
 
   tableBody.innerHTML = filtered
     .map((game) => {
-      const imgUrl = game.image
+      const rawImg = game.image
         ? game.image.split(" ")[0]
-        : "../../img/placeholder.jpg";
+        : "../../assets/home.jpg";
+      const imgUrl = typeof getSafeImageUrl === "function" ? getSafeImageUrl(rawImg) : rawImg;
       const tagBadges =
         (game.genres || "")
           .split(",")
@@ -765,9 +766,10 @@ function renderWishlistTable(root) {
     .map((game, index) => {
       const rank = index + 1;
       const rankClass = rank <= 3 ? `rank-${rank}` : "";
-      const imgUrl = game.image
+      const rawImg = game.image
         ? game.image.split(" ")[0]
-        : "../../img/placeholder.jpg";
+        : "../../assets/home.jpg";
+      const imgUrl = typeof getSafeImageUrl === "function" ? getSafeImageUrl(rawImg) : rawImg;
       const releaseDate = game.release_date
         ? new Date(game.release_date).toLocaleDateString("vi-VN")
         : "Chưa rõ";
@@ -863,9 +865,10 @@ function renderReviewTable(root) {
     .map((game, index) => {
       const rank = index + 1;
       const rankClass = rank <= 3 ? `rank-${rank}` : "";
-      const imgUrl = game.image
+      const rawImg = game.image
         ? game.image.split(" ")[0]
-        : "../../img/placeholder.jpg";
+        : "../../assets/home.jpg";
+      const imgUrl = typeof getSafeImageUrl === "function" ? getSafeImageUrl(rawImg) : rawImg;
 
       const tagBadges =
         (game.genres || "")

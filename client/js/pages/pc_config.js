@@ -219,12 +219,12 @@ function renderGameCards(games, isSearching = false) {
     .map((g) => {
       const gameId = g.game_id || g.id;
       const title = g.name || g.title;
-      const img = g.image ? g.image.split(" ")[0] : "../assets/default-game.png";
+      const img = typeof getSafeImageUrl === 'function' ? getSafeImageUrl(g.image ? g.image.split(" ")[0] : null) : (g.image ? g.image.split(" ")[0] : "../assets/default-game.png");
 
       return `
       <div class="game-select-card" data-game-id="${gameId}">
         <div class="selected-check"><i class="bx bx-check"></i></div>
-        <img src="${img}" alt="${title}" loading="lazy" />
+        <img src="${img}" alt="${title}" loading="lazy" onerror="this.onerror=null; this.src='../assets/default-game.png'" />
         <div class="game-title-overlay">
           <h4>${title}</h4>
         </div>
@@ -365,9 +365,11 @@ async function handleCheckCompatibility(e) {
     return;
   }
 
-  // 1. Cập nhật thông tin Game ở bên Trái (Flex Row)
-  document.getElementById("res-game-poster").src =
-    selectedGameObj.image ? selectedGameObj.image.split(" ")[0] : "../assets/default-game.png";
+  const resPosterEl = document.getElementById("res-game-poster");
+  if (resPosterEl) {
+    resPosterEl.src = typeof getSafeImageUrl === 'function' ? getSafeImageUrl(selectedGameObj.image ? selectedGameObj.image.split(" ")[0] : null) : (selectedGameObj.image ? selectedGameObj.image.split(" ")[0] : "../assets/default-game.png");
+    resPosterEl.onerror = function() { this.onerror = null; this.src = "../assets/default-game.png"; };
+  }
   document.getElementById("res-game-title").textContent =
     selectedGameObj.name || selectedGameObj.title;
   document.getElementById("res-game-dev").textContent =

@@ -48,14 +48,17 @@ function renderPopularGames(games) {
       const isSaved = savedWishlistGameIds.has(gameIdStr);
       const bookmarkHtml = getBookmarkHtml(gameIdStr, isSaved);
 
+      const ytId = game.trailer_url ? (typeof getYouTubeVideoId === "function" ? getYouTubeVideoId(game.trailer_url) : null) : null;
+      const ytAttr = ytId ? `data-yt-id="${ytId}"` : "";
+
       return `
     <div class="swiper-slide">
-      <div class="box" data-id="${gameIdStr}" style="position: relative; cursor: pointer; transition: transform 0.3s;" 
-           onmouseenter="this.style.transform='scale(1.05)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=1; i.style.opacity=0; v.play().catch(()=>{}); }" 
-           onmouseleave="this.style.transform='scale(1)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=0; i.style.opacity=1; v.pause(); v.currentTime=0; }">
+      <div class="box" data-id="${gameIdStr}" ${ytAttr} style="position: relative; cursor: pointer; transition: transform 0.3s;" 
+           onmouseenter="handleGameCardHover(this, true)" 
+           onmouseleave="handleGameCardHover(this, false)">
         <div class="media-wrapper" style="position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden;">
-          <img src="${game.image ? game.image.split(" ")[0] : "../assets/default-game.png"}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
-          ${game.trailer_url ? `<video src="${game.trailer_url.split(" ")[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ""}
+          <img src="${typeof getSafeImageUrl === 'function' ? getSafeImageUrl(game.image ? game.image.split(" ")[0] : null) : (game.image ? game.image.split(" ")[0] : "../assets/default-game.png")}" onerror="this.onerror=null; this.src='../assets/default-game.png'" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
+          ${game.trailer_url && !game.trailer_url.includes("youtube") && !game.trailer_url.includes("youtu.be") ? `<video src="${game.trailer_url.split(" ")[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ""}
         </div>
         ${bookmarkHtml}
         <div class="box-text">
@@ -87,11 +90,12 @@ async function renderCategorySections() {
     categoriesToDisplay.map(async (cat) => {
       let games = [];
 
-      // 1. Thử fetch trực tiếp từ API theo tagId để lấy dữ liệu đầy đủ từ DB
-      if (cat.tagId) {
+      // 1. Thử fetch trực tiếp từ API theo tagName (filterKey) để lấy dữ liệu từ DB
+      const tagQuery = cat.filterKey || cat.title;
+      if (tagQuery) {
         try {
           const res = await fetch(
-            `/api/games/tag/${cat.tagId}`,
+            `/api/games/tag/${encodeURIComponent(tagQuery)}`,
           );
           const data = await res.json();
           if (
@@ -106,9 +110,9 @@ async function renderCategorySections() {
         }
       }
 
-      // 2. Fallback nếu không có tagId hoặc fetch API thất bại: Lọc trong mảng allGames
+      // 2. Fallback nếu fetch API không có kết quả: Lọc trong mảng allGames
       if (games.length === 0 && allGames.length > 0) {
-        const key = cat.filterKey.toLowerCase();
+        const key = (cat.filterKey || cat.title).toLowerCase();
         games = allGames.filter((game) => {
           const gameCat = game.category || game.platform || "";
           const gameTags = game.tags || "";
@@ -128,14 +132,16 @@ async function renderCategorySections() {
           const gameIdStr = (game.game_id || game.id || "").toString();
           const isSaved = savedWishlistGameIds.has(gameIdStr);
           const bookmarkHtml = getBookmarkHtml(gameIdStr, isSaved);
+          const ytId = game.trailer_url ? (typeof getYouTubeVideoId === "function" ? getYouTubeVideoId(game.trailer_url) : null) : null;
+          const ytAttr = ytId ? `data-yt-id="${ytId}"` : "";
 
           return `
-        <div class="box" data-id="${gameIdStr}" style="position: relative; cursor: pointer; transition: transform 0.3s;" 
-             onmouseenter="this.style.transform='scale(1.05)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=1; i.style.opacity=0; v.play().catch(()=>{}); }" 
-             onmouseleave="this.style.transform='scale(1)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=0; i.style.opacity=1; v.pause(); v.currentTime=0; }">
+        <div class="box" data-id="${gameIdStr}" ${ytAttr} style="position: relative; cursor: pointer; transition: transform 0.3s;" 
+             onmouseenter="handleGameCardHover(this, true)" 
+             onmouseleave="handleGameCardHover(this, false)">
           <div class="media-wrapper" style="position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden;">
-            <img src="${game.image ? game.image.split(" ")[0] : "../assets/default-game.png"}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
-            ${game.trailer_url ? `<video src="${game.trailer_url.split(" ")[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ""}
+            <img src="${typeof getSafeImageUrl === 'function' ? getSafeImageUrl(game.image ? game.image.split(" ")[0] : null) : (game.image ? game.image.split(" ")[0] : "../assets/default-game.png")}" onerror="this.onerror=null; this.src='../assets/default-game.png'" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
+            ${game.trailer_url && !game.trailer_url.includes("youtube") && !game.trailer_url.includes("youtu.be") ? `<video src="${game.trailer_url.split(" ")[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ""}
           </div>
           ${bookmarkHtml}
           <div class="box-text">
@@ -198,13 +204,16 @@ async function fetchAndRenderActionGames() {
           const isSaved = savedWishlistGameIds.has(gameIdStr);
           const bookmarkHtml = getBookmarkHtml(gameIdStr, isSaved);
 
+          const ytId = game.trailer_url ? (typeof getYouTubeVideoId === "function" ? getYouTubeVideoId(game.trailer_url) : null) : null;
+          const ytAttr = ytId ? `data-yt-id="${ytId}"` : "";
+
           return `
-        <div class="box" data-id="${gameIdStr}" style="position: relative; cursor: pointer; transition: transform 0.3s;" 
-             onmouseenter="this.style.transform='scale(1.05)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=1; i.style.opacity=0; v.play().catch(()=>{}); }" 
-             onmouseleave="this.style.transform='scale(1)'; const v = this.querySelector('video'); const i = this.querySelector('img'); if(v) { v.style.opacity=0; i.style.opacity=1; v.pause(); v.currentTime=0; }">
+        <div class="box" data-id="${gameIdStr}" ${ytAttr} style="position: relative; cursor: pointer; transition: transform 0.3s;" 
+             onmouseenter="handleGameCardHover(this, true)" 
+             onmouseleave="handleGameCardHover(this, false)">
           <div class="media-wrapper" style="position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden;">
-            <img src="${game.image ? game.image.split(" ")[0] : "../assets/default-game.png"}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
-            ${game.trailer_url ? `<video src="${game.trailer_url.split(" ")[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ""}
+            <img src="${typeof getSafeImageUrl === 'function' ? getSafeImageUrl(game.image ? game.image.split(" ")[0] : null) : (game.image ? game.image.split(" ")[0] : "../assets/default-game.png")}" onerror="this.onerror=null; this.src='../assets/default-game.png'" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; display: block;" loading="lazy" alt="${game.name || game.title}" />
+            ${game.trailer_url && !game.trailer_url.includes("youtube") && !game.trailer_url.includes("youtu.be") ? `<video src="${game.trailer_url.split(" ")[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; pointer-events: none;" muted loop playsinline></video>` : ""}
           </div>
           ${bookmarkHtml}
           <div class="box-text">
