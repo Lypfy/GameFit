@@ -1,0 +1,85 @@
+chưa phân 
+review 
+statistics
+
+Nghĩa
+SP
+CPU: sp_GetCpusPaging, sp_GetCpuById, sp_addCpus, sp_updateCpus,sp_deleteCpus, fn_SearchCpus(@search)
+GPU: sp_GetGpuById,sp_GetGpusPaging, sp_addGpus, sp_updateGpus, sp_deleteGpus, dbo.fn_SearchGpus(@search)
+Sắp xếp: sp_sortByname, sp_sortByRating
+Game: sp_addGame, sp_updateGame, sp_deleteGame, sp_UpdateGameRequirement
+
+Khang
+View
+vw_Gpu_Detail
+vw_Cpu_Detail
+vw_User_Safe_Profile
+vw_Game_Card
+vw_Game_Detail
+vw_Game_Requirement_Detail
+vw_User_PC_Detail
+vw_Review_Details
+
+SP 
+ComputerConfig
+sp_addComputerConfig
+sp_UpdateComputerConfig
+sp_DeleteComputerConfig
+
+Wishlist
+sp_AddGameToWishlist
+sp_DeleteGameFromWishlist
+
+auth 
+sp_Register
+sp_ResetPassword
+sp_UpdateInformationAccount
+sp_AutoUnlockExpiredUsers
+
+Function
+games: 
+fn_GetGames(@offset, @limit, @categories, @publishers, @rams)
+fn_TotalGames(@categories, @publishers, @rams) AS totalItems
+fn_GetGameDetail(@game_id)
+fn_GetGameRequirementByID(@game_id)
+fn_GetGameRequirementByID(@game_id)
+fn_GetGamesByTag(@tag_name)
+fn_GetCompatibilityPercent(@game_id, @cpu_name, @gpu_name, @ram, @storage, @os)
+
+computerConfig
+fn_getComputersConfig(@user_id)
+
+wishlist
+fn_GetGamesFromWishlist(@user_id)
+
+auth
+fn_checkUserByEmail(@username)
+fn_checkUserByEmail(@email)
+fn_CheckUsernameExists(@user_id, @new_user_name)
+fn_GetUserById(@user_id)
+fn_GetUsers(@keyword, @role, @status)
+fn_GetUserPasswordById(@user_id)
+
+Thắng
+SP
+Notifications
+sp_GetUserNotifications
+sp_GetUnreadNotificationCount
+sp_MarkNotificationAsRead
+
+Khôi
+SP
+Tag
+sp_AddTag
+sp_UpdateTag
+sp_DeleteTag
+
+Function:
+auth
+sp_LockUnlockUser
+sp_AdminAddUser
+sp_ChangeUserRole
+
+Games
+fn_SearchTagsWithGameCount('')
+fn_GetAllPublishers()

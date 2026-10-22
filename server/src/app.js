@@ -1,7 +1,6 @@
 const express = require("express");
 require("dotenv").config();
 const { connectDB } = require("./config/db");
-const { connectRedis } = require("./config/redis");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -55,7 +54,7 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/notifications", notificationRoutes);
 
 // Khởi tạo kết nối DB và Redis trước khi lắng nghe port
-Promise.all([connectDB(), connectRedis()]).then(() => {
+connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Server GameFit đang chạy tại: http://localhost:${PORT}`);
   });
