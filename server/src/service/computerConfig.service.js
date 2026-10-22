@@ -22,7 +22,7 @@ async function resolveCpuGpuIds(cpu_id, gpu_id) {
       try {
         const reqCpu = new sql.Request();
         reqCpu.input("name", sql.NVarChar(100), cpu_id.trim());
-        const resCpu = await reqCpu.query("SELECT TOP 1 cpu_id FROM CPUs WHERE name LIKE '%' + @name + '%' OR brand LIKE '%' + @name + '%'");
+        const resCpu = await reqCpu.query("SELECT TOP 1 cpu_id FROM dbo.fn_SearchCpus(@name)");
         if (resCpu.recordset?.[0]?.cpu_id) {
           resolvedCpuId = resCpu.recordset[0].cpu_id;
         }
@@ -37,7 +37,7 @@ async function resolveCpuGpuIds(cpu_id, gpu_id) {
       try {
         const reqGpu = new sql.Request();
         reqGpu.input("name", sql.NVarChar(100), gpu_id.trim());
-        const resGpu = await reqGpu.query("SELECT TOP 1 gpu_id FROM GPUs WHERE name LIKE '%' + @name + '%' OR brand LIKE '%' + @name + '%'");
+        const resGpu = await reqGpu.query("SELECT TOP 1 gpu_id FROM dbo.fn_SearchGpus(@name)");
         if (resGpu.recordset?.[0]?.gpu_id) {
           resolvedGpuId = resGpu.recordset[0].gpu_id;
         }
@@ -52,6 +52,7 @@ async function resolveCpuGpuIds(cpu_id, gpu_id) {
     gpuId: isNaN(resolvedGpuId) || !resolvedGpuId ? null : resolvedGpuId,
   };
 }
+
 
 const addComputerConfig = async (pc_name, user_id, cpu_id, gpu_id, os, ram, storage) => {
     try {
